@@ -1,48 +1,28 @@
+'use client'
+
 import Entry from "../../components/Entry";
 import List from "../../components/List";
 import Summary from "../../components/Summary";
 import TopNav from "../../components/TopNav";
 import { useState } from "react"
-
-enum Category {
-  Salary = "Salary",
-  Rent = "Rent",
-  Food = "Food",
-  Entertainment = "Entertainment",
-  Car = "Car",
-  Vacation = "Vacation",
-  Home = "Home",
-  Garden = "Garden",
-  Date = "Date",
-  Christmass = "Christmass",
-  Birthdays = "Birthdays",
-  Utilities = "Utilities",
-  Other = "Other"
-}
-
-interface Transaction {
-    readonly id: string
-    ammount: number
-    type: "income" | "expense"
-    date: Date
-    category: Category
-    description?: string
-
-}
+import { Transactions } from "./types/Transactions";
 
 export default function App() {
-const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [transactions, setTransactions] = useState<Transactions>([])
 
   return (
     <>
-      <main>
+      <main className="flex flex-col gap-3 p-3">
         <TopNav />
-        <Entry />
+        <hr />
+        <Entry
+          setTransactions={setTransactions}
+        />
         <List />
         <Summary />
       </main>
       <footer>
-        
+
       </footer>
     </>
   );
