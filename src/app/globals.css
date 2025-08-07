@@ -5,10 +5,10 @@
   --foreground: #171717;
 }
 
-@theme inline {
+/* @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-}
+} */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -16,6 +16,13 @@
     --foreground: #ededed;
   }
 }
+
+/* * {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+} */
 
 body {
   background: var(--background);
