@@ -18,7 +18,7 @@ export interface Transaction {
     readonly id: string
     ammount: number
     type: "income" | "expense"
-    date: Date
+    date: string
     category: Category
     description?: string
 }

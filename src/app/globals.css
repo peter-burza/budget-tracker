@@ -35,7 +35,45 @@ body {
 input {
   background-color: var(--foreground);
   color: var(--background);
-  padding: 0.25rem 0.5rem;
+  padding: 0.4rem 0.7rem;
   border-radius: 0.25rem;
   width: 100%;
+  outline: none;
+}
+
+select {
+  background-color: var(--foreground);
+  color: var(--background);
+  padding: 0.6rem 0.5rem;
+  border-radius: 0.25rem;
+  width: 100%;
+  max-width: 232px; 
+  outline: none;
+}
+
+button {
+  background-color: #57b632;
+  color: var(--background);
+  padding: 0.5rem 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition-duration: 200ms;
+}
+
+input,
+select,
+textarea {
+  box-shadow: 0 0 1.5px 1px white;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  box-shadow: unset;
+}
+
+button:hover {
+  background-color: #57b632cb;
+  color:black;
 }
