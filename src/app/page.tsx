@@ -6,14 +6,11 @@ import Summary from "../../components/Summary";
 import TopNav from "../../components/TopNav";
 import { useEffect, useState } from "react"
 import { Transactions } from "./types/Transactions";
+import { JSX } from "@emotion/react/jsx-runtime";
 
 export default function App() {
   const [transactions, setTransactions] = useState<Transactions>([])
-
-
-  useEffect(() => {
-    console.log(transactions)
-  }, [transactions])
+  const [currency, setCurrency] = useState<JSX.Element>(<i className="fa-solid fa-euro-sign text-base"></i>) // <i class="fa-solid fa-dollar-sign text-xl"></i>
 
   return (
     <>
@@ -23,7 +20,7 @@ export default function App() {
         <Entry
           setTransactions={setTransactions}
         />
-        <List />
+        <List currency={currency} />
         <Summary />
       </main>
       <footer>

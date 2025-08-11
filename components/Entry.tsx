@@ -9,21 +9,21 @@ interface EntryProps {
     setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>
 }
 
-export const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
+const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
     const [newTransaction, setNewTransaction] = useState<Transaction>({
         id: "",
-        ammount: 0,
-        type: "income",
+        amount: 0,
+        type: "+",
         date: dayjs(Date.now()).format("YYYY-MM-DD"),
         category: Category.Salary,
     })
 
-    function displayAmmount(ammount: number): string {
-        if (ammount == 0) return ''
-        return ammount.toString()
+    function displayAmount(amount: number): string {
+        if (amount == 0) return ''
+        return amount.toString()
     }
 
-    function setAmmount(value: string): void {
+    function setAmount(value: string): void {
         let result: number
         const parsedValue = parseInt(value)
         if (Number.isNaN(parsedValue))
@@ -31,16 +31,16 @@ export const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
         else
             result = parsedValue
         setNewTransaction(prev => ({
-            ...prev, ammount: result
+            ...prev, amount: result
         }))
     }
 
     function setType(value: string): void {
-        let result: "income" | "expense"
-        if (value === "income")
+        let result: "+" | "-"
+        if (value === "+")
             result = value
         else
-            result = "expense"
+            result = "-"
         setNewTransaction(prev => ({
             ...prev, type: result
         }))
@@ -72,16 +72,16 @@ export const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
 
     return (
         <div id="transaction-entry" className="flex flex-col items-center gap-2 bg-[var(--bckground-muted)] rounded-md p-3">
-            <h1 className="text-2xl pb-2">New Entry</h1>
+            <h2>New Entry</h2>
             <div className="flex flex-col gap-1 max-w-[232px] w-full">
-                <p>Ammount:</p>
-                <input value={displayAmmount(newTransaction.ammount)} onChange={(e) => { setAmmount(e.target.value) }} type="number" />
+                <p>Amount:</p>
+                <input value={displayAmount(newTransaction.amount)} onChange={(e) => { setAmount(e.target.value) }} type="number" />
             </div>
             <div className="flex flex-col gap-1 max-w-[232px] w-full">
                 <p>Type:</p>
                 <select value={newTransaction.type} onChange={(e) => { setType(e.target.value) }}>
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
+                    <option value="+">Income</option>
+                    <option value="-">Expense</option>
                 </select>
             </div>
             <div className="flex flex-col gap-1 max-w-[232px] w-full">
