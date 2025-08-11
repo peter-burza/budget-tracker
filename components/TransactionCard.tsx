@@ -48,7 +48,9 @@ const TransactionCard = ({ screenWidth, transaction, currency }: { screenWidth: 
                         </div>
                     </div>
                     <div className="flex items-stretch gap-[1px]">
-                        <p className={`flex-[10] px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>{transaction.description}</p>
+                        <div className={`flex-[10] ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                            <p className="m-2">{transaction.description}</p>
+                        </div>
                         <div className={`flex flex-[1] justify-center px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
                             <p className="m-auto !text-xl">{displayType(transaction.type)}</p>
                         </div>
