@@ -14,6 +14,7 @@ type tableHeadkey = 'd' | 't' | 'a' | 'c'
 const List: React.FC<ListProps> = ({ currency }) => {
     const [screenWidth, setScreenWidth] = useState(0);
     const [tableHeads, setTableHeads] = useState<Record<tableHeadkey, JSX.Element | string>>({ d: '', t: '', a: '', c: '' })
+    const [transactionCount, setTransactionCount] = useState<number>(10)
 
     useEffect(() => {
         function handleResize() {
@@ -53,7 +54,7 @@ const List: React.FC<ListProps> = ({ currency }) => {
                 </thead>
                 <tbody>
                     {
-                        FAKE_TRANSACTIONS.map((transaction) => {
+                        FAKE_TRANSACTIONS.slice(0, transactionCount).map((transaction) => {
                             return (
                                 <TransactionCard
                                     key={transaction.id}
@@ -66,6 +67,17 @@ const List: React.FC<ListProps> = ({ currency }) => {
                     }
                 </tbody>
             </table>
+            {
+                transactionCount < Object.keys(FAKE_TRANSACTIONS).length ? (
+                    <button onClick={() => { setTransactionCount(transactionCount + 10) }}>
+                        <h4>Expand</h4>
+                    </button>
+                ) : (
+                    <button onClick={() => { setTransactionCount(10) }}>
+                        <h4>Shorten</h4>
+                    </button>
+                )
+            }
         </div>
     )
 }
