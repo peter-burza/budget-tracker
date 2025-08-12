@@ -10,8 +10,8 @@
 
   --color-list-bg-red: #d33b3b7a;
   --color-list-bg-green: #84ffb73f;
-  --color-list-border-red: #fa6f6f73;
-  --color-list-border-green: #00d4589f;
+  --color-list-border-red: #fa6f6f50;
+  --color-list-border-green: #00d45869;
 }
 
 /* @theme inline {
@@ -131,6 +131,10 @@ button:hover {
 
 .list-table td {
   border-bottom: none;
+}
+
+.list-table th,
+.list-table td {
   cursor: pointer;
 }
 

@@ -72,7 +72,7 @@ const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
 
     return (
         <div id="transaction-entry" className="flex flex-col items-center gap-2 bg-[var(--bckground-muted)] rounded-md p-3">
-            <h2>New Entry</h2>
+            <h3>New Entry</h3>
             <div className="flex flex-col gap-1 max-w-[232px] w-full">
                 <p>Amount:</p>
                 <input value={displayAmount(newTransaction.amount)} onChange={(e) => { setAmount(e.target.value) }} type="number" />

@@ -4,6 +4,7 @@ import { FAKE_TRANSACTIONS } from "@/app/utils"
 import { JSX } from "@emotion/react/jsx-runtime"
 import { useEffect, useState } from "react"
 import TransactionCard from "./TransactionCard"
+import { Transaction } from "@/app/interfaces/Transaction"
 
 interface ListProps {
     currency: JSX.Element
@@ -12,9 +13,32 @@ interface ListProps {
 type tableHeadkey = 'd' | 't' | 'a' | 'c'
 
 const List: React.FC<ListProps> = ({ currency }) => {
+    const [transactionList, setTransactionList] = useState<Transaction[]>(FAKE_TRANSACTIONS)
     const [screenWidth, setScreenWidth] = useState(0);
     const [tableHeads, setTableHeads] = useState<Record<tableHeadkey, JSX.Element | string>>({ d: '', t: '', a: '', c: '' })
     const [transactionCount, setTransactionCount] = useState<number>(10)
+
+    const [dateDescending, setDateDescending] = useState<Boolean | null>(true)
+    const [incomeOrExpense, setIncomeOrExpense] = useState<Boolean | null>(null)
+    const [amountDescending, setAmountDescending] = useState<Boolean | null>(null)
+    const [categoryPick, setCategoryPick] = useState<Boolean | null>(null)
+
+    function reorderList(header: string): void {
+        if (header === "date") {
+            setAmountDescending(null)
+            if (dateDescending === true) { // set ascending order by date
+                setTransactionList([...FAKE_TRANSACTIONS].sort((a, b) => {
+                    return new Date(b.date).getTime() - new Date(a.date).getTime();
+                }))
+                setDateDescending(false)
+            } else {
+                setTransactionList([...FAKE_TRANSACTIONS].sort((a, b) => {
+                    return new Date(a.date).getTime() - new Date(b.date).getTime();
+                }))
+                setDateDescending(true)
+            }
+        }
+    }
 
     useEffect(() => {
         function handleResize() {
@@ -41,12 +65,12 @@ const List: React.FC<ListProps> = ({ currency }) => {
 
     return (
         <div id="transaction-list" className="flex flex-col items-center gap-2 bg-[var(--bckground-muted)] rounded-md p-3">
-            <h2>Transactions History</h2>
+            <h3>Transactions History</h3>
             <p>Click on transaction for more details</p>
             <table className="list-table">
                 <thead>
                     <tr>
-                        <th>{tableHeads.d}</th>
+                        <th onClick={() => { reorderList("date") }}>{tableHeads.d}</th>
                         <th className="type-table-header">{tableHeads.t}</th>
                         <th>{tableHeads.a}</th>
                         <th className="category-table-header">{tableHeads.c}</th>
@@ -54,7 +78,7 @@ const List: React.FC<ListProps> = ({ currency }) => {
                 </thead>
                 <tbody>
                     {
-                        FAKE_TRANSACTIONS.slice(0, transactionCount).map((transaction) => {
+                        transactionList.slice(0, transactionCount).map((transaction) => {
                             return (
                                 <TransactionCard
                                     key={transaction.id}
