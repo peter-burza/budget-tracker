@@ -5,6 +5,8 @@ import { JSX } from "@emotion/react/jsx-runtime"
 import { useEffect, useState } from "react"
 import TransactionCard from "./TransactionCard"
 import { Transaction } from "@/app/interfaces/Transaction"
+import { setDefaultAutoSelectFamily } from "net"
+import { dateCalendarClasses } from "@mui/x-date-pickers"
 
 interface ListProps {
     currency: JSX.Element
@@ -18,27 +20,106 @@ const List: React.FC<ListProps> = ({ currency }) => {
     const [tableHeads, setTableHeads] = useState<Record<tableHeadkey, JSX.Element | string>>({ d: '', t: '', a: '', c: '' })
     const [transactionCount, setTransactionCount] = useState<number>(10)
 
-    const [dateDescending, setDateDescending] = useState<Boolean | null>(true)
-    const [incomeOrExpense, setIncomeOrExpense] = useState<Boolean | null>(null)
-    const [amountDescending, setAmountDescending] = useState<Boolean | null>(null)
-    const [categoryPick, setCategoryPick] = useState<Boolean | null>(null)
+    const [dateDescending, setDateDescending] = useState<boolean | null>(true)
+    const [isIncome, setIsIncome] = useState<boolean | null>(null)
+    const [amountDescending, setAmountDescending] = useState<boolean | null>(null)
+    const [categoryPick, setCategoryPick] = useState<boolean | null>(null)
 
-    function reorderList(header: string): void {
-        if (header === "date") {
-            setAmountDescending(null)
-            if (dateDescending === true) { // set ascending order by date
-                setTransactionList([...FAKE_TRANSACTIONS].sort((a, b) => {
-                    return new Date(b.date).getTime() - new Date(a.date).getTime();
-                }))
-                setDateDescending(false)
-            } else {
-                setTransactionList([...FAKE_TRANSACTIONS].sort((a, b) => {
-                    return new Date(a.date).getTime() - new Date(b.date).getTime();
-                }))
-                setDateDescending(true)
-            }
+    function filterListByType(newList: Transaction[]): void {
+        if (isIncome === null) {
+            newList = FAKE_TRANSACTIONS
+            console.log("filtered by type ALL");
+        } else if (isIncome === true) {
+            newList = [...FAKE_TRANSACTIONS].filter((transaction) => transaction.type === "+")
+            console.log("filtered by type +");
+        } else {
+            newList = [...FAKE_TRANSACTIONS].filter((transaction) => transaction.type === "-")
+            console.log("filtered by type -");
         }
+
+        newList = reorderListByDate(newList)
+        newList = reorderListByAmount(newList)
+
+        setTransactionList(newList)
     }
+
+    function reorderListByDate(list: Transaction[]): Transaction[] {
+        if (dateDescending === true) {
+            console.log("date DEscending");
+            return [...list].sort((a, b) => {
+                return new Date(a.date).getTime() - new Date(b.date).getTime();
+            })
+        } else if (dateDescending === false) {
+            console.log("date Ascending");
+            return [...list].sort((a, b) => {
+                return new Date(b.date).getTime() - new Date(a.date).getTime();
+            })
+        }
+        return list
+    }
+
+    function reorderListByAmount(list: Transaction[]): Transaction[] {
+        if (amountDescending === true) {
+            console.log("amount DEscending");
+            return [...list].sort((a, b) => {
+                return a.amount - b.amount
+            })
+        } else if (amountDescending === false) {
+            console.log("amount Ascending");
+            return [...list].sort((a, b) => {
+                return b.amount - a.amount
+            })
+        }
+        return list
+    }
+
+    function filterByType() {
+        if (isIncome === null) setIsIncome(true)
+        else if (isIncome === true) setIsIncome(false)
+        else setIsIncome(null)
+    }
+
+    function reorderByDate(): void {
+        setAmountDescending(null)
+        if (dateDescending === true) setDateDescending(false)
+        else if (dateDescending === false || dateDescending === null) setDateDescending(true)
+    }
+
+    function reorderAmount(): void {
+        setDateDescending(null)
+        if (amountDescending === true) setAmountDescending(false)
+        else if (amountDescending === false || amountDescending === null) setAmountDescending(true)
+    }
+
+    useEffect(() => {
+        console.log("dateDescending" + ": " + dateDescending);
+        console.log("isIncome" + ": " + isIncome);
+        console.log("amountDescending" + ": " + amountDescending);
+        console.log("categoryPick" + ": " + categoryPick);
+
+        filterListByType(FAKE_TRANSACTIONS)
+
+    }, [isIncome])
+
+    useEffect(() => {
+        console.log("dateDescending" + ": " + dateDescending);
+        console.log("isIncome" + ": " + isIncome);
+        console.log("amountDescending" + ": " + amountDescending);
+        console.log("categoryPick" + ": " + categoryPick);
+
+        setTransactionList(reorderListByDate(transactionList))
+
+    }, [dateDescending])
+    
+    useEffect(() => {
+        console.log("dateDescending" + ": " + dateDescending);
+        console.log("isIncome" + ": " + isIncome);
+        console.log("amountDescending" + ": " + amountDescending);
+        console.log("categoryPick" + ": " + categoryPick);
+
+        setTransactionList(reorderListByAmount(transactionList))
+
+    }, [amountDescending])
 
     useEffect(() => {
         function handleResize() {
@@ -70,9 +151,9 @@ const List: React.FC<ListProps> = ({ currency }) => {
             <table className="list-table">
                 <thead>
                     <tr>
-                        <th onClick={() => { reorderList("date") }}>{tableHeads.d}</th>
-                        <th className="type-table-header">{tableHeads.t}</th>
-                        <th>{tableHeads.a}</th>
+                        <th onClick={reorderByDate}>{tableHeads.d}</th>
+                        <th onClick={filterByType} className="type-table-header">{tableHeads.t}</th>
+                        <th onClick={reorderAmount}>{tableHeads.a}</th>
                         <th className="category-table-header">{tableHeads.c}</th>
                     </tr>
                 </thead>
