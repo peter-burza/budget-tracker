@@ -100,7 +100,7 @@ const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
                 <p className="">Description:</p>
                 <textarea onChange={e => { setDescription(e.target.value) }} className="bg-[var(--foreground)] text-[var(--background)] outline-0 p-2 px-3 rounded-sm" placeholder="Transaction detail"></textarea>
             </div>
-            <button onClick={() => { setTransactions(prev => ([ ...prev, newTransaction ])) }} ><h4>Add transaction</h4></button>
+            <button className="primary-btn" onClick={() => { setTransactions(prev => ([ ...prev, newTransaction ])) }} ><h4>Add transaction</h4></button>
         </div>
     )
 }

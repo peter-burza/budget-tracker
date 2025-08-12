@@ -71,7 +71,7 @@ select {
   outline: none;
 }
 
-button {
+.primary-btn {
   background-color: #57b632;
   color: var(--background);
   padding: 0.5rem 0.75rem;
@@ -106,7 +106,7 @@ textarea:hover {
   box-shadow: unset;
 }
 
-button:hover {
+.primary-btn:hover {
   background-color: #57b632cb;
   color: black;
 }

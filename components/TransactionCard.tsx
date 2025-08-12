@@ -1,8 +1,19 @@
+'use client'
+
 import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction"
 import { JSX } from "@emotion/react/jsx-runtime";
-import { useState } from "react";
+import React, { useState } from "react";
+import { tableHeadkey } from "./List";
 
-const TransactionCard = ({ screenWidth, transaction, currency }: { screenWidth: number, transaction: Transaction, currency: JSX.Element }) => {
+interface TransactionCardProps {
+    screenWidth: number
+    transaction: Transaction,
+    currency: JSX.Element
+    setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
+    setTableHeads: React.Dispatch<React.SetStateAction<Record<tableHeadkey, JSX.Element | string>>>
+}
+
+const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, currency, setCategoryFilter, setTableHeads }) => {
     const highlightStyle: string = transaction.type === "+" ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)]' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)]'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
@@ -63,7 +74,11 @@ const TransactionCard = ({ screenWidth, transaction, currency }: { screenWidth: 
             <td>{shortenDate(transaction.date)}</td>
             <td style={{}}>{displayType(transaction.type)}</td>
             <td>{transaction.amount}€</td>
-            <td>{displayCategory(transaction.category)}</td>
+            <td onClick={(e) => {
+                e.stopPropagation()
+                setCategoryFilter(transaction.category)
+                setTableHeads(prev => ({...prev, c: displayCategory(transaction.category)}))
+            }}>{displayCategory(transaction.category)}</td>
         </tr>
     )
 }
