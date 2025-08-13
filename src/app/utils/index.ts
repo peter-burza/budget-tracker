@@ -22,9 +22,9 @@ import { Category, Transaction } from "../interfaces/Transaction";
 //   { id: 'tx019', amount: 250, type: '+', date: '2025-08-19', category: Category.Investment, description: 'Dividend payout from stock portfolio.' },
 //   { id: 'tx020', amount: 90, type: '-', date: '2025-08-20', category: Category.GymFitness, description: 'Monthly gym membership fee and fitness class.' },
 //   { id: 'tx021', amount: 150, type: '-', date: '2025-08-21', category: Category.KidsSchool, description: 'School supplies and tuition fees for children.' },
-//   { id: 'tx022', amount: 80, type: '-', date: '2025-08-22', category: Category.Pets, description: 'Vet visit and pet food for the family dog.' },
-//   { id: 'tx023', amount: 200, type: '-', date: '2025-08-23', category: Category.Shopping, description: 'Bought clothes and accessories during seasonal sale.' },
-//   { id: 'tx024', amount: 400, type: '-', date: '2025-08-24', category: Category.FixedExp, description: 'Monthly fixed expenses including insurance and subscriptions.' }
+//   { id: 'tx022', amount: 80, type: '-', date: '2028-08-22', category: Category.Pets, description: 'Vet visit and pet food for the family dog.' },
+//   { id: 'tx023', amount: 200, type: '-', date: '2027-08-23', category: Category.Shopping, description: 'Bought clothes and accessories during seasonal sale.' },
+//   { id: 'tx024', amount: 400, type: '-', date: '2026-08-24', category: Category.FixedExp, description: 'Monthly fixed expenses including insurance and subscriptions.' }
 // ];
 
 
@@ -153,4 +153,15 @@ export function getMonth(date: string): string {
 
 export function getYear(date: string): string {
   return date.slice(0, 4)
+}
+
+export function getYearsFromTransactions(transactions: Transaction[]): string[] {
+  const yearsSet = new Set<string>();
+
+  for (const t of transactions) {
+    const year = t.date.slice(0, 4);
+    yearsSet.add(year);
+  }
+
+  return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
 }

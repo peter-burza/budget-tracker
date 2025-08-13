@@ -4,7 +4,7 @@ import { JSX } from "@emotion/react/jsx-runtime"
 import { useEffect, useState } from "react"
 import TransactionCard from "./TransactionCard"
 import { Category, Transaction } from "@/app/interfaces/Transaction"
-import { getMonth, getMonthName, getMonthNumber, getYear } from "@/app/utils"
+import { getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils"
 
 interface ListProps {
     currency: JSX.Element
@@ -14,27 +14,24 @@ interface ListProps {
 export type tableHeadkey = 'd' | 't' | 'a' | 'c'
 
 const List: React.FC<ListProps> = ({ currency, transactions }) => {
-    const [transactionList, setTransactionList] = useState<Transaction[]>(transactions)
+    const [transactionList, setTransactionList] = useState<Transaction[]>([])
+    const [tListFilteredByDate, setTListFilteredByDate] = useState<Transaction[]>([])
+    const [tListFilteredByTypeOrCategory, setTListFilteredByTypeOrCategory] = useState<Transaction[]>([])
     const [screenWidth, setScreenWidth] = useState(0);
     const [tableHeads, setTableHeads] = useState<Record<tableHeadkey, JSX.Element | string>>({ d: '', t: '', a: '', c: '' })
     const [transactionCount, setTransactionCount] = useState<number>(10)
-
 
     const [dateAscending, setDateAscending] = useState<boolean | null>(true)
     const [typeFilter, setTypeFilter] = useState<boolean | undefined | null>(undefined)
     const [amountDescending, setAmountDescending] = useState<boolean | null>(null)
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null)
 
-    // Get last recorded transaction date (month, year)    
-    const latestDateRecord: string = sortDateDescending(transactions)[0].date
-    const latestMonthRecord: string = latestDateRecord.slice(5, 7)
+    const latestDateRecord: string = sortDateAscending(transactions)[0].date
+    const latestMonthRecord: string = getMonthName(latestDateRecord.slice(5, 7))
     const latestYearRecord: string = latestDateRecord.slice(0, 4)
 
-    // const defaultDateFilter: [string, string] = [getMonthName(latestMonthRecord), latestYearRecord]
     const [selectedMonth, setSelectedMonth] = useState<string>(latestMonthRecord)
     const [selectedYear, setSelectedYear] = useState<string>(latestYearRecord)
-
-    // const [dateFilter, setDateFilter] = useState<[string, string]>([selectedYear, selectedMonth])
 
 
 
@@ -57,43 +54,45 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
     function filterListByType(): void {
         let newList: Transaction[]
         if (typeFilter === undefined) {
-            newList = transactionList
+            newList = tListFilteredByDate
         } else
             if (typeFilter === true) {
-                newList = [...transactionList].filter((transaction) => transaction.type === "+")
+                newList = [...tListFilteredByDate].filter((transaction) => transaction.type === "+")
             } else {
-                newList = [...transactionList].filter((transaction) => transaction.type === "-")
+                newList = [...tListFilteredByDate].filter((transaction) => transaction.type === "-")
             }
 
         newList = reorderListByDate(newList)
         newList = reorderListByAmount(newList)
 
-        setTransactionList(newList)
+        setTListFilteredByTypeOrCategory(newList)
+        // setTransactionList(newList)
         setCategoryFilter(null)
         // setDateFilter(defaultDateFilter)
     }
 
-    function filterListByCategory(categoryFilter: Category | null): void {
-        let newList: Transaction[] = [...transactionList].filter((transaction) => transaction.category === categoryFilter)
+    function filterListByCategory(): void {
+        let newList: Transaction[] = [...tListFilteredByDate].filter((transaction) => transaction.category === categoryFilter)
 
         newList = reorderListByDate(newList)
         newList = reorderListByAmount(newList)
 
-        setTransactionList(newList)
+        setTListFilteredByTypeOrCategory(newList)
+        // setTransactionList(newList)
         setTypeFilter(null)
         // setDateFilter(defaultDateFilter)
     }
 
     function filterListByDate(): void {
         let newList: Transaction[] = transactions
-        const filteredTListByYear = transactions.filter(t => (getYear(t.date) === selectedYear))
-        const filteredTListByMonth = filteredTListByYear.filter(t => (getMonth(t.date) == getMonthNumber(selectedMonth)))
+        const filteredTListByYear = selectedYear === 'overall' ? transactions : transactions.filter(t => (getYear(t.date) === selectedYear))
+        const filteredTListByMonth = selectedMonth === 'overall' ? filteredTListByYear : filteredTListByYear.filter(t => (getMonth(t.date) === getMonthNumber(selectedMonth)))
         newList = filteredTListByMonth
 
         newList = reorderListByDate(newList)
         newList = reorderListByAmount(newList)
 
-        setTransactionList(newList)
+        setTListFilteredByDate(newList)
         // setTypeFilter(null)
         // setCategoryFilter(null)
     }
@@ -130,8 +129,8 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
 
     function setAmountRender(): void {
         setDateAscending(null)
-        if (amountDescending === true) setAmountDescending(false)
-        else if (amountDescending === false || amountDescending === null) setAmountDescending(true)
+        if (amountDescending === false) setAmountDescending(true)
+        else if (amountDescending === true || amountDescending === null) setAmountDescending(false)
     }
 
     function resetFilters() {
@@ -140,7 +139,8 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
         setDateAscending(true)
         setAmountDescending(null)
         setTableHeads(prev => ({ ...prev, c: (screenWidth > 510 ? 'Category' : <i className="fa-solid fa-icons text-base"></i>) }))
-        setTransactionList(transactions)
+        setSelectedMonth(latestMonthRecord)
+        setSelectedYear(latestYearRecord)
     }
 
     useEffect(() => {
@@ -180,13 +180,27 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
         console.log("isIncome" + ": " + typeFilter);
         console.log("amountDescending" + ": " + amountDescending);
         console.log("categoryFilter" + ": " + categoryFilter);
-        filterListByCategory(categoryFilter)
+        filterListByCategory()
     }, [categoryFilter])
 
     useEffect(() => {
         console.log("Date Filter changet to: " + selectedYear + "-" + selectedMonth)
         filterListByDate()
     }, [selectedYear, selectedMonth])
+
+    useEffect(() => {
+        if (typeFilter !== null)
+            filterListByType()
+        if (categoryFilter !== null)
+            filterListByCategory()
+    }, [tListFilteredByDate])
+
+    useEffect(() => {
+        if (dateAscending !== null)
+            setTransactionList(reorderListByDate(tListFilteredByTypeOrCategory))
+        if (amountDescending !== null)
+            setTransactionList(reorderListByAmount(tListFilteredByTypeOrCategory))
+    }, [tListFilteredByTypeOrCategory])
 
     useEffect(() => {
         function handleResize() {
@@ -216,21 +230,31 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
             <h3>Transactions History</h3>
             <p className="text-center">Click on transaction for more details. To filter and order, click on table headers. For category filter, click on specific category.</p>
             <div className="flex justify-between w-full max-w-[200px]">
-                <select onChange={(e) => { setSelectedMonth(e.target.value) }} className="!max-w-30 !max-h-7.5 !p-1" name="month-selection" id="month-selection">
-                    <option value="overall">Overall</option>
-                    <option value="january">January</option>
-                    <option value="february">February</option>
-                    <option value="march">March</option>
-                    <option value="april">April</option>
-                    <option value="may">May</option>
-                    <option value="june">June</option>
-                    <option value="july">July</option>
-                    <option value="august">August</option>
-                    <option value="september">September</option>
-                    <option value="october">October</option>
-                    <option value="november">November</option>
-                    <option value="december">December</option>
-                </select>
+                <div className="flex flex-col gap-2">
+                    <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value) }} className="!max-w-30 !max-h-7.5 !p-1" name="year-selection" id="year-selection">
+                        <option value="overall">Overall</option>
+                        {
+                            getYearsFromTransactions(transactions).map((year, yearidx) => {
+                                return <option key={yearidx} value={year}>{year}</option>
+                            })
+                        }
+                    </select>
+                    <select value={selectedMonth.toLowerCase()} onChange={(e) => { setSelectedMonth(e.target.value) }} className="!max-w-30 !max-h-7.5 !p-1" name="month-selection" id="month-selection">
+                        <option value="overall">Overall</option>
+                        <option value="january">January</option>
+                        <option value="february">February</option>
+                        <option value="march">March</option>
+                        <option value="april">April</option>
+                        <option value="may">May</option>
+                        <option value="june">June</option>
+                        <option value="july">July</option>
+                        <option value="august">August</option>
+                        <option value="september">September</option>
+                        <option value="october">October</option>
+                        <option value="november">November</option>
+                        <option value="december">December</option>
+                    </select>
+                </div>
                 <div onClick={resetFilters} className="flex justify-center bg-[var(--color-dark-blue)] py-[8px] px-[6px] rounded-full duration-200 hover:rotate-180 cursor-pointer">
                     <i title="Reset filters" className="fa-solid fa-rotate"></i>
                 </div>
@@ -279,7 +303,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
             </table>
             <div className="relative w-full text-center">
                 {
-                    transactionCount < Object.keys(transactions).length ? (
+                    Object.keys(transactionList).length > 10 && (transactionCount < Object.keys(transactionList).length ? (
                         <button onClick={() => { setTransactionCount(transactionCount + 10) }} className="primary-btn">
                             <h4>Expand</h4>
                         </button>
@@ -287,7 +311,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
                         <button onClick={() => { setTransactionCount(10) }} className="primary-btn">
                             <h4>Shorten</h4>
                         </button>
-                    )
+                    ))
                 }
                 {/* <div onClick={resetFilters} className="flex justify-center bg-[var(--color-dark-blue)] py-[8px] px-[6px] rounded-full absolute bottom-3 right-3 duration-200 hover:rotate-180 cursor-pointer">
                     <i title="Reset filters" className="fa-solid fa-rotate"></i>
