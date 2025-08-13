@@ -66,9 +66,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
         newList = reorderListByAmount(newList)
 
         setTListFilteredByTypeOrCategory(newList)
-        // setTransactionList(newList)
         setCategoryFilter(null)
-        // setDateFilter(defaultDateFilter)
     }
 
     function filterListByCategory(): void {
@@ -78,9 +76,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
         newList = reorderListByAmount(newList)
 
         setTListFilteredByTypeOrCategory(newList)
-        // setTransactionList(newList)
         setTypeFilter(null)
-        // setDateFilter(defaultDateFilter)
     }
 
     function filterListByDate(): void {
@@ -93,8 +89,6 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
         newList = reorderListByAmount(newList)
 
         setTListFilteredByDate(newList)
-        // setTypeFilter(null)
-        // setCategoryFilter(null)
     }
 
     function reorderListByDate(list: Transaction[]): Transaction[] {
@@ -134,13 +128,13 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
     }
 
     function resetFilters() {
+        setSelectedMonth(latestMonthRecord)
+        setSelectedYear(latestYearRecord)
         setCategoryFilter(null)
         setTypeFilter(undefined)
         setDateAscending(true)
         setAmountDescending(null)
         setTableHeads(prev => ({ ...prev, c: (screenWidth > 510 ? 'Category' : <i className="fa-solid fa-icons text-base"></i>) }))
-        setSelectedMonth(latestMonthRecord)
-        setSelectedYear(latestYearRecord)
     }
 
     useEffect(() => {
