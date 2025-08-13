@@ -1,4 +1,4 @@
-export default function Summary() {
+const Summary = () => {
 
 
     return (
@@ -7,3 +7,5 @@ export default function Summary() {
         </div>
     )
 }
+
+export default Summary
