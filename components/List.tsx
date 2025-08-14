@@ -46,12 +46,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
 
     // UI state
     const [screenWidth, setScreenWidth] = useState(0);
-    const [tableHeads, setTableHeads] = useState<Record<TableHeadKey, JSX.Element | string>>({
-        d: '',
-        t: '',
-        a: '',
-        c: '',
-    });
+    const [tableHeads, setTableHeads] = useState<Record<TableHeadKey, JSX.Element | string>>({ d: '', t: '', a: '', c: '', });
     const [transactionCount, setTransactionCount] = useState<number>(10);
 
     // Derived list (single source of truth)
@@ -105,12 +100,12 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
         setTypeFilter((prev) => (prev === null ? true : prev === true ? false : null));
     }
 
-    function setDateRender(): void {
+    function setDateReorder(): void {
         setAmountDescending(null);
         setDateAscending((prev) => (prev === false ? true : false));
     }
 
-    function setAmountRender(): void {
+    function setAmountReorder(): void {
         setDateAscending(null);
         setAmountDescending((prev) => (prev === true ? false : true));
     }
@@ -162,18 +157,18 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
 
     // Render
     return (
-        <div id="transaction-list" className="flex flex-col items-center gap-2 bg-[var(--bckground-muted)] rounded-md p-3">
+        <div id="transaction-list" className="flex flex-col items-center gap-4 bg-[var(--bckground-muted)] rounded-md p-3">
             <h3>Transactions History</h3>
-            <p className="text-center">
+            <p className="text-center -mt-2">
                 Click on transaction for more details. To filter and order, click on table headers. For category filter, click on specific category.
             </p>
 
-            <div className="flex justify-between w-full max-w-[200px]">
-                <div className="flex flex-col gap-2">
+            <div className="flex justify-between gap-3 sm:gap-6">
+                <div className="flex flex-wrap gap-2">
                     <select
                         value={selectedYear}
                         onChange={(e) => setSelectedYear(e.target.value)}
-                        className="!max-w-30 !max-h-7.5 !p-1"
+                        className="max-h-7.5 !p-1"
                         name="year-selection"
                         id="year-selection"
                     >
@@ -187,7 +182,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
                     <select
                         value={selectedMonth}
                         onChange={(e) => setSelectedMonth(e.target.value)}
-                        className="!max-w-30 !max-h-7.5 !p-1"
+                        className="max-h-7.5 !p-1"
                         name="month-selection"
                         id="month-selection"
                     >
@@ -218,7 +213,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
             <table className="list-table">
                 <thead>
                     <tr>
-                        <th onClick={setDateRender}>
+                        <th onClick={setDateReorder}>
                             {tableHeads.d}
                             {dateAscending === false ? (
                                 <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
@@ -236,7 +231,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
                             {tableHeads.t}
                         </th>
 
-                        <th onClick={setAmountRender}>
+                        <th onClick={setAmountReorder}>
                             {tableHeads.a}
                             {amountDescending === true ? (
                                 <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
@@ -265,17 +260,13 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
                 </tbody>
             </table>
 
-            <div className="relative w-full text-center">
-                {filteredAndSortedTList.length > 10 &&
-                    (transactionCount < filteredAndSortedTList.length ? (
-                        <button onClick={() => setTransactionCount((n) => n + 10)} className="primary-btn">
-                            <h4>Expand</h4>
-                        </button>
-                    ) : (
-                        <button onClick={() => setTransactionCount(10)} className="primary-btn">
-                            <h4>Shorten</h4>
-                        </button>
-                    ))}
+            <div className="flex gap-4 w-full justify-center">
+                <button onClick={() => setTransactionCount((tC) => tC + 10)} className="expand-shorten-btn" disabled={transactionCount >= filteredAndSortedTList.length}>
+                    <h4><i className="fa-solid fa-arrow-down-long"></i></h4> {/* Expand */} 
+                </button>
+                <button onClick={() => setTransactionCount((tC) => tC - 10)} className="expand-shorten-btn" disabled={transactionCount <= 10}>
+                    <h4><i className="fa-solid fa-arrow-up-long"></i></h4> {/* Shorten */}
+                </button>
             </div>
         </div>
     );

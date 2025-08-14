@@ -66,8 +66,8 @@ select {
   color: var(--background);
   padding: 0.6rem 0.5rem;
   border-radius: 0.25rem;
-  width: 100%;
-  max-width: 232px;
+  /* width: 100%; */
+  /* max-width: 232px; */
   outline: none;
 }
 
@@ -154,6 +154,14 @@ textarea:hover {
 
 .category-table-header {
   width: 12% !important
+}
+
+.expand-shorten-btn {
+  cursor: pointer;
+}
+
+.expand-shorten-btn:disabled {
+  opacity: 0.4;
 }
 
 @media (min-width: 510px) {
