@@ -1,13 +1,13 @@
 'use client'
 
 import Entry from "../../components/Entry";
-import List from "../../components/List";
 import Summary from "../../components/Summary";
 import TopNav from "../../components/TopNav";
 import { useEffect, useState } from "react"
 import { JSX } from "@emotion/react/jsx-runtime";
 import { FAKE_TRANSACTIONS } from "./utils";
 import { Transaction } from "./interfaces/Transaction";
+import TransactionHistory from "../../components/TransactionHistory";
 
 export default function App() {
   const [transactions, setTransactions] = useState<Transaction[]>(FAKE_TRANSACTIONS)
@@ -21,12 +21,11 @@ export default function App() {
         <Entry
           setTransactions={setTransactions}
         />
-        <List
-          currency={currency}
+        <TransactionHistory
           transactions={transactions}
+          currency={currency}
           setTransactions={setTransactions}
         />
-        <Summary />
       </main>
       <footer>
 

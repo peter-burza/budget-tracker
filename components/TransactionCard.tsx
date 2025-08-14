@@ -11,7 +11,7 @@ interface TransactionCardProps {
     currency: JSX.Element
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
     setTableHeads: React.Dispatch<React.SetStateAction<Record<TableHeadKey, JSX.Element | string>>>
-    deleteTransaction: Function
+    deleteTransaction: (transaction: Transaction) => void
 }
 
 function displayType(type: string): JSX.Element {
