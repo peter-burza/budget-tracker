@@ -3,17 +3,23 @@
 import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction"
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useState } from "react";
-import { tableHeadkey } from "./List";
+import { TableHeadKey } from "./List";
 
 interface TransactionCardProps {
     screenWidth: number
     transaction: Transaction,
     currency: JSX.Element
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
-    setTableHeads: React.Dispatch<React.SetStateAction<Record<tableHeadkey, JSX.Element | string>>>
+    setTableHeads: React.Dispatch<React.SetStateAction<Record<TableHeadKey, JSX.Element | string>>>
+    deleteTransaction: Function
 }
 
-const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, currency, setCategoryFilter, setTableHeads }) => {
+function displayType(type: string): JSX.Element {
+    if (type === "+") return <i className="fa-solid fa-angles-up"></i>
+    return <i className="fa-solid fa-angles-down"></i>
+}
+
+const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, currency, setCategoryFilter, setTableHeads, deleteTransaction }) => {
     const highlightStyle: string = transaction.type === "+" ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)]' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)]'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
@@ -26,11 +32,6 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         const shortDay = String(Number(day));     // "05" → 5, "12" → 12
 
         return `${shortYear}-${shortMonth}-${shortDay}`;
-    }
-
-    function displayType(type: string): JSX.Element {
-        if (type === "+") return <i className="fa-solid fa-angles-up"></i>
-        return <i className="fa-solid fa-angles-down"></i>
     }
 
     function displayCategory(category: Category): string | JSX.Element {
@@ -46,24 +47,36 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
             <td colSpan={4} className="!border-none !py-[0.1rem] !px-0">
                 <div className="flex flex-col gap-[1px]">
                     <div className="flex items-stretch gap-[1px]">
-                        <h3 className={`flex-[2] px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>{transaction.category}</h3>
-                        <div className={`flex flex-[1] justify-center px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                            <h3>{transaction.amount}</h3>
-                            <h3 className="-mt-[0.2rem]">{currency}</h3>
+                        <div className="flex flex-col flex-[12] gap-[1px]">
+                            <div className="flex items-stretch gap-[1px]">
+                                <h4 className={`flex-[2] px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>{transaction.category}</h4>
+                                <div className={`flex flex-[1] justify-center pl-2 pr-1 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                                    <h4>{transaction.amount}</h4>
+                                    <h4 className="-mt-[0.05rem]">{currency}</h4>
+                                </div>
+                            </div>
+                            <div className="flex items-stretch gap-[1px]">
+                                <h5 className={`flex-[1] px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>Date</h5>
+                                <div className={`flex flex-[2] justify-center px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                                    <h5>{transaction.date}</h5>
+                                </div>
+                            </div>
+                            <div className="flex items-stretch gap-[1px]">
+                                <div className={`flex-[10] ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                                    <p className="m-1.5">{transaction.description}</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex items-stretch gap-[1px]">
-                        <h5 className={`flex-[1] px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>Date</h5>
-                        <div className={`flex flex-[2] justify-center px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                            <h5>{transaction.date}</h5>
-                        </div>
-                    </div>
-                    <div className="flex items-stretch gap-[1px]">
-                        <div className={`flex-[10] ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                            <p className="m-2">{transaction.description}</p>
-                        </div>
-                        <div className={`flex flex-[1] justify-center px-2 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                            <p className="m-auto !text-xl">{displayType(transaction.type)}</p>
+                        <div className="flex flex-col flex-[1] items-stretch gap-[1px]">
+                            <div className={`flex flex-col flex-[1] justify-center items-center px-1 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                                {displayType(transaction.type)}
+                            </div>
+                            <button onClick={(e) => {
+                                e.stopPropagation()
+                                deleteTransaction(transaction)
+                            }} className={`flex flex-col flex-[1] justify-center items-center px-1 py-1 ${highlightStyle} !border-1 !border-[var(--color-dark-blue)] cursor-pointer group hover:opacity-75 duration-100`}>
+                                <i className="fa-solid fa-trash-can text-red-300 group-hover:text-red-400"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -77,8 +90,9 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
             <td onClick={(e) => {
                 e.stopPropagation()
                 setCategoryFilter(transaction.category)
-                setTableHeads(prev => ({...prev, c: displayCategory(transaction.category)}))
+                setTableHeads(prev => ({ ...prev, c: displayCategory(transaction.category) }))
             }}>{displayCategory(transaction.category)}</td>
+            {/* <td><i className="fa-solid fa-trash-can text-red-300"></i></td> */}
         </tr>
     )
 }

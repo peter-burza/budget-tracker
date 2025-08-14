@@ -1,7 +1,7 @@
 'use client';
 
 import { JSX } from '@emotion/react/jsx-runtime';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import TransactionCard from './TransactionCard';
 import { Category, Transaction } from '@/app/interfaces/Transaction';
 import { getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from '@/app/utils';
@@ -9,6 +9,7 @@ import { getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactio
 interface ListProps {
     currency: JSX.Element;
     transactions: Transaction[];
+    setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>
 }
 
 export type TableHeadKey = 'd' | 't' | 'a' | 'c';
@@ -28,7 +29,7 @@ function sortAmountLowFirst(list: Transaction[]): Transaction[] {
     return [...list].sort((a, b) => a.amount - b.amount);
 }
 
-const List: React.FC<ListProps> = ({ currency, transactions }) => {
+const List: React.FC<ListProps> = ({ currency, transactions, setTransactions }) => {
     // Latest record info
     const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions]);
     const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest]);
@@ -122,6 +123,11 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
             c: screenWidth > 510 ? 'Category' : <i className="fa-solid fa-icons text-base"></i>,
         }));
         setTransactionCount(10);
+    }
+    
+    function deleteTransaction(deleteTransaction: Transaction):void {
+        const updatedTransactions: Transaction[] = transactions.filter(t => (t.id !== deleteTransaction.id))
+        setTransactions(updatedTransactions)
     }
 
     // Screen size
@@ -255,6 +261,7 @@ const List: React.FC<ListProps> = ({ currency, transactions }) => {
                             currency={currency}
                             setCategoryFilter={setCategoryFilter}
                             setTableHeads={setTableHeads}
+                            deleteTransaction={deleteTransaction}
                         />
                     ))}
                 </tbody>

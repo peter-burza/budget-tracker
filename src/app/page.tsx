@@ -24,6 +24,7 @@ export default function App() {
         <List
           currency={currency}
           transactions={transactions}
+          setTransactions={setTransactions}
         />
         <Summary />
       </main>

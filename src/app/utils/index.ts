@@ -65,7 +65,7 @@ export const FAKE_TRANSACTIONS: Transaction[] = [];
 
 let txCounter = 1;
 
-for (let year = 2025; year <= 2026; year++) {
+for (let year = 2022; year <= 2024; year++) {
   for (let month = 1; month <= 12; month++) {
     for (let i = 0; i < 5; i++) {
       const category = categoryList[(txCounter + i) % categoryList.length];
