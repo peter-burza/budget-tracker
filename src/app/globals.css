@@ -7,6 +7,8 @@
   --bckground-muted: #263b55;
 
   --color-dark-blue: #00b7ff3a;
+  --color-light-blue: #59d0ff;
+  --color-light-green:  #57b632;
 
   --color-list-bg-red: #d33b3b7a;
   --color-list-bg-green: #84ffb73f;
@@ -72,7 +74,7 @@ select {
 }
 
 .primary-btn {
-  background-color: #57b632;
+  background-color: var(--color-light-green);
   color: var(--background);
   padding: 0.5rem 0.75rem;
   margin: 0.5rem 0;
@@ -123,6 +125,12 @@ textarea:hover {
   border: 1px solid #00b7ff3a;
   padding: 2px;
   width: 25%;
+  cursor: pointer;
+}
+.list-table th,
+.list-table td,
+.list-table tr {
+  transition-duration: 200ms;
 }
 
 .list-table th {
@@ -133,9 +141,11 @@ textarea:hover {
   border-bottom: none;
 }
 
-.list-table th,
-.list-table td {
-  cursor: pointer;
+/* Dim entire row on hover */
+.list-table tbody tr:hover,
+.list-table th:hover {
+  filter: brightness(0.8);
+  /* transition: filter 0.3s ease; */
 }
 
 .list-table th:first-child,
@@ -154,6 +164,10 @@ textarea:hover {
 
 .category-table-header {
   width: 12% !important
+}
+
+.list-table tbody tr:hover .category-cell:hover {
+  color: var(--color-light-blue);
 }
 
 .expand-shorten-btn {

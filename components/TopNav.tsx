@@ -2,9 +2,9 @@ export default function TopNav() {
 
     return (
         <div id="top-nav-container" className="flex justify-between items-center">
-            <h1 className="text-4xl p-2 px-2">BudgetTer</h1>
+            <h3 className="text-4xl p-2 px-2">BudgetTer</h3>
             <button className="px-2 primary-btn">
-                <h4>Login</h4>
+                <h5>Login</h5>
             </button>
         </div>
     )

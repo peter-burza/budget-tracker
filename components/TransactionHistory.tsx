@@ -3,26 +3,27 @@
 import React, { useEffect, useMemo, useState } from "react";
 import List, { sortDateNewestFirst } from "./List"
 import Summary from "./Summary"
-import { getMonthName, getYearsFromTransactions } from "@/app/utils";
+import { getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils";
 import { Transaction } from "@/app/interfaces/Transaction";
 import { JSX } from "@emotion/react/jsx-runtime";
+import CategoryBreakdown from "./CategoryBreakdown";
 
 interface TransactionHistoryPtops {
     transactions: Transaction[]
     currency: JSX.Element
-    setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>
+    deleteTransaction: (transaction: Transaction) => void
 }
 
 const OVERALL = 'overall';
 
-const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, currency, setTransactions }) => {
+const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, currency, deleteTransaction }) => {
     // Latest record info
     const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions]);
     const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest]);
     const latestYearRecord = useMemo(() => latest?.date.slice(0, 4) ?? '1970', [latest]);
 
-    const [selectedMonth, setSelectedMonth] = useState<string>(latestMonthRecord.toLowerCase()); // 'january' | 'overall'
-    const [selectedYear, setSelectedYear] = useState<string>(latestYearRecord); // '2025' | 'overall'
+    const [selectedMonth, setSelectedMonth] = useState<string>(latestMonthRecord.toLowerCase());
+    const [selectedYear, setSelectedYear] = useState<string>(latestYearRecord);
 
     const [resetSignal, setResetSignal] = useState<number>(0)
 
@@ -32,6 +33,23 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
     function triggerReset() {
         setResetSignal(() => resetSignal + 1)
     }
+
+    const dateFilteredTransactions = useMemo(() => {
+        let list = transactions;
+
+        // Year
+        if (selectedYear !== OVERALL) {
+            list = list.filter((t) => getYear(t.date) === selectedYear);
+        }
+
+        // Month (selectedMonth is 'overall' or full lowercase month name)
+        if (selectedMonth !== OVERALL) {
+            const monthNum = getMonthNumber(selectedMonth); // returns '01'..'12'
+            list = list.filter((t) => getMonth(t.date) === monthNum);
+        }
+
+        return list
+    }, [selectedYear, selectedMonth, transactions])
 
     useEffect(() => {
         setSelectedMonth(latestMonthRecord.toLowerCase());
@@ -89,8 +107,8 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
             </div>
             <List
                 currency={currency}
-                transactions={transactions}
-                setTransactions={setTransactions}
+                dateFilteredTransactions={dateFilteredTransactions}
+                deleteTransaction={deleteTransaction}
                 selectedMonth={selectedMonth}
                 selectedYear={selectedYear}
                 OVERALL={OVERALL}
@@ -98,12 +116,18 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <Summary
+                dateFilteredTransactions={dateFilteredTransactions}
                 latestMonthRecord={latestMonthRecord}
                 latestYearRecord={latestYearRecord}
                 selectedMonth={selectedMonth}
                 setSelectedMonth={setSelectedMonth}
                 selectedYear={selectedYear}
                 setSelectedYear={setSelectedYear}
+                currency={currency}
+            />
+            <hr className="text-[var(--color-dark-blue)] w-[85%]" />
+            <CategoryBreakdown 
+                dateFilteredTransactions={dateFilteredTransactions}
             />
         </div>
     )

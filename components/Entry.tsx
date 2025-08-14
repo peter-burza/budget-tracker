@@ -1,17 +1,17 @@
 'use client'
 
 import { Category, Transaction } from "@/app/interfaces/Transaction"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import ResponsiveDatePicker from "./ui/ResponsiveDatePicker"
 import dayjs from "dayjs"
 
 interface EntryProps {
-    setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>
+    saveTransaction: (transaction: Transaction) => void
 }
 
-const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
+const Entry: React.FC<EntryProps> = ({ saveTransaction }) => {
     const [newTransaction, setNewTransaction] = useState<Transaction>({
-        id: "",
+        id: crypto.randomUUID(),
         amount: 0,
         type: "+",
         date: dayjs(Date.now()).format("YYYY-MM-DD"),
@@ -66,10 +66,6 @@ const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
         setNewTransaction(prev => ({ ...prev, description: value }))
     }
 
-    // useEffect(() => {
-    //     console.log(newTransaction)
-    // }, [newTransaction])
-
     return (
         <div id="transaction-entry" className="flex flex-col items-center gap-2 bg-[var(--bckground-muted)] rounded-md p-3">
             <h3>New Entry</h3>
@@ -100,7 +96,11 @@ const Entry: React.FC<EntryProps> = ({ setTransactions }) => {
                 <p className="">Description:</p>
                 <textarea onChange={e => { setDescription(e.target.value) }} className="bg-[var(--foreground)] text-[var(--background)] outline-0 p-2 px-3 rounded-sm" placeholder="Transaction detail"></textarea>
             </div>
-            <button className="primary-btn" onClick={() => { setTransactions(prev => ([ ...prev, newTransaction ])) }} ><h4>Add transaction</h4></button>
+            <button className="primary-btn" onClick={() => {
+                saveTransaction({ ...newTransaction })
+                setNewTransaction({...newTransaction, id: crypto.randomUUID()}) // Change the id, for next entry
+                
+            }} ><h5>Add newTransaction</h5></button>
         </div>
     )
 }

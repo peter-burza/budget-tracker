@@ -4,16 +4,15 @@ import { JSX } from '@emotion/react/jsx-runtime';
 import React, { useEffect, useMemo, useState } from 'react';
 import TransactionCard from './TransactionCard';
 import { Category, Transaction } from '@/app/interfaces/Transaction';
-import { getMonth, getMonthNumber, getYear, getYearsFromTransactions } from '@/app/utils';
 
 interface ListProps {
     currency: JSX.Element
-    transactions: Transaction[]
-    setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>
+    dateFilteredTransactions: Transaction[]
     selectedMonth: string
     selectedYear: string
     OVERALL: string
     resetSignal: number
+    deleteTransaction: (transaction: Transaction) => void
 }
 
 export type TableHeadKey = 'd' | 't' | 'a' | 'c';
@@ -31,7 +30,7 @@ function sortAmountLowFirst(list: Transaction[]): Transaction[] {
     return [...list].sort((a, b) => a.amount - b.amount);
 }
 
-const List: React.FC<ListProps> = ({ currency, transactions, setTransactions, selectedMonth, selectedYear, OVERALL, resetSignal }) => {
+const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFilteredTransactionList, deleteTransaction, resetSignal }) => {
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = '+', false = '-', null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
@@ -46,19 +45,8 @@ const List: React.FC<ListProps> = ({ currency, transactions, setTransactions, se
     const [transactionCount, setTransactionCount] = useState<number>(10);
 
     // Derived list (single source of truth)
-    const filteredAndSortedTList = useMemo(() => {
-        let list = transactions;
-
-        // Year
-        if (selectedYear !== OVERALL) {
-            list = list.filter((t) => getYear(t.date) === selectedYear);
-        }
-
-        // Month (selectedMonth is 'overall' or full lowercase month name)
-        if (selectedMonth !== OVERALL) {
-            const monthNum = getMonthNumber(selectedMonth); // returns '01'..'12'
-            list = list.filter((t) => getMonth(t.date) === monthNum);
-        }
+    const transactionsList = useMemo(() => {
+        let list = dateFilteredTransactionList;
 
         // Category
         if (categoryFilter !== null) {
@@ -82,9 +70,7 @@ const List: React.FC<ListProps> = ({ currency, transactions, setTransactions, se
 
         return list;
     }, [
-        transactions,
-        selectedYear,
-        selectedMonth,
+        dateFilteredTransactionList,
         categoryFilter,
         typeFilter,
         dateAscending,
@@ -104,11 +90,6 @@ const List: React.FC<ListProps> = ({ currency, transactions, setTransactions, se
     function setAmountReorder(): void {
         setDateAscending(null);
         setAmountDescending((prev) => (prev === true ? false : true));
-    }
-
-    function deleteTransaction(deleteTransaction: Transaction): void {
-        const updatedTransactions: Transaction[] = transactions.filter(t => (t.id !== deleteTransaction.id))
-        setTransactions(updatedTransactions)
     }
 
     // Reset filters and reordering
@@ -157,7 +138,7 @@ const List: React.FC<ListProps> = ({ currency, transactions, setTransactions, se
         <div id="transaction-list" className="flex flex-col items-center gap-4">
             <h4>List</h4>
             <p className="text-center -mt-2">
-                Click on transaction for more details. To filter and reorder, click on table headers. For category filter, click on specific category. W
+                Click on transaction for more details. To filter and reorder, click on table headers. For category filter, click on specific category.
             </p>
 
             <table className="list-table">
@@ -192,12 +173,12 @@ const List: React.FC<ListProps> = ({ currency, transactions, setTransactions, se
                             )}
                         </th>
 
-                        <th className="category-table-header">{tableHeads.c}</th>
+                        <th onClick={() => setCategoryFilter(null)} className="category-table-header">{tableHeads.c}</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {filteredAndSortedTList.slice(0, transactionCount).map((transaction) => (
+                    {transactionsList.slice(0, transactionCount).map((transaction) => (
                         <TransactionCard
                             key={transaction.id}
                             screenWidth={screenWidth}
@@ -212,7 +193,7 @@ const List: React.FC<ListProps> = ({ currency, transactions, setTransactions, se
             </table>
 
             <div className="flex gap-4 w-full justify-center">
-                <button onClick={() => setTransactionCount((tC) => tC + 10)} className="expand-shorten-btn" disabled={transactionCount >= filteredAndSortedTList.length}>
+                <button onClick={() => setTransactionCount((tC) => tC + 10)} className="expand-shorten-btn" disabled={transactionCount >= transactionsList.length}>
                     <h4><i className="fa-solid fa-arrow-down-long"></i></h4> {/* Expand */}
                 </button>
                 <button onClick={() => setTransactionCount((tC) => tC - 10)} className="expand-shorten-btn" disabled={transactionCount <= 10}>

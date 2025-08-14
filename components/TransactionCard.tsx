@@ -87,12 +87,11 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
             <td>{shortenDate(transaction.date)}</td>
             <td style={{}}>{displayType(transaction.type)}</td>
             <td>{transaction.amount}€</td>
-            <td onClick={(e) => {
+            <td className="category-cell" onClick={(e) => {
                 e.stopPropagation()
                 setCategoryFilter(transaction.category)
-                setTableHeads(prev => ({ ...prev, c: displayCategory(transaction.category) }))
+                // setTableHeads(prev => ({ ...prev, c: displayCategory(transaction.category) }))
             }}>{displayCategory(transaction.category)}</td>
-            {/* <td><i className="fa-solid fa-trash-can text-red-300"></i></td> */}
         </tr>
     )
 }
