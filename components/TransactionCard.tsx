@@ -3,15 +3,14 @@
 import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction"
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useState } from "react";
-import { TableHeadKey } from "./List";
 
 interface TransactionCardProps {
     screenWidth: number
     transaction: Transaction,
     currency: JSX.Element
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
-    setTableHeads: React.Dispatch<React.SetStateAction<Record<TableHeadKey, JSX.Element | string>>>
     deleteTransaction: (transaction: Transaction) => void
+    isLastIdx: boolean
 }
 
 function displayType(type: string): JSX.Element {
@@ -19,7 +18,7 @@ function displayType(type: string): JSX.Element {
     return <i className="fa-solid fa-angles-down"></i>
 }
 
-const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, currency, setCategoryFilter, setTableHeads, deleteTransaction }) => {
+const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, currency, setCategoryFilter, deleteTransaction, isLastIdx }) => {
     const highlightStyle: string = transaction.type === "+" ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)]' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)]'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
@@ -84,10 +83,10 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         </tr>
     ) : (
         <tr onClick={toggleExpanded} className={highlightStyle}>
-            <td>{shortenDate(transaction.date)}</td>
-            <td style={{}}>{displayType(transaction.type)}</td>
-            <td>{transaction.amount}€</td>
-            <td className="category-cell" onClick={(e) => {
+            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{shortenDate(transaction.date)}</td>
+            <td className={`${isLastIdx ? '!border-b-0' : ''}`} style={{}}>{displayType(transaction.type)}</td>
+            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{transaction.amount}€</td>
+            <td className={`${isLastIdx ? '!border-b-0' : ''} category-cell`} onClick={(e) => {
                 e.stopPropagation()
                 setCategoryFilter(transaction.category)
                 // setTableHeads(prev => ({ ...prev, c: displayCategory(transaction.category) }))

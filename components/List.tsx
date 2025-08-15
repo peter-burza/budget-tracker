@@ -178,17 +178,20 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
                 </thead>
 
                 <tbody>
-                    {transactionsList.slice(0, transactionCount).map((transaction) => (
-                        <TransactionCard
-                            key={transaction.id}
-                            screenWidth={screenWidth}
-                            transaction={transaction}
-                            currency={currency}
-                            setCategoryFilter={setCategoryFilter}
-                            setTableHeads={setTableHeads}
-                            deleteTransaction={deleteTransaction}
-                        />
-                    ))}
+                    {transactionsList.slice(0, transactionCount).map((transaction, idx) => {
+                        const isLastIdx = idx === transactionsList.length - 1;
+                        return (
+                            <TransactionCard
+                                key={transaction.id}
+                                screenWidth={screenWidth}
+                                transaction={transaction}
+                                currency={currency}
+                                setCategoryFilter={setCategoryFilter}
+                                deleteTransaction={deleteTransaction}
+                                isLastIdx={isLastIdx}
+                            />
+                        )
+                    })}
                 </tbody>
             </table>
 

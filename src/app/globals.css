@@ -113,48 +113,48 @@ textarea:hover {
   color: black;
 }
 
-.list-table {
+table {
   border-collapse: separate;
   border-spacing: 0.1rem 0.1rem;
   width: 100%;
   table-layout: fixed;
 }
 
-.list-table th,
-.list-table td {
+table th,
+table td {
   border: 1px solid #00b7ff3a;
   padding: 2px;
   width: 25%;
   cursor: pointer;
 }
-.list-table th,
-.list-table td,
-.list-table tr {
+table th,
+table td,
+table tr {
   transition-duration: 200ms;
 }
 
-.list-table th {
+table th {
   border-top: none;
 }
 
-.list-table td {
+/* table td {
   border-bottom: none;
-}
+} */
 
 /* Dim entire row on hover */
-.list-table tbody tr:hover,
-.list-table th:hover {
+table tbody tr:hover,
+table th:hover {
   filter: brightness(0.8);
   /* transition: filter 0.3s ease; */
 }
 
-.list-table th:first-child,
-.list-table td:first-child {
+table th:first-child,
+table td:first-child {
   border-left: none;
 }
 
-.list-table th:last-child,
-.list-table td:last-child {
+table th:last-child,
+table td:last-child {
   border-right: none;
 }
 
@@ -166,7 +166,7 @@ textarea:hover {
   width: 12% !important
 }
 
-.list-table tbody tr:hover .category-cell:hover {
+table tbody tr:hover .category-cell:hover {
   color: var(--color-light-blue);
 }
 

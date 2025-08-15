@@ -39,8 +39,9 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, currency })
     }, [dateFilteredTransactions])
 
     return (
-        <div id="summary" className="flex flex-col items-center gap-4 w-full">
+        <div id="summary" className="flex flex-col items-center gap-2 w-full">
             <h3>Summary</h3>
+            <p>Basic info of the selected period.</p>
             <div className="flex justify-between gap-2">
                 <div id="basic-summary-info" className="flex flex-col gap-[8px]">
                     <div className="flex gap-2 items-center">

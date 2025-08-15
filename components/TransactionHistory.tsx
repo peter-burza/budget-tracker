@@ -6,7 +6,7 @@ import Summary from "./Summary"
 import { getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils";
 import { Transaction } from "@/app/interfaces/Transaction";
 import { JSX } from "@emotion/react/jsx-runtime";
-import CategoryBreakdown from "./CategoryBreakdown";
+import ExpenseBreakdown from "./ExpenseBreakdown";
 
 interface TransactionHistoryPtops {
     transactions: Transaction[]
@@ -126,7 +126,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 currency={currency}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
-            <CategoryBreakdown 
+            <ExpenseBreakdown 
                 dateFilteredTransactions={dateFilteredTransactions}
             />
         </div>
