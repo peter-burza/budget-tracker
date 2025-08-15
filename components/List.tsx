@@ -4,6 +4,7 @@ import { JSX } from '@emotion/react/jsx-runtime';
 import React, { useEffect, useMemo, useState } from 'react';
 import TransactionCard from './TransactionCard';
 import { Category, Transaction } from '@/app/interfaces/Transaction';
+import ResponsiveHeader from './ResponsiveHeader';
 
 interface ListProps {
     currency: JSX.Element
@@ -145,7 +146,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
                 <thead>
                     <tr>
                         <th onClick={setDateReorder}>
-                            {tableHeads.d}
+                            <ResponsiveHeader label="Date" iconClass="fa-calendar-days" screenWidth={screenWidth} />
                             {dateAscending === false ? (
                                 <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
                             ) : dateAscending === true ? (
@@ -159,11 +160,11 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
                             onClick={setTypeFilterToggle}
                             className={`type-table-header ${typeFilter === true ? 'text-green-300' : typeFilter === false ? 'text-red-400' : ''}`}
                         >
-                            {tableHeads.t}
+                            <ResponsiveHeader label="Type" iconClass="fa-arrow-down-up-across-line" screenWidth={screenWidth} />
                         </th>
 
                         <th onClick={setAmountReorder}>
-                            {tableHeads.a}
+                            <ResponsiveHeader label="Amount" iconClass="fa-euro-sign" screenWidth={screenWidth} />
                             {amountDescending === true ? (
                                 <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
                             ) : amountDescending === false ? (
@@ -173,7 +174,9 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
                             )}
                         </th>
 
-                        <th onClick={() => setCategoryFilter(null)} className="category-table-header">{tableHeads.c}</th>
+                        <th onClick={() => setCategoryFilter(null)} className="category-table-header">
+                            <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
+                        </th>
                     </tr>
                 </thead>
 
