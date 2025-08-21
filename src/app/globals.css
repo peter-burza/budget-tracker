@@ -127,6 +127,7 @@ table td {
   width: 25%;
   cursor: pointer;
 }
+
 table th,
 table td,
 table tr {
@@ -137,16 +138,14 @@ table th {
   border-top: none;
 }
 
-/* table td {
-  border-bottom: none;
-} */
+.hoverable:hover {
+  filter: brightness(0.8);
+}
 
 /* Dim entire row on hover */
-.list-table tbody tr:hover,
-table th:hover {
+/* .list-table tbody tr:hover {
   filter: brightness(0.8);
-  /* transition: filter 0.3s ease; */
-}
+} */
 
 table th:first-child,
 table td:first-child {

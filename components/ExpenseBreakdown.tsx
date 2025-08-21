@@ -1,20 +1,24 @@
 import { Category, Transaction } from "@/app/interfaces/Transaction";
+import ResponsiveHeader from "./ResponsiveHeader";
+import { JSX } from "@emotion/react/jsx-runtime";
 
 interface ExpenseBreakdownProps {
   dateFilteredTransactions: Transaction[];
+  screenWidth: number
+  currency: JSX.Element
 }
 
 type CategorySummary = {
-  category: Category;
-  total: number;
-  percentage: number;
+  category: Category
+  total: number
+  percentage: number
 };
 
 function getExpenseBreakdown(transactions: Transaction[]): CategorySummary[] {
-  const expenses = transactions.filter(t => t.type === "-");
-  const totalExpense = expenses.reduce((sum, t) => sum + t.amount, 0);
+  const expenses = transactions.filter(t => t.type === "-")
+  const totalExpense = expenses.reduce((sum, t) => sum + t.amount, 0)
 
-  const categoryMap = new Map<Category, number>();
+  const categoryMap = new Map<Category, number>()
 
   expenses.forEach(t => {
     categoryMap.set(t.category, (categoryMap.get(t.category) || 0) + t.amount);
@@ -27,7 +31,8 @@ function getExpenseBreakdown(transactions: Transaction[]): CategorySummary[] {
   }));
 }
 
-const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions }) => {
+
+const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, currency }) => {
   const breakdown = getExpenseBreakdown(dateFilteredTransactions);
 
   return (
@@ -36,14 +41,18 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
       <table className="expenses-table">
         <thead>
           <tr>
-            <th>Category</th>
-            <th>Total (€)</th>
-            <th>Share (%)</th>
+            <th>
+              <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
+            </th>
+            <th className="hoverable">
+              <ResponsiveHeader label="Total" screenWidth={screenWidth} /> {currency}</th>
+            <th className="hoverable">
+              <ResponsiveHeader label="Share" screenWidth={screenWidth} /> (%)</th>
           </tr>
         </thead>
         <tbody>
           {breakdown.map(({ category, total, percentage }, idx) => {
-            const isLastIdx = idx === breakdown.length - 1;            
+            const isLastIdx = idx === breakdown.length - 1
             return (
               <tr key={category} className="bg-sky-800">
                 <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{category}</td>

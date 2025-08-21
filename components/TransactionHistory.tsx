@@ -12,11 +12,12 @@ interface TransactionHistoryPtops {
     transactions: Transaction[]
     currency: JSX.Element
     deleteTransaction: (transaction: Transaction) => void
+    screenWidth: number
 }
 
 const OVERALL = 'overall';
 
-const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, currency, deleteTransaction }) => {
+const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, currency, deleteTransaction, screenWidth }) => {
     // Latest record info
     const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions]);
     const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest]);
@@ -113,6 +114,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 selectedYear={selectedYear}
                 OVERALL={OVERALL}
                 resetSignal={resetSignal}
+                screenWidth={screenWidth}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <Summary
@@ -128,6 +130,8 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <ExpenseBreakdown 
                 dateFilteredTransactions={dateFilteredTransactions}
+                screenWidth={screenWidth}
+                currency={currency}
             />
         </div>
     )

@@ -100,7 +100,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction }) => {
                 saveTransaction({ ...newTransaction })
                 setNewTransaction({...newTransaction, id: crypto.randomUUID()}) // Change the id, for next entry
                 
-            }} ><h5>Add newTransaction</h5></button>
+            }} ><h5>Add Transaction</h5></button>
         </div>
     )
 }

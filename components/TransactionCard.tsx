@@ -42,7 +42,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
     }
 
     return isExpanded ? (
-        <tr onClick={toggleExpanded}>
+        <tr onClick={toggleExpanded} className="hoverable">
             <td colSpan={4} className="!border-none !py-[0.1rem] !px-0">
                 <div className="flex flex-col gap-[1px]">
                     <div className="flex items-stretch gap-[1px]">
@@ -82,7 +82,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
             </td>
         </tr>
     ) : (
-        <tr onClick={toggleExpanded} className={highlightStyle}>
+        <tr onClick={toggleExpanded} className={`${highlightStyle} hoverable`}>
             <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{shortenDate(transaction.date)}</td>
             <td className={`${isLastIdx ? '!border-b-0' : ''}`} style={{}}>{displayType(transaction.type)}</td>
             <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{transaction.amount}€</td>

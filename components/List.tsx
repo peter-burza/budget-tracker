@@ -14,9 +14,8 @@ interface ListProps {
     OVERALL: string
     resetSignal: number
     deleteTransaction: (transaction: Transaction) => void
+    screenWidth: number
 }
-
-export type TableHeadKey = 'd' | 't' | 'a' | 'c';
 
 export function sortDateNewestFirst(list: Transaction[]): Transaction[] {
     return [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -31,7 +30,7 @@ function sortAmountLowFirst(list: Transaction[]): Transaction[] {
     return [...list].sort((a, b) => a.amount - b.amount);
 }
 
-const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFilteredTransactionList, deleteTransaction, resetSignal }) => {
+const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFilteredTransactionList, deleteTransaction, resetSignal, screenWidth }) => {
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = '+', false = '-', null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
@@ -41,8 +40,6 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
     const [amountDescending, setAmountDescending] = useState<boolean | null>(null);
 
     // UI state
-    const [screenWidth, setScreenWidth] = useState(0);
-    const [tableHeads, setTableHeads] = useState<Record<TableHeadKey, JSX.Element | string>>({ d: '', t: '', a: '', c: '', });
     const [transactionCount, setTransactionCount] = useState<number>(10);
 
     // Derived list (single source of truth)
@@ -99,40 +96,26 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
         setTypeFilter(null);
         setDateAscending(false);
         setAmountDescending(null);
-        setTableHeads((prev) => ({
-            ...prev,
-            c: screenWidth > 510 ? 'Category' : <i className="fa-solid fa-icons text-base"></i>,
-        }));
         setTransactionCount(10);
     }, [resetSignal])
 
-    // Screen size
-    useEffect(() => {
-        function handleResize() {
-            setScreenWidth(window.innerWidth);
-        }
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    // Table heads
-    useEffect(() => {
-        if (screenWidth < 510) {
-            setTableHeads({
-                d: <i className="fa-solid fa-calendar-days text-base"></i>,
-                t: (
-                    <>
-                        <i className="fa-solid fa-arrow-down-up-across-line"></i>
-                    </>
-                ),
-                a: currency,
-                c: <i className="fa-solid fa-icons text-base"></i>,
-            });
-        } else {
-            setTableHeads({ d: 'Date', t: 'Type', a: 'Amount', c: 'Category' });
-        }
-    }, [screenWidth, currency]);
+    // // Table heads
+    // useEffect(() => {
+    //     if (screenWidth < 510) {
+    //         setTableHeads({
+    //             d: <i className="fa-solid fa-calendar-days text-base"></i>,
+    //             t: (
+    //                 <>
+    //                     <i className="fa-solid fa-arrow-down-up-across-line"></i>
+    //                 </>
+    //             ),
+    //             a: currency,
+    //             c: <i className="fa-solid fa-icons text-base"></i>,
+    //         });
+    //     } else {
+    //         setTableHeads({ d: 'Date', t: 'Type', a: 'Amount', c: 'Category' });
+    //     }
+    // }, [screenWidth, currency]);
 
     // Render
     return (
@@ -145,7 +128,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
             <table className="list-table">
                 <thead>
                     <tr>
-                        <th onClick={setDateReorder}>
+                        <th onClick={setDateReorder} className='hoverable'>
                             <ResponsiveHeader label="Date" iconClass="fa-calendar-days" screenWidth={screenWidth} />
                             {dateAscending === false ? (
                                 <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
@@ -158,12 +141,12 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
 
                         <th
                             onClick={setTypeFilterToggle}
-                            className={`type-table-header ${typeFilter === true ? 'text-green-300' : typeFilter === false ? 'text-red-400' : ''}`}
+                            className={`type-table-header ${typeFilter === true ? 'text-green-300' : typeFilter === false ? 'text-red-400' : ''} hoverable`}
                         >
                             <ResponsiveHeader label="Type" iconClass="fa-arrow-down-up-across-line" screenWidth={screenWidth} />
                         </th>
 
-                        <th onClick={setAmountReorder}>
+                        <th onClick={setAmountReorder} className='hoverable'>
                             <ResponsiveHeader label="Amount" iconClass="fa-euro-sign" screenWidth={screenWidth} />
                             {amountDescending === true ? (
                                 <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
@@ -174,7 +157,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
                             )}
                         </th>
 
-                        <th onClick={() => setCategoryFilter(null)} className="category-table-header">
+                        <th onClick={() => setCategoryFilter(null)} className="category-table-header hoverable">
                             <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
                         </th>
                     </tr>
