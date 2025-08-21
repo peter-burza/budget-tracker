@@ -68,15 +68,15 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
       <table className="expenses-table">
         <thead>
           <tr>
-            <th className={`hoverable ${totalAscending === null && 'text-[var(--color-light-blue)]'}`} onClick={resetOrdering}>
+            <th className={`hoverable ${totalAscending === null && 'text-[var(--color-light-blue)]'} category-table-header`} onClick={resetOrdering}>
               <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
             </th>
             <th className="hoverable" onClick={setTotalReorder}>
-              <ResponsiveHeader label="Total" screenWidth={screenWidth} /> (€)
+              <ResponsiveHeader label="Total" iconClass="fa-chart-simple" screenWidth={screenWidth} />
               {renderSortingIcon(totalAscending)}
             </th>
             <th>
-              <ResponsiveHeader label="Share" screenWidth={screenWidth} /> (%)
+              <ResponsiveHeader label="Percentage" iconClass="fa-percent" screenWidth={screenWidth} />
             </th>
           </tr>
         </thead>
