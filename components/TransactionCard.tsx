@@ -11,6 +11,7 @@ interface TransactionCardProps {
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
     deleteTransaction: (transaction: Transaction) => void
     isLastIdx: boolean
+    displayCategory: (category: Category)=> string | JSX.Element
 }
 
 function displayType(type: string): JSX.Element {
@@ -18,7 +19,7 @@ function displayType(type: string): JSX.Element {
     return <i className="fa-solid fa-angles-down"></i>
 }
 
-const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, currency, setCategoryFilter, deleteTransaction, isLastIdx }) => {
+const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, currency, setCategoryFilter, deleteTransaction, isLastIdx, displayCategory }) => {
     const highlightStyle: string = transaction.type === "+" ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)]' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)]'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
@@ -31,10 +32,6 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         const shortDay = String(Number(day));     // "05" → 5, "12" → 12
 
         return `${shortYear}-${shortMonth}-${shortDay}`;
-    }
-
-    function displayCategory(category: Category): string | JSX.Element {
-        return screenWidth > 510 ? category : CategoryIcons[category];
     }
 
     function toggleExpanded(): void {
@@ -89,7 +86,6 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
             <td className={`${isLastIdx ? '!border-b-0' : ''} category-cell`} onClick={(e) => {
                 e.stopPropagation()
                 setCategoryFilter(transaction.category)
-                // setTableHeads(prev => ({ ...prev, c: displayCategory(transaction.category) }))
             }}>{displayCategory(transaction.category)}</td>
         </tr>
     )

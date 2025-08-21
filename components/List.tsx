@@ -14,6 +14,7 @@ interface ListProps {
     resetSignal: number
     deleteTransaction: (transaction: Transaction) => void
     screenWidth: number
+    displayCategory: (category: Category) => string | JSX.Element
 }
 
 export function sortDateNewestFirst(list: Transaction[]): Transaction[] {
@@ -36,7 +37,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 }
 
 
-const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFilteredTransactionList, deleteTransaction, resetSignal, screenWidth }) => {
+const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFilteredTransactionList, deleteTransaction, resetSignal, displayCategory, screenWidth }) => {
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = '+', false = '-', null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
@@ -146,6 +147,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
                             <TransactionCard
                                 key={transaction.id}
                                 screenWidth={screenWidth}
+                                displayCategory={displayCategory}
                                 transaction={transaction}
                                 currency={currency}
                                 setCategoryFilter={setCategoryFilter}

@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import List, { sortDateNewestFirst } from "./List"
 import Summary from "./Summary"
 import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils";
-import { Transaction } from "@/app/interfaces/Transaction";
+import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction";
 import { JSX } from "@emotion/react/jsx-runtime";
 import ExpenseBreakdown from "./ExpenseBreakdown";
 
@@ -33,6 +33,10 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
 
     function triggerReset() {
         setResetSignal(() => resetSignal + 1)
+    }
+
+    function displayCategory(category: Category): string | JSX.Element {
+        return screenWidth > 510 ? category : CategoryIcons[category];
     }
 
     const dateFilteredTransactions = useMemo(() => {
@@ -118,6 +122,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 selectedYear={selectedYear}
                 resetSignal={resetSignal}
                 screenWidth={screenWidth}
+                displayCategory={displayCategory}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <Summary
@@ -137,6 +142,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 screenWidth={screenWidth}
                 currency={currency}
                 totalExpense={totalExpense}
+                displayCategory={displayCategory}
             />
         </div>
     )
