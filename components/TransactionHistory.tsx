@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import List, { sortDateNewestFirst } from "./List"
 import Summary from "./Summary"
-import { getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils";
+import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils";
 import { Transaction } from "@/app/interfaces/Transaction";
 import { JSX } from "@emotion/react/jsx-runtime";
 import ExpenseBreakdown from "./ExpenseBreakdown";
@@ -51,6 +51,10 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
 
         return list
     }, [selectedYear, selectedMonth, transactions])
+
+    const totalExpense = useMemo(() => {
+        return calculateTotal("-", dateFilteredTransactions)
+    }, [dateFilteredTransactions])
 
     useEffect(() => {
         setSelectedMonth(latestMonthRecord.toLowerCase());
@@ -112,7 +116,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 deleteTransaction={deleteTransaction}
                 selectedMonth={selectedMonth}
                 selectedYear={selectedYear}
-                OVERALL={OVERALL}
                 resetSignal={resetSignal}
                 screenWidth={screenWidth}
             />
@@ -126,12 +129,14 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 selectedYear={selectedYear}
                 setSelectedYear={setSelectedYear}
                 currency={currency}
+                totalExpense={totalExpense}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
-            <ExpenseBreakdown 
+            <ExpenseBreakdown
                 dateFilteredTransactions={dateFilteredTransactions}
                 screenWidth={screenWidth}
                 currency={currency}
+                totalExpense={totalExpense}
             />
         </div>
     )

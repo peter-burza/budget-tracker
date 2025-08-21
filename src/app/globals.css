@@ -7,7 +7,7 @@
   --bckground-muted: #263b55;
 
   --color-dark-blue: #00b7ff3a;
-  --color-light-blue: #59d0ff;
+  --color-light-blue: oklch(82.8% 0.111 230.318);
   --color-light-green:  #57b632;
 
   --color-list-bg-red: #d33b3b7a;
@@ -125,7 +125,6 @@ table td {
   border: 1px solid #00b7ff3a;
   padding: 2px;
   width: 25%;
-  cursor: pointer;
 }
 
 table th,
@@ -140,6 +139,7 @@ table th {
 
 .hoverable:hover {
   filter: brightness(0.8);
+  cursor: pointer;
 }
 
 /* Dim entire row on hover */

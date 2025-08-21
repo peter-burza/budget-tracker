@@ -165,3 +165,10 @@ export function getYearsFromTransactions(transactions: Transaction[]): string[] 
 
   return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
 }
+
+export function calculateTotal(type: string, transactions: Transaction[]): number {
+    const filteredTransactions = transactions.filter(t => (t.type === type))
+    const amounts = filteredTransactions.map(t => t.amount)
+    const totalAmount = amounts.reduce((sum, t) => sum + t, 0)
+    return totalAmount
+}

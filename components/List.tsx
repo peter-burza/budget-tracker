@@ -11,7 +11,6 @@ interface ListProps {
     dateFilteredTransactions: Transaction[]
     selectedMonth: string
     selectedYear: string
-    OVERALL: string
     resetSignal: number
     deleteTransaction: (transaction: Transaction) => void
     screenWidth: number
@@ -30,6 +29,13 @@ function sortAmountLowFirst(list: Transaction[]): Transaction[] {
     return [...list].sort((a, b) => a.amount - b.amount);
 }
 
+export function renderSortingIcon(sorted: boolean | null): JSX.Element {
+    if (sorted === false) return <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
+    if (sorted === true) return <i className="fa-solid fa-angle-down text-xs text-blue-300 rotate-180 duration-200"></i>
+    return <i className="fa-solid fa-angle-down text-xs text-[var(--foreground)] duration-200"></i>
+}
+
+
 const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFilteredTransactionList, deleteTransaction, resetSignal, screenWidth }) => {
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = '+', false = '-', null = all
@@ -37,33 +43,33 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
 
     // Sorting toggles: dateAscending can be true/false/null (null = inactive), same for amountDescending
     const [dateAscending, setDateAscending] = useState<boolean | null>(false);
-    const [amountDescending, setAmountDescending] = useState<boolean | null>(null);
+    const [amountAscending, setAmountAscending] = useState<boolean | null>(null);
 
     // UI state
     const [transactionCount, setTransactionCount] = useState<number>(10);
 
     // Derived list (single source of truth)
     const transactionsList = useMemo(() => {
-        let list = dateFilteredTransactionList;
+        let list = dateFilteredTransactionList
 
         // Category
         if (categoryFilter !== null) {
-            list = list.filter((t) => t.category === categoryFilter);
+            list = list.filter((t) => t.category === categoryFilter)
         }
 
         // Type
         if (typeFilter !== null) {
-            list = list.filter((t) => (typeFilter ? t.type === '+' : t.type === '-'));
+            list = list.filter((t) => (typeFilter ? t.type === '+' : t.type === '-'))
         }
 
         // Sorting (only one active at a time; if both null, keep natural order)
         if (dateAscending !== null) {
-            list = dateAscending ? sortDateOldestFirst(list) : sortDateNewestFirst(list);
-        } else if (amountDescending !== null) {
-            list = amountDescending ? sortAmountHighFirst(list) : sortAmountLowFirst(list);
+            list = dateAscending ? sortDateOldestFirst(list) : sortDateNewestFirst(list)
+        } else if (amountAscending !== null) {
+            list = amountAscending ? sortAmountLowFirst(list) : sortAmountHighFirst(list)
         } else {
             // default stable order: newest first
-            list = sortDateNewestFirst(list);
+            list = sortDateNewestFirst(list)
         }
 
         return list;
@@ -72,50 +78,32 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
         categoryFilter,
         typeFilter,
         dateAscending,
-        amountDescending,
+        amountAscending,
     ]);
 
     // Handlers
     function setTypeFilterToggle() {
-        setTypeFilter((prev) => (prev === null ? true : prev === true ? false : null));
+        setTypeFilter((prev) => (prev === null ? true : prev === true ? false : null))
     }
 
     function setDateReorder(): void {
-        setAmountDescending(null);
-        setDateAscending((prev) => (prev === false ? true : false));
+        setAmountAscending(null)
+        setDateAscending((prev) => (prev === false ? true : false))
     }
 
     function setAmountReorder(): void {
-        setDateAscending(null);
-        setAmountDescending((prev) => (prev === true ? false : true));
+        setDateAscending(null)
+        setAmountAscending((prev) => (prev === false ? true : false))
     }
 
     // Reset filters and reordering
     useEffect(() => {
-        setCategoryFilter(null);
-        setTypeFilter(null);
-        setDateAscending(false);
-        setAmountDescending(null);
-        setTransactionCount(10);
+        setCategoryFilter(null)
+        setTypeFilter(null)
+        setDateAscending(false)
+        setAmountAscending(null)
+        setTransactionCount(10)
     }, [resetSignal])
-
-    // // Table heads
-    // useEffect(() => {
-    //     if (screenWidth < 510) {
-    //         setTableHeads({
-    //             d: <i className="fa-solid fa-calendar-days text-base"></i>,
-    //             t: (
-    //                 <>
-    //                     <i className="fa-solid fa-arrow-down-up-across-line"></i>
-    //                 </>
-    //             ),
-    //             a: currency,
-    //             c: <i className="fa-solid fa-icons text-base"></i>,
-    //         });
-    //     } else {
-    //         setTableHeads({ d: 'Date', t: 'Type', a: 'Amount', c: 'Category' });
-    //     }
-    // }, [screenWidth, currency]);
 
     // Render
     return (
@@ -130,13 +118,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
                     <tr>
                         <th onClick={setDateReorder} className='hoverable'>
                             <ResponsiveHeader label="Date" iconClass="fa-calendar-days" screenWidth={screenWidth} />
-                            {dateAscending === false ? (
-                                <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
-                            ) : dateAscending === true ? (
-                                <i className="fa-solid fa-angle-down text-xs text-blue-300 rotate-180 duration-200"></i>
-                            ) : (
-                                <i className="fa-solid fa-angle-down text-xs text-[var(--foreground)] duration-200"></i>
-                            )}
+                            {renderSortingIcon(dateAscending)}
                         </th>
 
                         <th
@@ -148,13 +130,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
 
                         <th onClick={setAmountReorder} className='hoverable'>
                             <ResponsiveHeader label="Amount" iconClass="fa-euro-sign" screenWidth={screenWidth} />
-                            {amountDescending === true ? (
-                                <i className="fa-solid fa-angle-down text-xs text-blue-300 duration-200"></i>
-                            ) : amountDescending === false ? (
-                                <i className="fa-solid fa-angle-down text-xs text-blue-300 rotate-180 duration-200"></i>
-                            ) : (
-                                <i className="fa-solid fa-angle-down text-xs text-[var(--foreground)] duration-200"></i>
-                            )}
+                            {renderSortingIcon(amountAscending)}
                         </th>
 
                         <th onClick={() => setCategoryFilter(null)} className="category-table-header hoverable">

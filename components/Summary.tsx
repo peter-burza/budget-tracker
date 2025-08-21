@@ -1,6 +1,7 @@
 'use client'
 
 import { Transaction } from "@/app/interfaces/Transaction";
+import { calculateTotal } from "@/app/utils";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useMemo } from "react";
 
@@ -13,13 +14,7 @@ interface SummaryProps {
     selectedYear: string
     setSelectedYear: React.Dispatch<React.SetStateAction<string>>
     currency: JSX.Element
-}
-
-function calculateTotal(type: string, transactions: Transaction[]): number {
-    const onlyIncomeTransactions = transactions.filter(t => (t.type === type))
-    const types = onlyIncomeTransactions.map(t => t.amount)
-    const totaltype = types.reduce((sum, t) => sum + t, 0)
-    return totaltype
+    totalExpense: number
 }
 
 function calculateNetBalance(totalIncome: number, totalExpense: number): number {
@@ -30,12 +25,9 @@ function fancyNumber(num: number): string {
     return num.toLocaleString()
 }
 
-const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, currency }) => {
+const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, currency, totalExpense }) => {
     const totalIncome = useMemo(() => {
         return calculateTotal("+", dateFilteredTransactions)
-    }, [dateFilteredTransactions])
-    const totalExpense = useMemo(() => {
-        return calculateTotal("-", dateFilteredTransactions)
     }, [dateFilteredTransactions])
 
     return (
