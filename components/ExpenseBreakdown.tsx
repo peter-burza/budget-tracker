@@ -36,7 +36,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
     }
 
     return breakdown
-  }, [totalAscending])
+  }, [totalAscending, dateFilteredTransactions])
 
   function getExpenseBreakdown(): CategorySummary[] {
     const expenses = dateFilteredTransactions.filter(t => t.type === "-")
