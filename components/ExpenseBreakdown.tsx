@@ -32,7 +32,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
 
   const orderedBreakdown = useMemo(() => {
     const breakdown = getExpenseBreakdown();
-    if (!totalAscending) {
+    if (totalAscending !== null) {
       return totalAscending === false ? sortTotalHighFirst(breakdown) : sortTotalLowFirst(breakdown)
     }
 
