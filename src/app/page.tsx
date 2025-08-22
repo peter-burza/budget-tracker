@@ -7,6 +7,7 @@ import { JSX } from "@emotion/react/jsx-runtime";
 import { FAKE_TRANSACTIONS } from "./utils";
 import { Transaction } from "./interfaces/Transaction";
 import TransactionHistory from "../../components/TransactionHistory";
+import Footer from "../../components/Footer";
 
 export default function App() {
   const [transactions, setTransactions] = useState<Transaction[]>(FAKE_TRANSACTIONS)
@@ -34,8 +35,10 @@ export default function App() {
 
   return (
     <>
-      <main className="flex flex-col gap-3 p-3">
+      <header className="flex flex-col gap-3 p-3 pb-0">
         <TopNav />
+      </header>
+      <main className="flex flex-col gap-3 p-3">
         <Entry
           saveTransaction={saveTransaction}
         />
@@ -47,7 +50,7 @@ export default function App() {
         />
       </main>
       <footer>
-
+        <Footer />
       </footer>
     </>
   );

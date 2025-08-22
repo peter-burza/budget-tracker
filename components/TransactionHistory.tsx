@@ -66,7 +66,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
     }, [resetSignal])
 
     return (
-        <div className="flex flex-col items-center gap-5 bg-[var(--bckground-muted)] rounded-md p-3">
+        <div id="transactions-history" className="flex flex-col items-center gap-5 bg-[var(--bckground-muted)] rounded-md p-3">
             <h3>Transactions History</h3>
             <div className="flex justify-between gap-3 sm:gap-6">
                 <div className="flex flex-wrap gap-2">
