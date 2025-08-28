@@ -39,7 +39,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 }
 
 
-const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFilteredTransactionList, deleteTransaction, resetSignal, displayCategory, screenWidth }) => {
+const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, screenWidth }) => {
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = '+', false = '-', null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
@@ -56,7 +56,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
 
     // Derived list (single source of truth)
     const transactionsList = useMemo(() => {
-        let list = dateFilteredTransactionList
+        let list = dateFilteredTransactions
 
         // Category
         if (categoryFilter !== null) {
@@ -80,7 +80,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions: dateFil
 
         return list;
     }, [
-        dateFilteredTransactionList,
+        dateFilteredTransactions,
         categoryFilter,
         typeFilter,
         dateAscending,

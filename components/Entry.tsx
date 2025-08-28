@@ -7,9 +7,10 @@ import dayjs from "dayjs"
 
 interface EntryProps {
     saveTransaction: (transaction: Transaction) => void
+    savingNewTr: boolean
 }
 
-const Entry: React.FC<EntryProps> = ({ saveTransaction }) => {
+const Entry: React.FC<EntryProps> = ({ saveTransaction, savingNewTr }) => {
     const [newTransaction, setNewTransaction] = useState<Transaction>({
         id: crypto.randomUUID(),
         amount: 0,
@@ -100,13 +101,14 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction }) => {
             </div>
             <button
                 className="secondary-btn disabled:opacity-50"
-                disabled={cantAddEntry}
+                disabled={cantAddEntry || savingNewTr}
                 title={cantAddEntry ? "Please enter amount" : ""}
                 onClick={() => {
                     saveTransaction({ ...newTransaction })
                     setNewTransaction({ ...newTransaction, id: crypto.randomUUID() }) // Change the id, for next entry
-
-                }} ><h5>Add Transaction</h5></button>
+                }} >
+                <h5>{savingNewTr === true ? 'Saving...' : 'Add Transaction'}</h5>
+            </button>
         </div>
     )
 }
