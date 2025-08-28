@@ -63,7 +63,6 @@ input {
   background-color: var(--foreground);
   color: var(--background);
   padding: 0.4rem 0.7rem;
-  border-radius: 0.25rem;
   width: 100%;
   outline: none;
 }
@@ -72,7 +71,6 @@ select {
   background-color: var(--foreground);
   color: var(--background);
   padding: 0.6rem 0.5rem;
-  border-radius: 0.25rem;
   /* width: 100%; */
   /* max-width: 232px; */
   outline: none;
@@ -93,9 +91,11 @@ select {
 }
 
 .secondary-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
+  margin: 0.5rem 0;
   border: 1.5px solid var(--color-light-blue);
-  background: var(--background-muted);
+  border-radius: 0.2rem;
+  background: #74d3ff3f;
   cursor: pointer;
   transition-duration: 200ms;
 }
@@ -109,6 +109,7 @@ select,
 textarea {
   box-shadow: 0 0 1.5px 1px white;
   transition-duration: 200ms;
+  border-radius: 0.1rem;
 }
 
 input:hover,
