@@ -8,12 +8,6 @@ import Modal from "./Modal";
 
 interface SummaryProps {
     dateFilteredTransactions: Transaction[]
-    latestMonthRecord: string;
-    latestYearRecord: string
-    selectedMonth: string
-    setSelectedMonth: React.Dispatch<React.SetStateAction<string>>
-    selectedYear: string
-    setSelectedYear: React.Dispatch<React.SetStateAction<string>>
     currency: JSX.Element
     totalExpense: number
 }

@@ -9,7 +9,7 @@ import { Transaction } from "./interfaces/Transaction";
 import TransactionHistory from "../../components/TransactionHistory";
 import Footer from "../../components/Footer";
 import { useAuth } from "../../context/AuthContext";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 
 export default function App() {
@@ -36,12 +36,16 @@ export default function App() {
       throw new Error("User is not authenticated");
     }
 
+    // // Look for identical transactions
+    // if (transactions)
+
     // Saving try
     try {
       setSavingNewTr(true)
       const newId = crypto.randomUUID()
       const trRef = doc(db, "users", currentUser?.uid, "transactions", newId)
       const savingTransactionOnDb = await setDoc(trRef, {
+        id: newId,
         amount: newTr.amount,
         type: newTr.type,
         date: newTr.date,
@@ -58,6 +62,7 @@ export default function App() {
     }
   }
 
+
   // Screen size
   useEffect(() => {
     function handleResize() {
@@ -68,10 +73,38 @@ export default function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    async function fetchTransactions() { // this fetches the ids of all our documents
+      if (!currentUser) return
+      try {
+        const transactionsRef = collection(db, 'users', currentUser.uid, 'transactions')
+        const snapshot = await getDocs(transactionsRef)
+        const fetchedTransactions = snapshot.docs.map((doc) => {          
+          const tr = doc.data()
+
+          return {
+            id: tr.id,
+            amount: tr.amount,
+            type: tr.type,
+            date: tr.date,
+            category: tr.category,
+            description: tr.description || '' 
+          }
+        })
+        setTransactions(fetchedTransactions)
+      } catch (error: any) {
+        console.log(error.message)
+      } finally {
+
+      }
+    }
+    fetchTransactions()
+  }, [currentUser])
+
   return (
     <>
       <header className="flex flex-col gap-3 p-3 pb-0">
-        <TopNav />
+        <TopNav setTransactions={setTransactions} />
       </header>
       <main className="flex flex-col gap-3 p-3">
         <Entry

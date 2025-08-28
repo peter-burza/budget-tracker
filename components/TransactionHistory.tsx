@@ -19,12 +19,13 @@ const OVERALL = 'overall';
 
 const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, currency, deleteTransaction, screenWidth }) => {
     // Latest record info
-    const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions]);
-    const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest]);
-    const latestYearRecord = useMemo(() => latest?.date.slice(0, 4) ?? '1970', [latest]);
+    // const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions]);
+    // const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest]);
+    // const latestYearRecord = useMemo(() => latest?.date.slice(0, 4) ?? '1970', [latest]);
 
-    const [selectedMonth, setSelectedMonth] = useState<string>(latestMonthRecord.toLowerCase());
-    const [selectedYear, setSelectedYear] = useState<string>(latestYearRecord);
+    const [selectedMonth, setSelectedMonth] = useState<string>("");
+    const [selectedYear, setSelectedYear] = useState<string>("");
+
 
     const [resetSignal, setResetSignal] = useState<number>(0)
 
@@ -40,6 +41,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
     }
 
     const dateFilteredTransactions = useMemo(() => {
+        if (transactions.length === 0 || selectedMonth == "" || selectedYear == "") return []
         let list = transactions;
 
         // Year
@@ -61,9 +63,28 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
     }, [dateFilteredTransactions])
 
     useEffect(() => {
-        setSelectedMonth(latestMonthRecord.toLowerCase());
-        setSelectedYear(latestYearRecord);
-    }, [resetSignal])
+        if (transactions.length === 0) return;
+
+        const latest = sortDateNewestFirst(transactions)[0];
+        const month = getMonthName(latest?.date.slice(5, 7) ?? '01').toLowerCase();
+        const year = latest?.date.slice(0, 4) ?? '1970';
+
+        setSelectedMonth(month);
+        setSelectedYear(year);
+    }, [transactions, resetSignal]);
+
+
+    useEffect(() => {
+        if (transactions.length === 0) return;
+
+        const latest = sortDateNewestFirst(transactions)[0];
+        const month = getMonthName(latest?.date.slice(5, 7) ?? '01').toLowerCase();
+        const year = latest?.date.slice(0, 4) ?? '1970';
+
+        setSelectedMonth(month);
+        setSelectedYear(year);
+    }, [transactions]);
+
 
     return (
         <div id="transactions-history" className="flex flex-col items-center gap-5 bg-[var(--background-muted)] rounded-md p-3">
@@ -116,12 +137,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
             </div>
             <Summary
                 dateFilteredTransactions={dateFilteredTransactions}
-                latestMonthRecord={latestMonthRecord}
-                latestYearRecord={latestYearRecord}
-                selectedMonth={selectedMonth}
-                setSelectedMonth={setSelectedMonth}
-                selectedYear={selectedYear}
-                setSelectedYear={setSelectedYear}
                 currency={currency}
                 totalExpense={totalExpense}
             />
