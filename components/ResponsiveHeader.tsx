@@ -16,7 +16,6 @@ const ResponsiveHeader: React.FC<ResponsiveHeaderProps> = ({ label, iconClass, s
   return (
     <>
       {header}
-      {/* {screenWidth > 510 ? label : <i className={`fa-solid ${iconClass} text-base${hoverable ? ' group-hover:brightness-80 duration-200' : ''}`}></i>} */}
     </>
   );
 };
