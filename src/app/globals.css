@@ -4,11 +4,14 @@
   --background: #1d2631;
   --foreground: #ededed;
 
-  --bckground-muted: #263b55;
+  --background-muted: #263b55;
 
   --color-dark-blue: #00b7ff3a;
   --color-light-blue: #74d4ff;
   --color-light-green:  #009689;
+  --color-red: #ff4e7a;
+  --color-link: #60a5fa;
+  --color-link-transparent: rgba(37, 99, 235, 0.2);
 
   --hover-color-light-green: #00786f;
 
@@ -89,6 +92,18 @@ select {
   background-color: var(--hover-color-light-green);
 }
 
+.secondary-btn {
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--color-light-blue);
+  background: var(--background-muted);
+  cursor: pointer;
+  transition-duration: 200ms;
+}
+
+.secondary-btn:hover {
+  border: 1.5px solid var(--background);
+}
+
 input,
 select,
 textarea {
@@ -142,7 +157,7 @@ table th {
   border-top: none;
 }
 
-.hoverable:hover {
+.clickable:hover {
   filter: brightness(0.8);
   cursor: pointer;
 }
@@ -180,6 +195,75 @@ table tbody tr:hover .category-cell:hover {
 
 .expand-shorten-btn:disabled {
   opacity: 0.4;
+}
+
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.modal-underlay {
+  position: absolute;
+  inset: 0;
+  background: var(--background);
+  opacity: 0.8;
+  z-index: 99;
+  border: none;
+  width: 100%;
+  box-shadow: unset;
+  cursor: pointer;
+}
+
+.modal-underlay:hover {
+  transform: translate(0);
+  box-shadow: unset;
+}
+
+.modal-content {
+  position: relative;
+  z-index: 101;
+  margin: 0 auto;
+  border: 1px solid var(--background);
+  background: var(--background-muted);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  gap: 0.75rem;
+  /* max-height: 95vh; */
+  max-width: 85%;
+  overflow-y: auto;      
+}
+
+.modal-content p {
+  line-height: 1.2rem;
+}
+
+.close-button {  
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.2rem 0.1rem;
+  color: var(--color-red);
+  border: 1.5px solid var(--color-red);
+  transition-duration: 200ms;
+  cursor: pointer;
+  font-size: small;
+}
+
+.close-button:hover {
+  border: 1.5px solid var(--background);
+  opacity: 0.9;
 }
 
 @media (min-width: 510px) {

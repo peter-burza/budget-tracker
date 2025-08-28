@@ -172,3 +172,7 @@ export function calculateTotal(type: string, transactions: Transaction[]): numbe
     const totalAmount = amounts.reduce((sum, t) => sum + t, 0)
     return totalAmount
 }
+
+export function handleToggle(x: boolean, setX: React.Dispatch<React.SetStateAction<boolean>>): void {
+  setX(!x)
+}

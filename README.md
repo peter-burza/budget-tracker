@@ -23,8 +23,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Tasks ✏️
 
-1. Odfiltrovat categories, aby sa nezobrazil salary ked je nastavene expense
-2. Popis pouzivania listu aj ostatnych funkcii v appke, dat do nejakej ikonky...
 3. Add setting to change the accurancy
 4. If no ammount is added, disable option of submiting the Entry form with error message that please fill out all neccessery inputs...
 5. Prehodit summary s listom
@@ -35,3 +33,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 10. Nastavit ukladanie nastaveni
 11. Pripojit investicie, suhrn kam a kolko som investoval...
 12. Remove blue border on focus of DatePicker MUI Material feature
+
+#### DONE TASKS ✅
+1. Odfiltrovat categories, aby sa nezobrazil salary ked je nastavene expense - niekto by mozno chcel mat party ako income, ak poriada pary eventy a za kazdu z nich ma nejake peniaze... z toho dovodu som sa zatial rozhodol ponechat vsetky kategorie mozne nastaveniu income aj expence...
+2. Popis pouzivania listu aj ostatnych funkcii v appke, dat do nejakej ikonky...
