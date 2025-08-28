@@ -36,6 +36,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 LATER TASKS:
 - First fetch of data after login, will be from last 5 years maybe? to prevent long waiting after login... or maybe last 1000 transactions? up to descusion
+- Zjednotit vysku selectov v New Entry
+- finish styling of date select (Mui Material component)... pain in the ass :D
 
 #### DONE TASKS ✅
 - Odfiltrovat categories, aby sa nezobrazil salary ked je nastavene expense - niekto by mozno chcel mat party ako income, ak poriada pary eventy a za kazdu z nich ma nejake peniaze... z toho dovodu som sa zatial rozhodol ponechat vsetky kategorie mozne nastaveniu income aj expence...

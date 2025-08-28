@@ -4,10 +4,6 @@ import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { NodeNextRequest } from 'next/dist/server/base-http/node';
-// import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-// import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-// import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 
 interface ResponsiveDatePickerProps {
     setTransactionDate: (date: dayjs.Dayjs) => void
@@ -34,7 +30,8 @@ export default function ResponsiveDatePicker({ setTransactionDate }: ResponsiveD
                             '& .MuiPickersOutlinedInput-root': {
                                 bgcolor: 'var(--foreground)',
                                 color: 'var(--background)',
-                                borderRadius: '0.325rem',
+                                borderRadius: '0.2rem',
+                                fontSize: '0.9rem',
                             },
                             '& .MuiPickersSectionList-root': {
                                 paddingY: "0.6rem",
