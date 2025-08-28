@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Head from "./head";
+import AuthProvider from "../../context/AuthContext";
 
 export const metadata: Metadata = {
   title: "BudgetTer | Budget Tracker",
@@ -15,10 +16,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head />
-      <body>
-        <div id="app">{children}</div>
-        <div id="portal"></div>
-      </body>
+      <AuthProvider>
+        <body>
+          <div id="app">{children}</div>
+          <div id="portal"></div>
+        </body>
+      </AuthProvider>
     </html>
   );
 }
