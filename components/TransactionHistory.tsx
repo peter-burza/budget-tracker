@@ -114,17 +114,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                     <i title="Reset filters" className="fa-solid fa-rotate"></i>
                 </div>
             </div>
-            <List
-                currency={currency}
-                dateFilteredTransactions={dateFilteredTransactions}
-                deleteTransaction={deleteTransaction}
-                selectedMonth={selectedMonth}
-                selectedYear={selectedYear}
-                resetSignal={resetSignal}
-                screenWidth={screenWidth}
-                displayCategory={displayCategory}
-            />
-            <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <Summary
                 dateFilteredTransactions={dateFilteredTransactions}
                 latestMonthRecord={latestMonthRecord}
@@ -135,6 +124,17 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 setSelectedYear={setSelectedYear}
                 currency={currency}
                 totalExpense={totalExpense}
+            />
+            <hr className="text-[var(--color-dark-blue)] w-[85%]" />
+            <List
+                currency={currency}
+                dateFilteredTransactions={dateFilteredTransactions}
+                deleteTransaction={deleteTransaction}
+                selectedMonth={selectedMonth}
+                selectedYear={selectedYear}
+                resetSignal={resetSignal}
+                screenWidth={screenWidth}
+                displayCategory={displayCategory}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <ExpenseBreakdown

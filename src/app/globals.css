@@ -96,12 +96,12 @@ select {
   border: 1.5px solid var(--color-light-blue);
   border-radius: 0.2rem;
   background: #74d3ff3f;
-  cursor: pointer;
   transition-duration: 200ms;
 }
 
-.secondary-btn:hover {
+.secondary-btn:not([disabled]):hover {
   border: 1.5px solid var(--background);
+  cursor: pointer;
 }
 
 input,

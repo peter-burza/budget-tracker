@@ -17,6 +17,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction }) => {
         date: dayjs(Date.now()).format("YYYY-MM-DD"),
         category: Category.Salary,
     })
+    const cantAddEntry: boolean | undefined = newTransaction.amount === 0 ? true : false
 
     function displayAmount(amount: number): string {
         if (amount == 0) return ''
@@ -66,6 +67,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction }) => {
         setNewTransaction(prev => ({ ...prev, description: value }))
     }
 
+
     return (
         <div id="transaction-entry" className="flex flex-col items-center gap-2 bg-[var(--background-muted)] rounded-md p-3">
             <h3>New Entry</h3>
@@ -96,11 +98,15 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction }) => {
                 <p className="">Description:</p>
                 <textarea onChange={e => { setDescription(e.target.value) }} className="bg-[var(--foreground)] text-[var(--background)] outline-0 p-2 px-3 rounded-sm" placeholder="Transaction detail"></textarea>
             </div>
-            <button className="secondary-btn" onClick={() => {
-                saveTransaction({ ...newTransaction })
-                setNewTransaction({...newTransaction, id: crypto.randomUUID()}) // Change the id, for next entry
-                
-            }} ><h5>Add Transaction</h5></button>
+            <button
+                className="secondary-btn disabled:opacity-50"
+                disabled={cantAddEntry}
+                title={cantAddEntry ? "Please enter amount" : ""}
+                onClick={() => {
+                    saveTransaction({ ...newTransaction })
+                    setNewTransaction({ ...newTransaction, id: crypto.randomUUID() }) // Change the id, for next entry
+
+                }} ><h5>Add Transaction</h5></button>
         </div>
     )
 }
