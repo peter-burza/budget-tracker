@@ -11,10 +11,12 @@ import Footer from "../../components/Footer";
 import { useAuth } from "../../context/AuthContext";
 import { collection, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import { Currency } from "./utils";
 
 export default function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [currency, setCurrency] = useState<JSX.Element>(<i className="fa-solid fa-euro-sign text-base"></i>) // <i class="fa-solid fa-dollar-sign text-xl"></i>
+  // const [selectedCurrency, setSelectedCurrency] = useState<JSX.Element>(<i className="fa-solid fa-euro-sign text-base"></i>) // <i class="fa-solid fa-dollar-sign text-xl"></i>
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(Currency.EUR)
   const [screenWidth, setScreenWidth] = useState(0);
   // const [isSavingNewTr, setIsSavingNewTr] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -81,7 +83,7 @@ export default function App() {
         setIsLoading(true)
         const transactionsRef = collection(db, 'users', currentUser.uid, 'transactions')
         const snapshot = await getDocs(transactionsRef)
-        const fetchedTransactions = snapshot.docs.map((doc) => {          
+        const fetchedTransactions = snapshot.docs.map((doc) => {
           const tr = doc.data()
 
           return {
@@ -90,7 +92,7 @@ export default function App() {
             type: tr.type,
             date: tr.date,
             category: tr.category,
-            description: tr.description || '' 
+            description: tr.description || ''
           }
         })
         setTransactions(fetchedTransactions)
@@ -106,7 +108,11 @@ export default function App() {
   return (
     <>
       <header className="flex flex-col gap-3 p-3 pb-0">
-        <TopNav setTransactions={setTransactions} />
+        <TopNav
+          setTransactions={setTransactions}
+          selectedCurrency={selectedCurrency}
+          setCurrency={setSelectedCurrency}
+        />
       </header>
       <main className="flex flex-col gap-3 p-3">
         <Entry
@@ -116,7 +122,7 @@ export default function App() {
         />
         <TransactionHistory
           transactions={transactions}
-          currency={currency}
+          selectedCurrency={selectedCurrency}
           deleteTransaction={deleteTransaction}
           screenWidth={screenWidth}
           isLoading={isLoading}

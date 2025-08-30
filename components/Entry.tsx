@@ -12,7 +12,7 @@ interface EntryProps {
 
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     const [newTransaction, setNewTransaction] = useState<Transaction>({
-        id: crypto.randomUUID(),
+        id: '',
         amount: 0,
         type: "+",
         date: dayjs(Date.now()).format("YYYY-MM-DD"),
@@ -105,7 +105,6 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
                 title={cantAddEntry ? "Please enter amount" : ""}
                 onClick={() => {
                     saveTransaction({ ...newTransaction })
-                    setNewTransaction({ ...newTransaction, id: crypto.randomUUID() }) // Change the id, for next entry
                 }} >
                 <h5>{isLoading === true ? 'Saving...' : 'Add Transaction'}</h5>
             </button>

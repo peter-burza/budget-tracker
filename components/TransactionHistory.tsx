@@ -3,14 +3,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import List, { sortDateNewestFirst } from "./List"
 import Summary from "./Summary"
-import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils";
+import { calculateTotal, Currency, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils";
 import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction";
 import { JSX } from "@emotion/react/jsx-runtime";
 import ExpenseBreakdown from "./ExpenseBreakdown";
 
 interface TransactionHistoryPtops {
     transactions: Transaction[]
-    currency: JSX.Element
+    selectedCurrency: Currency
     deleteTransaction: (transaction: Transaction) => void
     screenWidth: number
     isLoading: boolean
@@ -18,7 +18,7 @@ interface TransactionHistoryPtops {
 
 const OVERALL = 'overall';
 
-const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, currency, deleteTransaction, screenWidth, isLoading }) => {
+const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, selectedCurrency, deleteTransaction, screenWidth, isLoading }) => {
     // Latest record info
     // const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions]);
     // const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest]);
@@ -138,13 +138,13 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
             </div>
             <Summary
                 dateFilteredTransactions={dateFilteredTransactions}
-                currency={currency}
+                selectedCurrency={selectedCurrency}
                 totalExpense={totalExpense}
                 isLoading={isLoading}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <List
-                currency={currency}
+                selectedCurrency={selectedCurrency}
                 dateFilteredTransactions={dateFilteredTransactions}
                 deleteTransaction={deleteTransaction}
                 selectedMonth={selectedMonth}
@@ -158,7 +158,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
             <ExpenseBreakdown
                 dateFilteredTransactions={dateFilteredTransactions}
                 screenWidth={screenWidth}
-                currency={currency}
+                selectedCurrency={selectedCurrency}
                 totalExpense={totalExpense}
                 displayCategory={displayCategory}
                 isLoading={isLoading}

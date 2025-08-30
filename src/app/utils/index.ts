@@ -147,6 +147,75 @@ export function getMonthNumber(monthName: string): string {
   }
 }
 
+export enum Currency {
+  USD = 'USD',
+  EUR = 'EUR',
+  JPY = 'JPY',
+  GBP = 'GBP',
+  CHF = 'CHF',
+  CAD = 'CAD',
+  AUD = 'AUD',
+  NZD = 'NZD',
+  CNY = 'CNY',
+  HKD = 'HKD',
+  SGD = 'SGD',
+  SEK = 'SEK',
+  NOK = 'NOK',
+  KRW = 'KRW',
+  DKK = 'DKK',
+  INR = 'INR',
+  MXN = 'MXN',
+  BRL = 'BRL',
+  ZAR = 'ZAR',
+  TRY = 'TRY',
+  RUB = 'RUB',
+  PLN = 'PLN',
+  CZK = 'CZK',
+  HUF = 'HUF',
+  RON = 'RON',
+  ILS = 'ILS',
+  THB = 'THB',
+  IDR = 'IDR',
+  MYR = 'MYR',
+  PHP = 'PHP',
+}
+
+export const CurrencyNames: Record<Currency, string> = {
+  [Currency.USD]: 'US Dollar',
+  [Currency.EUR]: 'Euro',
+  [Currency.JPY]: 'Japanese Yen',
+  [Currency.GBP]: 'British Pound',
+  [Currency.CHF]: 'Swiss Franc',
+  [Currency.CAD]: 'Canadian Dollar',
+  [Currency.AUD]: 'Australian Dollar',
+  [Currency.NZD]: 'New Zealand Dollar',
+  [Currency.CNY]: 'Chinese Yuan Renminbi',
+  [Currency.HKD]: 'Hong Kong Dollar',
+  [Currency.SGD]: 'Singapore Dollar',
+  [Currency.SEK]: 'Swedish Krona',
+  [Currency.NOK]: 'Norwegian Krone',
+  [Currency.KRW]: 'South Korean Won',
+  [Currency.DKK]: 'Danish Krone',
+  [Currency.INR]: 'Indian Rupee',
+  [Currency.MXN]: 'Mexican Peso',
+  [Currency.BRL]: 'Brazilian Real',
+  [Currency.ZAR]: 'South African Rand',
+  [Currency.TRY]: 'Turkish Lira',
+  [Currency.RUB]: 'Russian Ruble',
+  [Currency.PLN]: 'Polish Zloty',
+  [Currency.CZK]: 'Czech Koruna',
+  [Currency.HUF]: 'Hungarian Forint',
+  [Currency.RON]: 'Romanian Leu',
+  [Currency.ILS]: 'Israeli Shekel',
+  [Currency.THB]: 'Thai Baht',
+  [Currency.IDR]: 'Indonesian Rupiah',
+  [Currency.MYR]: 'Malaysian Ringgit',
+  [Currency.PHP]: 'Philippine Peso',
+};
+
+
+
+// FUNCTIONS
 export function getMonth(date: string): string {
   return date.slice(5, 7)
 }

@@ -4,12 +4,12 @@ import { JSX } from '@emotion/react/jsx-runtime';
 import React, { useEffect, useMemo, useState } from 'react';
 import TransactionCard from './TransactionCard';
 import { Category, Transaction } from '@/app/interfaces/Transaction';
-import ResponsiveHeader from './ResponsiveHeader';
+import ResponsiveHeader from './ui/ResponsiveHeader';
 import Modal from './Modal';
-import { handleToggle } from '@/app/utils';
+import { Currency, handleToggle } from '@/app/utils';
 
 interface ListProps {
-    currency: JSX.Element
+    selectedCurrency: Currency
     dateFilteredTransactions: Transaction[]
     selectedMonth: string
     selectedYear: string
@@ -40,7 +40,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 }
 
 
-const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, screenWidth, isLoading }) => {
+const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, screenWidth, isLoading }) => {
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = '+', false = '-', null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
@@ -170,7 +170,7 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions, deleteT
                                 screenWidth={screenWidth}
                                 displayCategory={displayCategory}
                                 transaction={transaction}
-                                currency={currency}
+                                selectedCurrency={selectedCurrency}
                                 setCategoryFilter={setCategoryFilter}
                                 deleteTransaction={deleteTransaction}
                                 isLastIdx={isLastIdx}

@@ -1,15 +1,16 @@
 'use client'
 
 import { Category, Transaction } from "@/app/interfaces/Transaction";
-import ResponsiveHeader from "./ResponsiveHeader";
+import ResponsiveHeader from "./ui/ResponsiveHeader";
 import { JSX } from "@emotion/react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
 import { renderSortingIcon } from "./List";
+import { Currency } from "@/app/utils";
 
 interface ExpenseBreakdownProps {
   dateFilteredTransactions: Transaction[];
   screenWidth: number
-  currency: JSX.Element
+  selectedCurrency: Currency
   totalExpense: number
   displayCategory: (category: Category) => string | JSX.Element
   isLoading: boolean
@@ -28,7 +29,7 @@ function sortTotalLowFirst(list: CategorySummary[]): CategorySummary[] {
   return [...list].sort((a, b) => new Date(a.total).getTime() - new Date(b.total).getTime());
 }
 
-const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, currency, totalExpense, displayCategory, isLoading }) => {
+const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayCategory, isLoading }) => {
   const [totalAscending, setTotalAscending] = useState<boolean | null>(null);
 
   const orderedBreakdown = useMemo(() => {
