@@ -11,12 +11,13 @@ import Footer from "../../components/Footer";
 import { useAuth } from "../../context/AuthContext";
 import { collection, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { Currency } from "./utils";
+import { Currency } from "./types";
+import { CURRENCIES } from "./utils";
 
 export default function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   // const [selectedCurrency, setSelectedCurrency] = useState<JSX.Element>(<i className="fa-solid fa-euro-sign text-base"></i>) // <i class="fa-solid fa-dollar-sign text-xl"></i>
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(Currency.EUR)
+  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(CURRENCIES.EUR)
   const [screenWidth, setScreenWidth] = useState(0);
   // const [isSavingNewTr, setIsSavingNewTr] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -111,7 +112,7 @@ export default function App() {
         <TopNav
           setTransactions={setTransactions}
           selectedCurrency={selectedCurrency}
-          setCurrency={setSelectedCurrency}
+          setSelectedCurrency={setSelectedCurrency}
         />
       </header>
       <main className="flex flex-col gap-3 p-3">

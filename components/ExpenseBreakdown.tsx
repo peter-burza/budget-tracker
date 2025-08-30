@@ -5,7 +5,7 @@ import ResponsiveHeader from "./ui/ResponsiveHeader";
 import { JSX } from "@emotion/react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
 import { renderSortingIcon } from "./List";
-import { Currency } from "@/app/utils";
+import { Currency } from "@/app/types";
 
 interface ExpenseBreakdownProps {
   dateFilteredTransactions: Transaction[];
@@ -93,7 +93,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
                   return (
                     <tr key={category} className="bg-sky-800">
                       <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
-                      <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{total.toFixed(2)}€</td>
+                      <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{total.toFixed(2)} {selectedCurrency.symbol}</td>
                       <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
                     </tr>
                   );

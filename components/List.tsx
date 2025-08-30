@@ -6,7 +6,8 @@ import TransactionCard from './TransactionCard';
 import { Category, Transaction } from '@/app/interfaces/Transaction';
 import ResponsiveHeader from './ui/ResponsiveHeader';
 import Modal from './Modal';
-import { Currency, handleToggle } from '@/app/utils';
+import { Currency } from "@/app/types";
+import { handleToggle } from '@/app/utils';
 
 interface ListProps {
     selectedCurrency: Currency
@@ -120,74 +121,76 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
                     'Loading...'
                 ) : (
                     <>
-                    { showInfo && (
-                        <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
-                            <h3>List usage info</h3>
-                            <ul className="flex flex-col gap-2">
-                                <li className='bg-[#23374e] p-1.5'>1. Click on a transaction for more details.</li>
-                                <li className='bg-[#23374e] p-1.5'>2. To filter and reorder, click on table headers.</li>
-                                <li className='bg-[#23374e] p-1.5'>3. For category filtering, click on a specific category.</li>
-                            </ul>
+                        {showInfo && (
+                            <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
+                                <h3>List usage info</h3>
+                                <ul className="flex flex-col gap-2">
+                                    <li className='bg-[#23374e] p-1.5'>1. Click on a transaction for more details.</li>
+                                    <li className='bg-[#23374e] p-1.5'>2. To filter and reorder, click on table headers.</li>
+                                    <li className='bg-[#23374e] p-1.5'>3. For category filtering, click on a specific category.</li>
+                                </ul>
 
-                        </Modal>)}
-            <div className='flex gap-2 items-center'>
-                <h4>List</h4>
-                <i onClick={() => { handleToggle(showInfo, setShowInfo) }} className="fa-solid fa-circle-info clickable duration-200 text-sky-300"></i>
-            </div>
+                            </Modal>)}
+                        <div className='flex gap-2 items-center'>
+                            <h4>List</h4>
+                            <i onClick={() => { handleToggle(showInfo, setShowInfo) }} className="fa-solid fa-circle-info clickable duration-200 text-sky-300"></i>
+                        </div>
 
-            <table className="list-table">
-                <thead>
-                    <tr>
-                        <th onClick={setDateReorder} className='clickable'>
-                            <ResponsiveHeader label="Date" iconClass="fa-calendar-days" screenWidth={screenWidth} />
-                            {renderSortingIcon(dateAscending)}
-                        </th>
+                        <table className="list-table">
+                            <thead>
+                                <tr>
+                                    <th onClick={setDateReorder} className='clickable'>
+                                        <ResponsiveHeader label="Date" iconClass="fa-calendar-days" screenWidth={screenWidth} />
+                                        {renderSortingIcon(dateAscending)}
+                                    </th>
 
-                        <th
-                            onClick={setTypeFilterToggle}
-                            className={`type-table-header ${typeFilter === true ? 'text-green-300' : typeFilter === false ? 'text-red-400' : ''} clickable`}
-                        >
-                            <ResponsiveHeader label="Type" iconClass="fa-arrow-down-up-across-line" screenWidth={screenWidth} />
-                        </th>
+                                    <th
+                                        onClick={setTypeFilterToggle}
+                                        className={`type-table-header ${typeFilter === true ? 'text-green-300' : typeFilter === false ? 'text-red-400' : ''} clickable`}
+                                    >
+                                        <ResponsiveHeader label="Type" iconClass="fa-arrow-down-up-across-line" screenWidth={screenWidth} />
+                                    </th>
 
-                        <th onClick={setAmountReorder} className='clickable'>
-                            <ResponsiveHeader label="Amount" iconClass="fa-euro-sign" screenWidth={screenWidth} />
-                            {renderSortingIcon(amountAscending)}
-                        </th>
+                                    <th onClick={setAmountReorder} className='clickable'>
+                                        <div className='flex items-center justify-center'>
+                                            <ResponsiveHeader label="Amount" symbol={selectedCurrency.symbol} screenWidth={screenWidth} />
+                                            {renderSortingIcon(amountAscending)}
+                                        </div>
+                                    </th>
 
-                        <th onClick={() => setCategoryFilter(null)} className="category-table-header clickable">
-                            <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
-                        </th>
-                    </tr>
-                </thead>
+                                    <th onClick={() => setCategoryFilter(null)} className="category-table-header clickable">
+                                        <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
+                                    </th>
+                                </tr>
+                            </thead>
 
-                <tbody>
-                    {transactionsList.slice(0, transactionCount).map((transaction, idx) => {
-                        const isLastIdx = idx === transactionsList.length - 1;
-                        return (
-                            <TransactionCard
-                                key={transaction.id}
-                                screenWidth={screenWidth}
-                                displayCategory={displayCategory}
-                                transaction={transaction}
-                                selectedCurrency={selectedCurrency}
-                                setCategoryFilter={setCategoryFilter}
-                                deleteTransaction={deleteTransaction}
-                                isLastIdx={isLastIdx}
-                            />
-                        )
-                    })}
-                </tbody>
-            </table>
+                            <tbody>
+                                {transactionsList.slice(0, transactionCount).map((transaction, idx) => {
+                                    const isLastIdx = idx === transactionsList.length - 1;
+                                    return (
+                                        <TransactionCard
+                                            key={transaction.id}
+                                            screenWidth={screenWidth}
+                                            displayCategory={displayCategory}
+                                            transaction={transaction}
+                                            selectedCurrency={selectedCurrency}
+                                            setCategoryFilter={setCategoryFilter}
+                                            deleteTransaction={deleteTransaction}
+                                            isLastIdx={isLastIdx}
+                                        />
+                                    )
+                                })}
+                            </tbody>
+                        </table>
 
-            <div className="flex gap-4 w-full justify-center">
-                <button onClick={() => setTransactionCount((tC) => tC + 10)} className="expand-shorten-btn" disabled={transactionCount >= transactionsList.length}>
-                    <h4><i className="fa-solid fa-arrow-down-long"></i></h4> {/* Expand */}
-                </button>
-                <button onClick={() => setTransactionCount((tC) => tC - 10)} className="expand-shorten-btn" disabled={transactionCount <= 10}>
-                    <h4><i className="fa-solid fa-arrow-up-long"></i></h4> {/* Shorten */}
-                </button>
-            </div>
+                        <div className="flex gap-4 w-full justify-center">
+                            <button onClick={() => setTransactionCount((tC) => tC + 10)} className="expand-shorten-btn" disabled={transactionCount >= transactionsList.length}>
+                                <h4><i className="fa-solid fa-arrow-down-long"></i></h4> {/* Expand */}
+                            </button>
+                            <button onClick={() => setTransactionCount((tC) => tC - 10)} className="expand-shorten-btn" disabled={transactionCount <= 10}>
+                                <h4><i className="fa-solid fa-arrow-up-long"></i></h4> {/* Shorten */}
+                            </button>
+                        </div>
                     </>
                 )
             }

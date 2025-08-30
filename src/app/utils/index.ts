@@ -1,4 +1,5 @@
 import { Category, Transaction } from "../interfaces/Transaction";
+import { Currency } from "../types";
 
 // export const FAKE_TRANSACTIONS: Transaction[] = [
 //   { id: 'tx001', amount: 3200, type: '+', date: '2025-08-01', category: Category.Salary, description: 'Received monthly salary from full-time employment, including base pay and performance bonus.' },
@@ -85,6 +86,55 @@ for (let year = 2022; year <= 2024; year++) {
   }
 }
 
+export const CURRENCIES: Record<string, Currency> = {
+  USD: { code: 'USD', symbol: '$', name: 'United States Dollar' },
+  EUR: { code: 'EUR', symbol: '€', name: 'Euro' },
+  GBP: { code: 'GBP', symbol: '£', name: 'British Pound Sterling' },
+  JPY: { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
+  CNY: { code: 'CNY', symbol: '¥', name: 'Chinese Yuan Renminbi' },
+  INR: { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
+  KRW: { code: 'KRW', symbol: '₩', name: 'South Korean Won' },
+  AUD: { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
+  CAD: { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
+  CHF: { code: 'CHF', symbol: 'Fr', name: 'Swiss Franc' },
+  SEK: { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' },
+  NOK: { code: 'NOK', symbol: 'kr', name: 'Norwegian Krone' },
+  DKK: { code: 'DKK', symbol: 'kr', name: 'Danish Krone' },
+  CZK: { code: 'CZK', symbol: 'Kč', name: 'Czech Koruna' },
+  HUF: { code: 'HUF', symbol: 'Ft', name: 'Hungarian Forint' },
+  PLN: { code: 'PLN', symbol: 'zł', name: 'Polish Zloty' },
+  RON: { code: 'RON', symbol: 'lei', name: 'Romanian Leu' },
+  BGN: { code: 'BGN', symbol: 'лв', name: 'Bulgarian Lev' },
+  HRK: { code: 'HRK', symbol: 'kn', name: 'Croatian Kuna' },
+  ISK: { code: 'ISK', symbol: 'kr', name: 'Icelandic Krona' },
+  RUB: { code: 'RUB', symbol: '₽', name: 'Russian Ruble' },
+  TRY: { code: 'TRY', symbol: '₺', name: 'Turkish Lira' },
+  ZAR: { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
+  BRL: { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' },
+  MXN: { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
+  ARS: { code: 'ARS', symbol: '$', name: 'Argentine Peso' },
+  CLP: { code: 'CLP', symbol: '$', name: 'Chilean Peso' },
+  COP: { code: 'COP', symbol: '$', name: 'Colombian Peso' },
+  PEN: { code: 'PEN', symbol: 'S/', name: 'Peruvian Sol' },
+  NZD: { code: 'NZD', symbol: 'NZ$', name: 'New Zealand Dollar' },
+  SGD: { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar' },
+  HKD: { code: 'HKD', symbol: 'HK$', name: 'Hong Kong Dollar' },
+  MYR: { code: 'MYR', symbol: 'RM', name: 'Malaysian Ringgit' },
+  IDR: { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah' },
+  THB: { code: 'THB', symbol: '฿', name: 'Thai Baht' },
+  PHP: { code: 'PHP', symbol: '₱', name: 'Philippine Peso' },
+  VND: { code: 'VND', symbol: '₫', name: 'Vietnamese Dong' },
+  AED: { code: 'AED', symbol: 'د.إ', name: 'United Arab Emirates Dirham' },
+  SAR: { code: 'SAR', symbol: '﷼', name: 'Saudi Riyal' },
+  ILS: { code: 'ILS', symbol: '₪', name: 'Israeli New Shekel' },
+  EGP: { code: 'EGP', symbol: '£', name: 'Egyptian Pound' },
+  NGN: { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' },
+  KES: { code: 'KES', symbol: 'Sh', name: 'Kenyan Shilling' },
+  PKR: { code: 'PKR', symbol: '₨', name: 'Pakistani Rupee' },
+  TWD: { code: 'TWD', symbol: 'NT$', name: 'New Taiwan Dollar' },
+}
+
+
 export function getMonthName(monthNum: string): string {
   switch (monthNum) {
     case "01":
@@ -146,74 +196,6 @@ export function getMonthNumber(monthName: string): string {
       return 'Invalid month';
   }
 }
-
-export enum Currency {
-  USD = 'USD',
-  EUR = 'EUR',
-  JPY = 'JPY',
-  GBP = 'GBP',
-  CHF = 'CHF',
-  CAD = 'CAD',
-  AUD = 'AUD',
-  NZD = 'NZD',
-  CNY = 'CNY',
-  HKD = 'HKD',
-  SGD = 'SGD',
-  SEK = 'SEK',
-  NOK = 'NOK',
-  KRW = 'KRW',
-  DKK = 'DKK',
-  INR = 'INR',
-  MXN = 'MXN',
-  BRL = 'BRL',
-  ZAR = 'ZAR',
-  TRY = 'TRY',
-  RUB = 'RUB',
-  PLN = 'PLN',
-  CZK = 'CZK',
-  HUF = 'HUF',
-  RON = 'RON',
-  ILS = 'ILS',
-  THB = 'THB',
-  IDR = 'IDR',
-  MYR = 'MYR',
-  PHP = 'PHP',
-}
-
-export const CurrencyNames: Record<Currency, string> = {
-  [Currency.USD]: 'US Dollar',
-  [Currency.EUR]: 'Euro',
-  [Currency.JPY]: 'Japanese Yen',
-  [Currency.GBP]: 'British Pound',
-  [Currency.CHF]: 'Swiss Franc',
-  [Currency.CAD]: 'Canadian Dollar',
-  [Currency.AUD]: 'Australian Dollar',
-  [Currency.NZD]: 'New Zealand Dollar',
-  [Currency.CNY]: 'Chinese Yuan Renminbi',
-  [Currency.HKD]: 'Hong Kong Dollar',
-  [Currency.SGD]: 'Singapore Dollar',
-  [Currency.SEK]: 'Swedish Krona',
-  [Currency.NOK]: 'Norwegian Krone',
-  [Currency.KRW]: 'South Korean Won',
-  [Currency.DKK]: 'Danish Krone',
-  [Currency.INR]: 'Indian Rupee',
-  [Currency.MXN]: 'Mexican Peso',
-  [Currency.BRL]: 'Brazilian Real',
-  [Currency.ZAR]: 'South African Rand',
-  [Currency.TRY]: 'Turkish Lira',
-  [Currency.RUB]: 'Russian Ruble',
-  [Currency.PLN]: 'Polish Zloty',
-  [Currency.CZK]: 'Czech Koruna',
-  [Currency.HUF]: 'Hungarian Forint',
-  [Currency.RON]: 'Romanian Leu',
-  [Currency.ILS]: 'Israeli Shekel',
-  [Currency.THB]: 'Thai Baht',
-  [Currency.IDR]: 'Indonesian Rupiah',
-  [Currency.MYR]: 'Malaysian Ringgit',
-  [Currency.PHP]: 'Philippine Peso',
-};
-
-
 
 // FUNCTIONS
 export function getMonth(date: string): string {
