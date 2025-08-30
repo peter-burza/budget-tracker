@@ -59,7 +59,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
                             </div>
                             <div className="flex items-stretch gap-[1px]">
                                 <div className={`flex-[10] ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                    <p className="m-1.5">{transaction.description}</p>
+                                    <p className="m-1.5">{transaction.description !== '' ? transaction.description : 'No description...'}</p>
                                 </div>
                             </div>
                         </div>

@@ -33,8 +33,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Pripojit investicie, suhrn kam a kolko som investoval...
 - Remove blue border on focus of DatePicker MUI Material feature
 - Add feature, when user tries to add transaction with same stats (amount, type, category, date etc.), ask him if he really want to add another identical transaction (via Modal -> yes/no button)
+- When user clickes on delete transaction button - ask him: "Are you sure?"...
 
-LATER TASKS:
+#### LATER TASKS:
 - First fetch of data after login, will be from last 5 years maybe? to prevent long waiting after login... or maybe last 1000 transactions? up to descusion
 - Zjednotit vysku selectov v New Entry
 - finish styling of date select (Mui Material component)... pain in the ass :D
