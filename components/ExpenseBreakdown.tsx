@@ -12,6 +12,7 @@ interface ExpenseBreakdownProps {
   currency: JSX.Element
   totalExpense: number
   displayCategory: (category: Category) => string | JSX.Element
+  isLoading: boolean
 }
 
 type CategorySummary = {
@@ -27,7 +28,7 @@ function sortTotalLowFirst(list: CategorySummary[]): CategorySummary[] {
   return [...list].sort((a, b) => new Date(a.total).getTime() - new Date(b.total).getTime());
 }
 
-const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, currency, totalExpense, displayCategory }) => {
+const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, currency, totalExpense, displayCategory, isLoading }) => {
   const [totalAscending, setTotalAscending] = useState<boolean | null>(null);
 
   const orderedBreakdown = useMemo(() => {
@@ -64,35 +65,43 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
 
   return (
     <div id="expense-breakdown" className="flex flex-col items-center gap-4">
-      <h4>Expense Breakdown</h4>
-      <table className="expenses-table">
-        <thead>
-          <tr>
-            <th className={`clickable ${totalAscending === null && 'text-[var(--color-light-blue)]'} category-table-header`} onClick={resetOrdering}>
-              <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
-            </th>
-            <th className="clickable" onClick={setTotalReorder}>
-              <ResponsiveHeader label="Total" iconClass="fa-chart-simple" screenWidth={screenWidth} />
-              {renderSortingIcon(totalAscending)}
-            </th>
-            <th>
-              <ResponsiveHeader label="Percentage" iconClass="fa-percent" screenWidth={screenWidth} />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {orderedBreakdown.map(({ category, total, percentage }, idx) => {
-            const isLastIdx = idx === orderedBreakdown.length - 1
-            return (
-              <tr key={category} className="bg-sky-800">
-                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
-                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{total.toFixed(2)}€</td>
-                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      {
+        isLoading ? (
+          'Loading...'
+        ) : (
+          <>
+            <h4>Expense Breakdown</h4>
+            <table className="expenses-table">
+              <thead>
+                <tr>
+                  <th className={`clickable ${totalAscending === null && 'text-[var(--color-light-blue)]'} category-table-header`} onClick={resetOrdering}>
+                    <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
+                  </th>
+                  <th className="clickable" onClick={setTotalReorder}>
+                    <ResponsiveHeader label="Total" iconClass="fa-chart-simple" screenWidth={screenWidth} />
+                    {renderSortingIcon(totalAscending)}
+                  </th>
+                  <th>
+                    <ResponsiveHeader label="Percentage" iconClass="fa-percent" screenWidth={screenWidth} />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderedBreakdown.map(({ category, total, percentage }, idx) => {
+                  const isLastIdx = idx === orderedBreakdown.length - 1
+                  return (
+                    <tr key={category} className="bg-sky-800">
+                      <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
+                      <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{total.toFixed(2)}€</td>
+                      <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
+        )
+      }
     </div>
   );
 };

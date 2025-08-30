@@ -16,7 +16,8 @@ export default function App() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [currency, setCurrency] = useState<JSX.Element>(<i className="fa-solid fa-euro-sign text-base"></i>) // <i class="fa-solid fa-dollar-sign text-xl"></i>
   const [screenWidth, setScreenWidth] = useState(0);
-  const [savingNewTr, setSavingNewTr] = useState(false)
+  // const [isSavingNewTr, setIsSavingNewTr] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { currentUser } = useAuth()
 
@@ -31,7 +32,7 @@ export default function App() {
 
   async function handleSaveNewTr(newTr: Transaction) {
     // Guard closes
-    if (!newTr?.amount) return
+    if (!newTr?.amount || isLoading) return
     if (!currentUser?.uid) {
       throw new Error("User is not authenticated");
     }
@@ -41,7 +42,7 @@ export default function App() {
 
     // Saving try
     try {
-      setSavingNewTr(true)
+      setIsLoading(true)
       const newId = crypto.randomUUID()
       const trRef = doc(db, "users", currentUser?.uid, "transactions", newId)
       const savingTransactionOnDb = await setDoc(trRef, {
@@ -58,7 +59,7 @@ export default function App() {
     } catch (error: any) {
       console.log(error.message)
     } finally {
-      setSavingNewTr(false)
+      setIsLoading(false)
     }
   }
 
@@ -74,9 +75,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    async function fetchTransactions() { // this fetches the ids of all our documents
-      if (!currentUser) return
+    async function fetchTransactions() { // this fetches all transactions
+      if (!currentUser || isLoading) return
       try {
+        setIsLoading(true)
         const transactionsRef = collection(db, 'users', currentUser.uid, 'transactions')
         const snapshot = await getDocs(transactionsRef)
         const fetchedTransactions = snapshot.docs.map((doc) => {          
@@ -95,7 +97,7 @@ export default function App() {
       } catch (error: any) {
         console.log(error.message)
       } finally {
-
+        setIsLoading(false)
       }
     }
     fetchTransactions()
@@ -109,13 +111,15 @@ export default function App() {
       <main className="flex flex-col gap-3 p-3">
         <Entry
           saveTransaction={handleSaveNewTr}
-          savingNewTr={savingNewTr}
+          // savingNewTr={isSavingNewTr}
+          isLoading={isLoading}
         />
         <TransactionHistory
           transactions={transactions}
           currency={currency}
           deleteTransaction={deleteTransaction}
           screenWidth={screenWidth}
+          isLoading={isLoading}
         />
       </main>
       <footer>

@@ -13,11 +13,12 @@ interface TransactionHistoryPtops {
     currency: JSX.Element
     deleteTransaction: (transaction: Transaction) => void
     screenWidth: number
+    isLoading: boolean
 }
 
 const OVERALL = 'overall';
 
-const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, currency, deleteTransaction, screenWidth }) => {
+const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, currency, deleteTransaction, screenWidth, isLoading }) => {
     // Latest record info
     // const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions]);
     // const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest]);
@@ -139,6 +140,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 dateFilteredTransactions={dateFilteredTransactions}
                 currency={currency}
                 totalExpense={totalExpense}
+                isLoading={isLoading}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <List
@@ -150,6 +152,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 resetSignal={resetSignal}
                 screenWidth={screenWidth}
                 displayCategory={displayCategory}
+                isLoading={isLoading}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <ExpenseBreakdown
@@ -158,6 +161,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, c
                 currency={currency}
                 totalExpense={totalExpense}
                 displayCategory={displayCategory}
+                isLoading={isLoading}
             />
         </div>
     )

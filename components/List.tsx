@@ -17,6 +17,7 @@ interface ListProps {
     deleteTransaction: (transaction: Transaction) => void
     screenWidth: number
     displayCategory: (category: Category) => string | JSX.Element
+    isLoading: boolean
 }
 
 export function sortDateNewestFirst(list: Transaction[]): Transaction[] {
@@ -39,7 +40,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 }
 
 
-const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, screenWidth }) => {
+const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, screenWidth, isLoading }) => {
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = '+', false = '-', null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
@@ -114,16 +115,21 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions, deleteT
     // Render
     return (
         <div id="transaction-list" className="flex flex-col items-center gap-4">
-            {showInfo && (
-                <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
-                    <h3>List usage info</h3>
-                    <ul className="flex flex-col gap-2">
-                        <li className='bg-[#23374e] p-1.5'>1. Click on a transaction for more details.</li>
-                        <li className='bg-[#23374e] p-1.5'>2. To filter and reorder, click on table headers.</li>
-                        <li className='bg-[#23374e] p-1.5'>3. For category filtering, click on a specific category.</li>
-                    </ul>
+            {
+                isLoading ? (
+                    'Loading...'
+                ) : (
+                    <>
+                    { showInfo && (
+                        <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
+                            <h3>List usage info</h3>
+                            <ul className="flex flex-col gap-2">
+                                <li className='bg-[#23374e] p-1.5'>1. Click on a transaction for more details.</li>
+                                <li className='bg-[#23374e] p-1.5'>2. To filter and reorder, click on table headers.</li>
+                                <li className='bg-[#23374e] p-1.5'>3. For category filtering, click on a specific category.</li>
+                            </ul>
 
-                </Modal>)}
+                        </Modal>)}
             <div className='flex gap-2 items-center'>
                 <h4>List</h4>
                 <i onClick={() => { handleToggle(showInfo, setShowInfo) }} className="fa-solid fa-circle-info clickable duration-200 text-sky-300"></i>
@@ -182,8 +188,11 @@ const List: React.FC<ListProps> = ({ currency, dateFilteredTransactions, deleteT
                     <h4><i className="fa-solid fa-arrow-up-long"></i></h4> {/* Shorten */}
                 </button>
             </div>
+                    </>
+                )
+            }
         </div>
-    );
-};
+    )
+}
 
-export default List;
+export default List
