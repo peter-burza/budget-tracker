@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import React from "react";
 import CurrencySelector from "./ui/CurrencySelector";
 import { Currency } from "@/app/types";
+import DropdownMenu from "./ui/DropdownMenu";
 
 interface TopNavProps {
     setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>
@@ -19,19 +20,20 @@ const TopNav: React.FC<TopNavProps> = ({ setTransactions, setSelectedCurrency, s
         <div id="top-nav-container" className="flex justify-between items-center">
             <h3 className="text-4xl p-2 px-2">BudgeTer</h3>
             {currentUser ?
-                <div>
-                    <button onClick={() => {
-                        logout()
-                        setTransactions([])
-                    }} className="px-2 secondary-btn">
-                        <h5>Logout</h5>
-                    </button>
+            <DropdownMenu />
+                // <div>
+                //     <button onClick={() => {
+                //         logout()
+                //         setTransactions([])
+                //     }} className="px-2 secondary-btn">
+                //         <h5>Logout</h5>
+                //     </button>
 
-                    <CurrencySelector
-                        selectedCurrency={selectedCurrency}
-                        setSelectedCurrency={setSelectedCurrency}
-                    />
-                </div>
+                //     <CurrencySelector
+                //         selectedCurrency={selectedCurrency}
+                //         setSelectedCurrency={setSelectedCurrency}
+                //     />
+                // </div>
                 :
                 <button onClick={signInWithGoogle} className="px-2 secondary-btn">
                     <h5>Sign in with Google</h5>
