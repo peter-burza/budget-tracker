@@ -23,9 +23,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Tasks ✏️
 
+- pre transactions vytvorit context a nie pushovat to vsade do componentov 
+- components and context folder prehodit do src/app foldru, a prepisat vsetky cesty
+- default category set Other.
+- type default Expense
+- z typu v transaction spravit enum a bude nie + a - ale boolena (true/false)
+- prekopat entry, break new transaction into more useState variables and setNewTransaction az ked sa submitne, aj to id z tade vyhodit potom...
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
-- Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej v dany den navstevy spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...))
+- Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej v dany den navstevy spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
 - Nastavit ukladanie nastaveni
 - Pripojit investicie, suhrn kam a kolko som investoval...
 - Remove blue border on focus of DatePicker MUI Material feature
