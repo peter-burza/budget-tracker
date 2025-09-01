@@ -10,7 +10,7 @@ interface TransactionCardProps {
     transaction: Transaction,
     selectedCurrency: Currency
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
-    deleteTransaction: (transaction: Transaction) => void
+    deleteTransaction: (deleteTrId: string) => void
     isLastIdx: boolean
     displayCategory: (category: Category)=> string | JSX.Element
 }
@@ -70,7 +70,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
                             </div>
                             <button onClick={(e) => {
                                 e.stopPropagation()
-                                deleteTransaction(transaction)
+                                deleteTransaction(transaction.id)
                             }} className={`flex flex-col flex-[1] justify-center items-center px-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)] cursor-pointer group hover:opacity-75 duration-100`}>
                                 <i className="fa-solid fa-trash-can text-red-300 group-hover:text-red-400"></i>
                             </button>

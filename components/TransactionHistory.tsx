@@ -12,7 +12,7 @@ import { Currency } from "@/app/types";
 interface TransactionHistoryPtops {
     transactions: Transaction[]
     selectedCurrency: Currency
-    deleteTransaction: (transaction: Transaction) => void
+    deleteTransaction: (deleteTrId: string) => void
     screenWidth: number
     isLoading: boolean
 }

@@ -1,6 +1,7 @@
 'use client';
 
-import { auth } from '../firebase'
+import { Transaction } from '@/app/interfaces/Transaction';
+import { auth, db } from '../firebase'
 
 import {
   // createUserWithEmailAndPassword,

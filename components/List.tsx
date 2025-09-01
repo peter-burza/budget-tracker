@@ -15,7 +15,7 @@ interface ListProps {
     selectedMonth: string
     selectedYear: string
     resetSignal: number
-    deleteTransaction: (transaction: Transaction) => void
+    deleteTransaction: (deleteTrId: string) => void
     screenWidth: number
     displayCategory: (category: Category) => string | JSX.Element
     isLoading: boolean
@@ -82,7 +82,7 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
 
         return list;
     }, [
-        dateFilteredTransactions,
+        // dateFilteredTransactions,
         categoryFilter,
         typeFilter,
         dateAscending,
