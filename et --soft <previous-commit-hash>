@@ -1,0 +1,52 @@
+[33m0c0c368[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: commit (amend): added different effect for tables when loading data
+[33m0e52470[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: commit: When transactions list is updated the filters and ordering stays the same
+[33md7358fc[m HEAD@{2}: commit: mistake change
+[33m4a3ed2f[m HEAD@{3}: commit: managed deleting transactions, also on firebase db
+[33mc279325[m HEAD@{4}: commit: designing dropdownMenu
+[33m3108273[m HEAD@{5}: pull --tags origin main: Fast-forward
+[33mfdc391d[m HEAD@{6}: commit: changed date value font-size to 0.9rem, as the other text is
+[33m670747f[m HEAD@{7}: commit: Fetching data after login and adding new transaction.
+[33m1c92982[m HEAD@{8}: commit: Added saving New Transaction into database
+[33m029dc80[m HEAD@{9}: commit: set up login and logout via google
+[33m32c7c1e[m HEAD@{10}: commit: made Add Transaction button unable to click when no amount is setted
+[33ma079850[m HEAD@{11}: commit: changed style of buttons
+[33m9212e3e[m HEAD@{12}: pull --tags origin main: Fast-forward
+[33m5b46c75[m HEAD@{13}: checkout: moving from codespace-obscure-space-dollop-97gv7w69q54276x4 to main
+[33m674daef[m[33m ([m[1;31morigin/codespace-obscure-space-dollop-97gv7w69q54276x4[m[33m, [m[1;32mcodespace-obscure-space-dollop-97gv7w69q54276x4[m[33m)[m HEAD@{14}: commit: hoverable -> clickable,
+[33m5b46c75[m HEAD@{15}: reset: moving to HEAD
+[33m5b46c75[m HEAD@{16}: reset: moving to HEAD
+[33m5b46c75[m HEAD@{17}: checkout: moving from main to codespace-obscure-space-dollop-97gv7w69q54276x4
+[33m5b46c75[m HEAD@{18}: reset: moving to HEAD
+[33m5b46c75[m HEAD@{19}: pull --tags origin main: Fast-forward
+[33m774e9b7[m HEAD@{20}: commit: styling
+[33m84b47e4[m HEAD@{21}: commit: styling summary
+[33m7647e9b[m HEAD@{22}: commit: exp. br. sorting bug fixed
+[33m8f33fb8[m HEAD@{23}: commit: expense breakdown icon column responsibility on shrink
+[33md786876[m HEAD@{24}: commit: expense breakdown showing icon on small screenwidth fixed
+[33m50cae9b[m HEAD@{25}: commit: updating expence breakdown bug fixed
+[33m70336cb[m HEAD@{26}: commit: filtering of expence breakdown finished
+[33mbebfd2f[m HEAD@{27}: commit: cleaned hovering effect
+[33m4d57f06[m HEAD@{28}: commit: update of list
+[33m239d31a[m HEAD@{29}: commit: set last item in the tables always without bottom border
+[33m6b9f733[m HEAD@{30}: commit: update list and summary functionality and connection, added expense breakdown - unfinished
+[33mc02d318[m HEAD@{31}: commit: reworked structure of components
+[33m7d01ad8[m HEAD@{32}: commit: added transaction deletion
+[33mafdba77[m HEAD@{33}: commit: styling of the list finished
+[33m3566bd2[m HEAD@{34}: commit: optimized the List.tsx functionality
+[33mc90b585[m HEAD@{35}: commit: removing comments from List.tsx
+[33md7bb6bb[m HEAD@{36}: commit: finished functionality of Transaction history list
+[33m67f68ab[m HEAD@{37}: commit: month filter
+[33mef82633[m HEAD@{38}: commit: update Transaction List functionalists - finished
+[33m40fe05b[m HEAD@{39}: commit: filtering and reordering of the list, unfinished
+[33m932dc90[m HEAD@{40}: commit: Started reordering of Transaction List
+[33m7a809c5[m HEAD@{41}: commit: update of entry
+[33me06e272[m HEAD@{42}: commit: extend + shorten button added
+[33m727e308[m HEAD@{43}: commit: list style update
+[33m7bc811e[m HEAD@{44}: commit: Transactions history finished
+[33ma314f69[m HEAD@{45}: commit: set description assign and adding new transaction into transactions array
+[33mabfdae7[m HEAD@{46}: commit: styled and set some functionalities of Transaction Entry section of the app
+[33m11d42dd[m HEAD@{47}: commit: started coding Transaction Entry. Created Transaction interface and Transactions type
+[33me439f9c[m HEAD@{48}: commit: added components, resets, page.tsx + layout.tsx. created head.tsx and added cdb of awesome icons.
+[33md636a26[m HEAD@{49}: commit: added head.tsx and others
+[33mb78aeee[m HEAD@{50}: commit: init next.js with TS and TailwindCSS
+[33m8b02534[m HEAD@{51}: clone: from https://github.com/peter-burza/budget-tracker

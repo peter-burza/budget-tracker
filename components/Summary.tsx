@@ -41,7 +41,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
                                 <h3>Summary</h3>
                                 <ul className="flex flex-col gap-2">
                                     <li className='bg-[#23374e] p-1.5'>Basic info of the selected period.</li>
-                                </ul>
+                                </ul >
 
                             </Modal>)}
                         <div className='flex gap-2 items-center'>
