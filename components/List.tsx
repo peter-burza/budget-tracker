@@ -82,7 +82,7 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
 
         return list;
     }, [
-        // dateFilteredTransactions,
+        dateFilteredTransactions,
         categoryFilter,
         typeFilter,
         dateAscending,
