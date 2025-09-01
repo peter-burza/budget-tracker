@@ -1,13 +1,13 @@
 'use state'
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react"
 import List, { sortDateNewestFirst } from "./List"
 import Summary from "./Summary"
-import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils";
-import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction";
-import { JSX } from "@emotion/react/jsx-runtime";
-import ExpenseBreakdown from "./ExpenseBreakdown";
-import { Currency } from "@/app/types";
+import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils"
+import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction"
+import { JSX } from "@emotion/react/jsx-runtime"
+import ExpenseBreakdown from "./ExpenseBreakdown"
+import { Currency } from "@/app/types"
 
 interface TransactionHistoryPtops {
     transactions: Transaction[]
@@ -17,44 +17,44 @@ interface TransactionHistoryPtops {
     isLoading: boolean
 }
 
-const OVERALL = 'overall';
+const OVERALL = 'overall'
 
 const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, selectedCurrency, deleteTransaction, screenWidth, isLoading }) => {
     // Latest record info
-    // const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions]);
-    // const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest]);
-    // const latestYearRecord = useMemo(() => latest?.date.slice(0, 4) ?? '1970', [latest]);
+    // const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions])
+    // const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest])
+    // const latestYearRecord = useMemo(() => latest?.date.slice(0, 4) ?? '1970', [latest])
 
-    const [selectedMonth, setSelectedMonth] = useState<string>("");
-    const [selectedYear, setSelectedYear] = useState<string>("");
+    const [selectedMonth, setSelectedMonth] = useState<string>("")
+    const [selectedYear, setSelectedYear] = useState<string>("")
 
 
     const [resetSignal, setResetSignal] = useState<number>(0)
 
     // Years list once
-    const years = useMemo(() => [OVERALL, ...getYearsFromTransactions(transactions).sort((a, b) => Number(b) - Number(a))], [transactions]);
+    const years = useMemo(() => [OVERALL, ...getYearsFromTransactions(transactions).sort((a, b) => Number(b) - Number(a))], [transactions])
 
     function triggerReset() {
         setResetSignal(() => resetSignal + 1)
     }
 
     function displayCategory(category: Category): string | JSX.Element {
-        return screenWidth > 510 ? category : CategoryIcons[category];
+        return screenWidth > 510 ? category : CategoryIcons[category]
     }
 
     const dateFilteredTransactions = useMemo(() => {
         if (transactions.length === 0 || selectedMonth == "" || selectedYear == "") return []
-        let list = transactions;
+        let list = transactions
 
         // Year
         if (selectedYear !== OVERALL) {
-            list = list.filter((t) => getYear(t.date) === selectedYear);
+            list = list.filter((t) => getYear(t.date) === selectedYear)
         }
 
         // Month (selectedMonth is 'overall' or full lowercase month name)
         if (selectedMonth !== OVERALL) {
-            const monthNum = getMonthNumber(selectedMonth); // returns '01'..'12'
-            list = list.filter((t) => getMonth(t.date) === monthNum);
+            const monthNum = getMonthNumber(selectedMonth) // returns '01'..'12'
+            list = list.filter((t) => getMonth(t.date) === monthNum)
         }
 
         return list
@@ -64,28 +64,28 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         return calculateTotal("-", dateFilteredTransactions)
     }, [dateFilteredTransactions])
 
-    useEffect(() => {
-        if (transactions.length === 0) return;
+    useEffect(() => { // to ensure that when the page is loaded and all data are fetched, the filter will set te latest Transaction date
+        if (transactions.length === 0 || (selectedMonth !== "" && selectedYear !== "")) return
 
-        const latest = sortDateNewestFirst(transactions)[0];
-        const month = getMonthName(latest?.date.slice(5, 7) ?? '01').toLowerCase();
-        const year = latest?.date.slice(0, 4) ?? '1970';
+        const latest = sortDateNewestFirst(transactions)[0]
+        const month = getMonthName(latest?.date.slice(5, 7) ?? '01').toLowerCase()
+        const year = latest?.date.slice(0, 4) ?? '1970'
 
-        setSelectedMonth(month);
-        setSelectedYear(year);
-    }, [transactions, resetSignal]);
+        setSelectedMonth(month)
+        setSelectedYear(year)
+    }, [transactions])
 
 
-    useEffect(() => {
-        if (transactions.length === 0) return;
+    useEffect(() => { // to ensure set Latest Transaction date after reset button is hitten
+        if (transactions.length === 0) return
 
-        const latest = sortDateNewestFirst(transactions)[0];
-        const month = getMonthName(latest?.date.slice(5, 7) ?? '01').toLowerCase();
-        const year = latest?.date.slice(0, 4) ?? '1970';
+        const latest = sortDateNewestFirst(transactions)[0]
+        const month = getMonthName(latest?.date.slice(5, 7) ?? '01').toLowerCase()
+        const year = latest?.date.slice(0, 4) ?? '1970'
 
-        setSelectedMonth(month);
-        setSelectedYear(year);
-    }, [transactions]);
+        setSelectedMonth(month)
+        setSelectedYear(year)
+    }, [resetSignal])
 
 
     return (

@@ -39,6 +39,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - First fetch of data after login, will be from last 5 years maybe? to prevent long waiting after login... or maybe last 1000 transactions? up to descusion
 - Zjednotit vysku selectov v New Entry
 - finish styling of date select (Mui Material component) - [blue border on focus, width on resize...]... pain in the ass :D
+- If the deletion causes the filtered list to become empty, you might want to show a message like:
+        {dateFilteredTransactions.length === 0 && (
+        <p className="text-gray-400">No transactions for selected filters.</p>
+        )}
 
 
 #### DONE TASKS ✅
