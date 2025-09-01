@@ -7,7 +7,7 @@
   --background-muted: #263b55;
 
   --color-dark-blue: #00b7ff3a;
-  --color-light-blue: #74d4ff;
+  --color-light-blue: #74d3ffb0;
   --color-light-green:  #009689;
   --color-red: #ff4e7a;
   --color-link: #60a5fa;
@@ -91,6 +91,7 @@ select {
 }
 
 .secondary-btn {
+  display: flex;
   padding: 0.5rem 0.75rem;
   margin: 0.5rem 0;
   border: 1.5px solid var(--color-light-blue);
@@ -100,7 +101,7 @@ select {
 }
 
 .secondary-btn:not([disabled]):hover {
-  border: 1.5px solid var(--background);
+  border: 1.5px solid transparent;
   cursor: pointer;
 }
 

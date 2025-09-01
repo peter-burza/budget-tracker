@@ -10,7 +10,7 @@ const DropdownMenu: React.FC = () => {
       {/* Hamburger Icon */}
       <button
         onClick={toggleMenu}
-        className="secondary-btn"
+        className="!p-2 !m-0 !bg-transparent secondary-btn"
       >
         <i className="fa-solid fa-bars text-xl"></i>
       </button>

@@ -11,8 +11,9 @@ interface EntryProps {
 }
 
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
+    const defaultTrVals = {}
     const [newTransaction, setNewTransaction] = useState<Transaction>({
-        id: '',
+        id: crypto.randomUUID(),
         amount: 0,
         type: "+",
         date: dayjs(Date.now()).format("YYYY-MM-DD"),
@@ -21,19 +22,14 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     const cantAddEntry: boolean | undefined = newTransaction.amount === 0 ? true : false
 
     function displayAmount(amount: number): string {
-        if (amount == 0) return ''
-        return amount.toString()
+        return amount === 0 ? '' : amount.toString()
     }
 
     function setAmount(value: string): void {
-        let result: number
-        const parsedValue = parseInt(value)
-        if (Number.isNaN(parsedValue))
-            result = 0
-        else
-            result = parsedValue
+        const parsedValue = parseFloat(value)
+        const validValue = Number.isNaN(parsedValue) ? 0 : parsedValue
         setNewTransaction(prev => ({
-            ...prev, amount: result
+            ...prev, amount: validValue
         }))
     }
 
@@ -74,7 +70,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
             <h3>New Entry</h3>
             <div className="flex flex-col gap-1 max-w-[232px] w-full">
                 <p>Amount:</p>
-                <input value={displayAmount(newTransaction.amount)} onChange={(e) => { setAmount(e.target.value) }} type="number" />
+                <input value={displayAmount(newTransaction.amount)} onChange={(e) => { setAmount(e.target.value) }} type="number" step="any" placeholder="e.g. 4.99" />
             </div>
             <div className="flex flex-col gap-1 max-w-[232px] w-full">
                 <p>Type:</p>
@@ -105,6 +101,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
                 title={cantAddEntry ? "Please enter amount" : ""}
                 onClick={() => {
                     saveTransaction({ ...newTransaction })
+                    setNewTransaction({ ...newTransaction, id: crypto.randomUUID() }) // Change the id, for next entry
                 }} >
                 <h5>{isLoading === true ? 'Saving...' : 'Add Transaction'}</h5>
             </button>
