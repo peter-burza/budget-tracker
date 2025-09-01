@@ -66,11 +66,11 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
 
   return (
     <div id="expense-breakdown" className="flex flex-col items-center gap-4">
-      {
+      {/* {
         isLoading ? (
           'Loading...'
         ) : (
-          <>
+          <> */}
             <h4>Expense Breakdown</h4>
             <table className="expenses-table">
               <thead>
@@ -87,7 +87,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
                 {orderedBreakdown.map(({ category, total, percentage }, idx) => {
                   const isLastIdx = idx === orderedBreakdown.length - 1
                   return (
@@ -100,9 +100,9 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
                 })}
               </tbody>
             </table>
-          </>
+          {/* </>
         )
-      }
+      } */}
     </div>
   );
 };

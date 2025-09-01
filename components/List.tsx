@@ -116,11 +116,11 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
     // Render
     return (
         <div id="transaction-list" className="flex flex-col items-center gap-4">
-            {
+            {/* {
                 isLoading ? (
                     'Loading...'
                 ) : (
-                    <>
+                    <> */}
                         {showInfo && (
                             <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
                                 <h3>List usage info</h3>
@@ -164,7 +164,7 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
                                 {transactionsList.slice(0, transactionCount).map((transaction, idx) => {
                                     const isLastIdx = idx === transactionsList.length - 1;
                                     return (
@@ -191,9 +191,9 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
                                 <h4><i className="fa-solid fa-arrow-up-long"></i></h4> {/* Shorten */}
                             </button>
                         </div>
-                    </>
+                    {/* </>
                 )
-            }
+            } */}
         </div>
     )
 }

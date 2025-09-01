@@ -31,11 +31,11 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
 
     return (
         <div id="summary" className="flex flex-col items-center gap-2 w-full">
-            {
+            {/* {
                 isLoading ? (
                     'Loading...'
                 ) : (
-                    <>
+                    <> */}
                         {showInfo && (
                             <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
                                 <h3>Summary</h3>
@@ -48,7 +48,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
                             <h4>Summary</h4>
                             <i onClick={() => { handleToggle(showInfo, setShowInfo) }} className="fa-solid fa-circle-info clickable duration-200 text-sky-300"></i>
                         </div>
-                        <div id="basic-summary-info" className="flex flex-col w-full justify-between gap-0.25">
+                        <div id="basic-summary-info" className={`flex flex-col w-full justify-between gap-0.25 ${isLoading && 'opacity-50 duration-200'}`}>
                            
                             <div className="flex gap-2 w-full items-center justify-center bg-[var(--color-list-bg-green)] text-green-200 p-1 border-1 border-[var(--color-dark-blue)]">
                                 <h4>Income:</h4>
@@ -75,9 +75,9 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
 
                             </div>
                         </div>
-                    </>
+                    {/* </>
                 )
-            }
+            } */}
         </div>
     )
 }
