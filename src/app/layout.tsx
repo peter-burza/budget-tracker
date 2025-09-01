@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Head from "./head";
 import AuthProvider from "../../context/AuthContext";
+import TopNav from "../../components/TopNav";
+import Footer from "../../components/Footer";
 
 export const metadata: Metadata = {
   title: "BudgetTer | Budget Tracker",
@@ -17,9 +19,17 @@ export default function RootLayout({
     <html lang="en">
       <Head />
       <AuthProvider>
-        <body>
-          <div id="app">{children}</div>
+        <body className="min-h-screen flex flex-col">
+          <header className="flex flex-col gap-3 p-3 pb-0">
+            <TopNav />
+          </header>
+
+          <div id="app" className="flex-grow">{children}</div>
           <div id="portal"></div>
+          
+          <footer>
+            <Footer />
+          </footer>
         </body>
       </AuthProvider>
     </html>

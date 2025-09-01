@@ -23,7 +23,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Tasks ✏️
 
-- Add setting to change the currancy
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
 - Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej v dany den navstevy spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...))
@@ -43,6 +42,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
         {dateFilteredTransactions.length === 0 && (
         <p className="text-gray-400">No transactions for selected filters.</p>
         )}
+- when you have opend Dropdown menu and click outside of the menu, close the menu
 
 
 #### DONE TASKS ✅
@@ -54,3 +54,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Pridat Login (via google account)
 - pridat fetching data from db after login
 - remove doubled id inside the transaction data on db.. saving, fetching. everywhere
+- Add setting to change the currancy
