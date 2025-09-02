@@ -23,11 +23,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Tasks ✏️
 
-- pre transactions vytvorit context a nie pushovat to vsade do componentov 
-- components and context folder prehodit do src foldru, a prepisat vsetky cesty
-- default category set Other.
-- type default Expense
-- z typu v transaction spravit enum a bude nie + a - ale boolena (true/false)
+- z typu v transaction spravit enum a bude nie + a - ale boolean (true/false)
 - prekopat entry, break new transaction into more useState variables and setNewTransaction az ked sa submitne, aj to id z tade vyhodit potom...
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
@@ -62,3 +58,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - pridat fetching data from db after login
 - remove doubled id inside the transaction data on db.. saving, fetching. everywhere
 - Add setting to change the currancy
+- pre transactions vytvorit context a nie pushovat to vsade do componentov
+        - ponechane, lebo to nepushujem do vela komponentov, iba do dvoch v podstate (zatial)
+- components and context folder prehodit do src foldru, a prepisat vsetky cesty
+- default category set Other.
+- type default Expense

@@ -1,11 +1,11 @@
 'use client'
 
-import { Transaction } from "@/app/interfaces/Transaction";
-import { calculateTotal, handleToggle } from "@/app/utils";
+import { Transaction } from "@/interfaces/Transaction";
+import { calculateTotal, handleToggle } from "@/utils";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useMemo, useState } from "react";
 import Modal from "./Modal";
-import { Currency } from "@/app/types";
+import { Currency } from "@/types";
 
 interface SummaryProps {
     dateFilteredTransactions: Transaction[]

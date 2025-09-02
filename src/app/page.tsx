@@ -1,17 +1,17 @@
 'use client'
 
-import Entry from "../../components/Entry";
+import Entry from "../components/Entry";
 // import TopNav from "../../../components/TopNav";
 import { useEffect, useState } from "react"
 // import { FAKE_TRANSACTIONS } from "./utils";
-import { Transaction } from "./interfaces/Transaction";
-import TransactionHistory from "../../components/TransactionHistory";
+import { Transaction } from "../interfaces/Transaction";
+import TransactionHistory from "../components/TransactionHistory";
 // import Footer from "../../../components/Footer";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { Currency } from "./types";
-import { CURRENCIES } from "./utils";
+import { Currency } from "../types";
+import { CURRENCIES } from "../utils";
 // import { useTransactions } from "../../../context/TransactionsContext";
 
 export default function Home() {

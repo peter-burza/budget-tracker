@@ -1,11 +1,11 @@
 'use client'
 
-import { Category, Transaction } from "@/app/interfaces/Transaction";
+import { Category, Transaction } from "@/interfaces/Transaction";
 import ResponsiveHeader from "./ui/ResponsiveHeader";
 import { JSX } from "@emotion/react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
 import { renderSortingIcon } from "./List";
-import { Currency } from "@/app/types";
+import { Currency } from "@/types";
 
 interface ExpenseBreakdownProps {
   dateFilteredTransactions: Transaction[];

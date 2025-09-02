@@ -1,6 +1,6 @@
 'use client'
 
-import { Category, Transaction } from '@/app/interfaces/Transaction'
+import { Category, Transaction } from '@/interfaces/Transaction'
 import React, { useState } from 'react'
 import ResponsiveDatePicker from './ui/ResponsiveDatePicker'
 import dayjs from 'dayjs'

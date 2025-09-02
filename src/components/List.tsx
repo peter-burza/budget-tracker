@@ -3,11 +3,11 @@
 import { JSX } from '@emotion/react/jsx-runtime';
 import React, { useEffect, useMemo, useState } from 'react';
 import TransactionCard from './TransactionCard';
-import { Category, Transaction } from '@/app/interfaces/Transaction';
+import { Category, Transaction } from '@/interfaces/Transaction';
 import ResponsiveHeader from './ui/ResponsiveHeader';
 import Modal from './Modal';
-import { Currency } from "@/app/types";
-import { handleToggle } from '@/app/utils';
+import { Currency } from "@/types";
+import { handleToggle } from '@/utils';
 
 interface ListProps {
     selectedCurrency: Currency

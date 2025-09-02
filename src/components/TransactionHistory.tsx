@@ -3,11 +3,11 @@
 import React, { useEffect, useMemo, useState } from "react"
 import List, { sortDateNewestFirst } from "./List"
 import Summary from "./Summary"
-import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/app/utils"
-import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction"
+import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/utils"
+import { Category, CategoryIcons, Transaction } from "@/interfaces/Transaction"
 import { JSX } from "@emotion/react/jsx-runtime"
 import ExpenseBreakdown from "./ExpenseBreakdown"
-import { Currency } from "@/app/types"
+import { Currency } from "@/types"
 // import { useTransactions } from "../context/TransactionsContext"
 
 interface TransactionHistoryPtops {

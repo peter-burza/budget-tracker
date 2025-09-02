@@ -1,5 +1,5 @@
-import { Currency } from '@/app/types'
-import { CURRENCIES } from '@/app/utils'
+import { Currency } from '@/types'
+import { CURRENCIES } from '@/utils'
 import React from 'react'
 
 interface CurrencySelectorProps {

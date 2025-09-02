@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Head from "./head";
-import AuthProvider from "../../context/AuthContext";
-import TopNav from "../../components/TopNav";
-import Footer from "../../components/Footer";
-import TransactionsProvider from "../../context/TransactionsContext";
+import AuthProvider from "../context/AuthContext";
+import TopNav from "../components/TopNav";
+import Footer from "../components/Footer";
+import TransactionsProvider from "../context/TransactionsContext";
 
 export const metadata: Metadata = {
   title: "BudgetTer | Budget Tracker",

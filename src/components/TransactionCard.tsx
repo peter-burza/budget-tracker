@@ -1,7 +1,7 @@
 'use client'
 
-import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transaction"
-import { Currency } from "@/app/types";
+import { Category, CategoryIcons, Transaction } from "@/interfaces/Transaction"
+import { Currency } from "@/types";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useState } from "react";
 
