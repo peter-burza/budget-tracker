@@ -1,23 +1,19 @@
 'use client'
 
 import Entry from "../components/Entry";
-// import TopNav from "../../../components/TopNav";
 import { useEffect, useState } from "react"
-// import { FAKE_TRANSACTIONS } from "./utils";
 import { Transaction } from "../interfaces/Transaction";
 import TransactionHistory from "../components/TransactionHistory";
-// import Footer from "../../../components/Footer";
 import { useAuth } from "../context/AuthContext";
 import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { Currency } from "../types";
-import { CURRENCIES } from "../utils";
+import { useGlobalStore } from "@/context/CurrencyZustandContext";
 // import { useTransactions } from "../../../context/TransactionsContext";
 
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   // const { transactions, setTransactions } = useTransactions()
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(CURRENCIES.EUR)
+  const { selectedCurrency } = useGlobalStore()
   const [screenWidth, setScreenWidth] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
 
@@ -38,7 +34,6 @@ export default function Home() {
     // Save try
     try {
       setIsLoading(true)
-      // const newId = crypto.randomUUID()
       const trRef = doc(db, "users", currentUser?.uid, "transactions", newTr.id)
       const savingTransactionOnDb = await setDoc(trRef, {
         id: newTr.id,
@@ -57,18 +52,6 @@ export default function Home() {
       setIsLoading(false)
     }
   }
-
-
-  // function deleteTransaction(transaction: Transaction): void {
-  // const updatedTransactions = transactions.filter(t => (t.id !== transaction.id))
-  // setTransactions(updatedTransactions)
-  // }
-
-
-  // const deleteTr = (transactionId: string) => {
-  //   const transactionRef = doc(db, "transactions", transactionId)
-  //   return
-  // }
 
   // Delete Transaction
   async function deleteTransaction(deleteTrId: string | undefined) {
@@ -96,7 +79,6 @@ export default function Home() {
       setIsLoading(false)
     }
   }
-
 
   // Screen size
   useEffect(() => {
@@ -140,18 +122,17 @@ export default function Home() {
 
   return (
     <>
-        <Entry
-          saveTransaction={saveTransaction}
-          // savingNewTr={isSavingNewTr}
-          isLoading={isLoading}
-        />
-        <TransactionHistory
-          transactions={transactions}
-          selectedCurrency={selectedCurrency}
-          deleteTransaction={deleteTransaction}
-          screenWidth={screenWidth}
-          isLoading={isLoading}
-        />
+      <Entry
+        saveTransaction={saveTransaction}
+        isLoading={isLoading}
+      />
+      <TransactionHistory
+        transactions={transactions}
+        selectedCurrency={selectedCurrency}
+        deleteTransaction={deleteTransaction}
+        screenWidth={screenWidth}
+        isLoading={isLoading}
+      />
     </>
   );
 }

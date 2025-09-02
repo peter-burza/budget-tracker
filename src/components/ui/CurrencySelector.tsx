@@ -1,13 +1,11 @@
-import { Currency } from '@/types'
+'use client'
+
+import { useGlobalStore } from '@/context/CurrencyZustandContext'
 import { CURRENCIES } from '@/utils'
 import React from 'react'
 
-interface CurrencySelectorProps {
-    selectedCurrency: Currency
-    setSelectedCurrency: React.Dispatch<React.SetStateAction<Currency>>
-}
-
-const CurrencySelector: React.FC<CurrencySelectorProps> = ({ selectedCurrency, setSelectedCurrency, }) => {
+const CurrencySelector: React.FC = () => {
+    const { selectedCurrency, setSelectedCurrency } = useGlobalStore()
 
     function setCurrency(selectedCurrCode: string): void {
         setSelectedCurrency(CURRENCIES[selectedCurrCode]);
@@ -15,9 +13,6 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ selectedCurrency, s
 
     return (
         <div className="flex flex-col gap-2 w-full max-w-sm">
-            <label htmlFor="currency" className="text-sm font-medium text-gray-700">
-                Select Currency
-            </label>
             <select
                 id="currency"
                 value={selectedCurrency.code}
@@ -26,7 +21,7 @@ const CurrencySelector: React.FC<CurrencySelectorProps> = ({ selectedCurrency, s
             >
                 {Object.values(CURRENCIES).map((currency) => (
                     <option key={currency.code} value={currency.code}>
-                        {currency.name} - {currency.code} &#91;{currency.symbol}&#93;
+                        {currency.code}  -  {currency.name}  -  &#91;{currency.symbol}&#93;
                     </option>
                 ))}
             </select>

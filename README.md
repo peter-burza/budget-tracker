@@ -32,6 +32,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Remove blue border on focus of DatePicker MUI Material feature
 - Add feature, when user tries to add transaction with same stats (amount, type, category, date etc.), ask him if he really want to add another identical transaction (via Modal -> yes/no button)
 - When user clickes on delete transaction button - ask him: "Are you sure?"...
+- currency zmena by mala zahrnat aj nejaky prepocet podla aktualnych kurzov?
 
 #### Consultations:
 - prekonzultovat context pre transactions a setTransactions. Asi ani netreba - pouziva sa iba v page.tsx a TransactionsHistory.tsx. Dalej sa uz posiela odfiltrovany transactions list
