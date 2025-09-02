@@ -23,12 +23,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Tasks ✏️
 
-- z typu v transaction spravit enum a bude nie + a - ale boolean (true/false)
-- prekopat entry, break new transaction into more useState variables and setNewTransaction az ked sa submitne, aj to id z tade vyhodit potom...
+- vlozit currency selector
+- Nastavit ukladanie nastaveni
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
-- Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej v dany den navstevy spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
-- Nastavit ukladanie nastaveni
+- Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej navsteve v dany den spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
 - Pripojit investicie, suhrn kam a kolko som investoval...
 - Remove blue border on focus of DatePicker MUI Material feature
 - Add feature, when user tries to add transaction with same stats (amount, type, category, date etc.), ask him if he really want to add another identical transaction (via Modal -> yes/no button)
@@ -49,6 +48,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
         )}
 - when you have opend Dropdown menu and click outside of the menu, close the menu
 - ked odstranim transakciu, tak po jej odstraneni ostane otvoreny akoby detail ale dalsej transakcie.. opravit aby neostalo nic dalsie otvorene.
+- close button na modaly (ked kliknes na i ikonu vyysvetliviek)
 
 
 #### DONE TASKS ✅
@@ -66,3 +66,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - components and context folder prehodit do src foldru, a prepisat vsetky cesty
 - default category set Other.
 - type default Expense
+- z typu v transaction spravit enum a bude nie + a - ale boolean (true/false)
+- prekopat entry, break new transaction into more useState variables and setNewTransaction az ked sa submitne, aj to id z tade vyhodit potom...

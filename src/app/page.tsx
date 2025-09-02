@@ -26,7 +26,7 @@ export default function Home() {
 
   async function saveTransaction(newTr: Transaction) {
     // Guard closes
-    if (!newTr?.amount || isLoading) return
+    if (!newTr.id || !newTr?.amount || isLoading) return
     if (!currentUser?.uid) {
       throw new Error("User is not authenticated");
     }
@@ -38,10 +38,10 @@ export default function Home() {
     // Save try
     try {
       setIsLoading(true)
-      const newId = crypto.randomUUID()
-      const trRef = doc(db, "users", currentUser?.uid, "transactions", newId)
+      // const newId = crypto.randomUUID()
+      const trRef = doc(db, "users", currentUser?.uid, "transactions", newTr.id)
       const savingTransactionOnDb = await setDoc(trRef, {
-        id: newId,
+        id: newTr.id,
         amount: newTr.amount,
         type: newTr.type,
         date: newTr.date,
@@ -50,7 +50,7 @@ export default function Home() {
         createdAt: serverTimestamp(),
       })
       setTransactions((prev) => [...prev, newTr])
-      console.log('Transaction (id: ' + newId + ') saved successfully');
+      console.log('Transaction (id: ' + newTr.id + ') saved successfully');
     } catch (error: any) {
       console.log(error.message)
     } finally {
@@ -70,7 +70,7 @@ export default function Home() {
   //   return
   // }
 
-
+  // Delete Transaction
   async function deleteTransaction(deleteTrId: string | undefined) {
     // Guard closes
     if (isLoading || deleteTrId === undefined) return
@@ -108,6 +108,7 @@ export default function Home() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Fetch Transactions from db
   useEffect(() => {
     async function fetchTransactions() { // this fetches all transactions
       if (!currentUser || isLoading) return

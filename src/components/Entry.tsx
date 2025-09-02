@@ -10,64 +10,47 @@ interface EntryProps {
   isLoading: boolean
 }
 
+function displayAmount(amount: number): string {
+  return amount === 0 ? '' : amount.toString()
+}
+
+
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
+  const [amount, setAmount] = useState<number>(0)
+  const [type, setType] = useState<TrType>(TrType.Expense)
+  const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
+  const [category, setCategory] = useState<Category>(Category.Other)
+  const [description, setDescription] = useState<string>('')
 
-  // TODO: Break newTransaction into individual states
-  // const [amout, setAmount] = useState<number>(0)
-  const [newTransaction, setNewTransaction] = useState<Transaction>({
-    // id: crypto.randomUUID(),
-    amount: 0,
-    type: TrType.Expense,
-    date: dayjs(Date.now()).format('YYYY-MM-DD'),
-    category: Category.Other
-  })
   const cantAddEntry: boolean | undefined =
-    newTransaction.amount === 0 ? true : false
+    amount === 0 ? true : false
 
-  function displayAmount(amount: number): string {
-    return amount === 0 ? '' : amount.toString()
-  }
-
-  function setAmount(value: string): void {
+  function handleSetAmount(value: string): void {
     const parsedValue = parseFloat(value)
     const validValue = Number.isNaN(parsedValue) ? 0 : parsedValue
-    setNewTransaction((prev) => ({
-      ...prev,
-      amount: validValue
-    }))
+    setAmount(validValue)
   }
 
-  function setType(value: TrType): void {
-    setNewTransaction((prev) => ({
-      ...prev,
-      type: value
-    }))
+  function handleSetType(value: TrType): void {
+    setType(value)
   }
 
-  function setCategory(value: string): void {
-    let result: Category | undefined = Object.values(Category).find(
-      (c) => c === value
-    )
-    if (result !== undefined) {
-      setNewTransaction((prev) => ({
-        ...prev,
-        category: result
-      }))
-    }
+  function handleSetCategory(value: Category): void {
+    // if (value !== undefined) {
+    setCategory(value)
+    // }
   }
 
-  function setDate(value: dayjs.Dayjs): void {
+  function handleSetDate(value: dayjs.Dayjs): void {
     const dateOnly: string = value.format('YYYY-MM-DD')
-    setNewTransaction((prev) => ({
-      ...prev,
-      date: dateOnly
-    }))
+    setDate(dateOnly)
   }
 
-  function setDescription(value: string): void {
-    setNewTransaction((prev) => ({ ...prev, description: value }))
+  function handleSetDescription(value: string): void {
+    setDescription(value)
   }
 
+  
   return (
     <div
       id="transaction-entry"
@@ -77,9 +60,9 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
       <div className="flex flex-col gap-1 max-w-[232px] w-full">
         <p>Amount:</p>
         <input
-          value={displayAmount(newTransaction.amount)}
+          value={displayAmount(amount)}
           onChange={(e) => {
-            setAmount(e.target.value)
+            handleSetAmount(e.target.value)
           }}
           type="number"
           step="any"
@@ -89,10 +72,9 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
       <div className="flex flex-col gap-1 max-w-[232px] w-full">
         <p>Type:</p>
         <select
-          value={newTransaction.type}
+          value={type}
           onChange={(e) => {
-            setType(e.target.value as TrType)
-            console.log(e.target.value)
+            handleSetType(e.target.value as TrType)
           }}
         >
           <option value={TrType.Income}>Income</option>
@@ -102,14 +84,14 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
       <div className="flex flex-col gap-1 max-w-[232px] w-full">
         <p>Category:</p>
         <select
-          value={newTransaction.category}
+          value={category}
           onChange={(e) => {
-            setCategory(e.target.value)
+            handleSetCategory(e.target.value as Category)
           }}
         >
-          {Object.values(Category).map((c) => (
+          {Object.values(Category).map((c, idx) => (
             <option
-              key={c}
+              key={idx}
               value={c}
             >
               {c}
@@ -119,13 +101,13 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
       </div>
       <div className="flex flex-col gap-1 max-w-[232px] w-full">
         <p className="-mb-2">Date:</p>
-        <ResponsiveDatePicker setTransactionDate={setDate} />
+        <ResponsiveDatePicker setTransactionDate={handleSetDate} />
       </div>
       <div className="flex flex-col gap-1 max-w-[232px] w-full">
         <p className="">Description:</p>
         <textarea
           onChange={(e) => {
-            setDescription(e.target.value)
+            handleSetDescription(e.target.value)
           }}
           className="bg-[var(--foreground)] text-[var(--background)] outline-0 p-2 px-3 rounded-sm"
           placeholder="Transaction detail"
@@ -136,8 +118,14 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
         disabled={cantAddEntry || isLoading}
         title={cantAddEntry ? 'Please enter amount' : ''}
         onClick={() => {
-          saveTransaction({ ...newTransaction })
-          setNewTransaction({ ...newTransaction, id: crypto.randomUUID() }) // Change the id, for next entry
+          saveTransaction({
+            id: crypto.randomUUID(),
+            amount: amount,
+            type: type,
+            date: date,
+            category: category,
+            description: description
+          })
         }}
       >
         <h5>{isLoading === true ? 'Saving...' : 'Add Transaction'}</h5>
