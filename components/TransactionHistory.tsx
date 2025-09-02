@@ -8,6 +8,7 @@ import { Category, CategoryIcons, Transaction } from "@/app/interfaces/Transacti
 import { JSX } from "@emotion/react/jsx-runtime"
 import ExpenseBreakdown from "./ExpenseBreakdown"
 import { Currency } from "@/app/types"
+// import { useTransactions } from "../context/TransactionsContext"
 
 interface TransactionHistoryPtops {
     transactions: Transaction[]
@@ -20,10 +21,7 @@ interface TransactionHistoryPtops {
 const OVERALL = 'overall'
 
 const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, selectedCurrency, deleteTransaction, screenWidth, isLoading }) => {
-    // Latest record info
-    // const latest = useMemo(() => sortDateNewestFirst(transactions)[0], [transactions])
-    // const latestMonthRecord = useMemo(() => getMonthName(latest?.date.slice(5, 7) ?? '01'), [latest])
-    // const latestYearRecord = useMemo(() => latest?.date.slice(0, 4) ?? '1970', [latest])
+    // const { transactions } = useTransactions()
 
     const [selectedMonth, setSelectedMonth] = useState<string>("")
     const [selectedYear, setSelectedYear] = useState<string>("")

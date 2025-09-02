@@ -1,7 +1,7 @@
 'use client'
 
-import { Transaction } from '@/app/interfaces/Transaction'
-import { auth, db } from '../firebase'
+// import { Transaction } from '@/app/interfaces/Transaction'
+import { auth } from '../firebase'
 
 import {
   // createUserWithEmailAndPassword,
@@ -60,7 +60,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   // };
 
   const signInWithGoogle = async () => {
+    setIsLoadingUser(true)
     const provider = await new GoogleAuthProvider()
+    setIsLoadingUser(false)
     return signInWithPopup(auth, provider)
   }
 

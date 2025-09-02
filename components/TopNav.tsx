@@ -17,7 +17,7 @@ export default function TopNav() {
       className="flex justify-between items-center"
     >
       <h3 className="text-4xl p-2 px-2">
-        BudgeTer - {currentUser?.displayName}
+        BudgeTer {currentUser ? ' - ' + currentUser?.displayName : ''}
       </h3>
       {currentUser ? (
         <DropdownMenu />

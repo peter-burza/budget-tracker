@@ -4,6 +4,7 @@ import Head from "./head";
 import AuthProvider from "../../context/AuthContext";
 import TopNav from "../../components/TopNav";
 import Footer from "../../components/Footer";
+import TransactionsProvider from "../../context/TransactionsContext";
 
 export const metadata: Metadata = {
   title: "BudgetTer | Budget Tracker",
@@ -19,18 +20,20 @@ export default function RootLayout({
     <html lang="en">
       <Head />
       <AuthProvider>
-        <body className="min-h-screen flex flex-col">
-          <header className="flex flex-col gap-3 p-3 pb-0">
-            <TopNav />
-          </header>
+        <TransactionsProvider>
+          <body className="min-h-screen flex flex-col">
+            <header className="flex flex-col gap-3 p-3 pb-0">
+              <TopNav />
+            </header>
 
-          <div id="app" className="flex-grow">{children}</div>
-          <div id="portal"></div>
-          
-          <footer>
-            <Footer />
-          </footer>
-        </body>
+            <div id="app" className="flex-grow">{children}</div>
+            <div id="portal"></div>
+
+            <footer>
+              <Footer />
+            </footer>
+          </body>
+        </TransactionsProvider>
       </AuthProvider>
     </html>
   );
