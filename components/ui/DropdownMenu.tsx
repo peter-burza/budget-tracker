@@ -18,9 +18,9 @@ const DropdownMenu = () => {
     <div className="relative inline-block text-left">
       <button
         onClick={toggleMenu}
-        className="!p-2 !m-0 !bg-transparent secondary-btn"
+        className="!p-2 !m-0 !bg-transparent secondary-btn group"
       >
-        <i className="fa-solid fa-bars text-xl"></i>
+        <i className="fa-solid fa-bars text-xl group-hover:text-sky-300 duration-200"></i>
       </button>
 
       {/* Underlay */}
