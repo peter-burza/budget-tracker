@@ -5,7 +5,7 @@ interface SettingsPageProps {
 const SettingsPage: React.FC<SettingsPageProps> = () => {
 
     return (
-        <div className="flex justify-center">
+        <div className="base-container">
             <h1>This is Settings Page</h1>
         </div>
     )

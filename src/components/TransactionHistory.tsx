@@ -87,7 +87,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
 
 
     return (
-        <div id="transactions-history" className="flex flex-col items-center gap-5 bg-[var(--background-muted)] rounded-md p-3">
+        <div id="transactions-history" className="base-container">
             <h3>Transactions History</h3>
             <div className="flex justify-between gap-3 sm:gap-6">
                 <div className="flex flex-wrap gap-2">

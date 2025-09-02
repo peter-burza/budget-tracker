@@ -54,7 +54,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   return (
     <div
       id="transaction-entry"
-      className="flex flex-col items-center gap-2 bg-[var(--background-muted)] rounded-md p-3"
+      className="base-container"
     >
       <h3>New Entry</h3>
       <div className="flex flex-col gap-1 max-w-[232px] w-full">

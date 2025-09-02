@@ -76,6 +76,17 @@ select {
   outline: none;
 }
 
+.base-container {
+  /* flex flex-col items-center gap-2 bg-[var(--background-muted)] rounded-md p-3 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--background-muted);
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+}
+
 .primary-btn {
   background-color: var(--color-light-green);
   color: white;

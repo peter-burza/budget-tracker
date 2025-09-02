@@ -140,8 +140,6 @@ export default function Home() {
 
   return (
     <>
-
-      <main className="flex flex-col gap-3 p-3">
         <Entry
           saveTransaction={saveTransaction}
           // savingNewTr={isSavingNewTr}
@@ -154,8 +152,6 @@ export default function Home() {
           screenWidth={screenWidth}
           isLoading={isLoading}
         />
-      </main>
-
     </>
   );
 }

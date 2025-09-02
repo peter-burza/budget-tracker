@@ -26,7 +26,9 @@ export default function RootLayout({
               <TopNav />
             </header>
 
-            <div id="app" className="flex-grow">{children}</div>
+            <main id="app" className="flex-grow flex flex-col gap-3 p-3">
+                {children}
+            </main>
             <div id="portal"></div>
 
             <footer>
