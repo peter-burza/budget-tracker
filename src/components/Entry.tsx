@@ -1,6 +1,6 @@
 'use client'
 
-import { Category, Transaction } from '@/interfaces/Transaction'
+import { Category, Transaction, TrType } from '@/interfaces/Transaction'
 import React, { useState } from 'react'
 import ResponsiveDatePicker from './ui/ResponsiveDatePicker'
 import dayjs from 'dayjs'
@@ -11,14 +11,13 @@ interface EntryProps {
 }
 
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
-  const defaultTrVals = {}
 
   // TODO: Break newTransaction into individual states
   // const [amout, setAmount] = useState<number>(0)
   const [newTransaction, setNewTransaction] = useState<Transaction>({
     // id: crypto.randomUUID(),
     amount: 0,
-    type: '-',
+    type: TrType.Expense,
     date: dayjs(Date.now()).format('YYYY-MM-DD'),
     category: Category.Other
   })
@@ -38,13 +37,10 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     }))
   }
 
-  function setType(value: string): void {
-    let result: '+' | '-'
-    if (value === '+') result = value
-    else result = '-'
+  function setType(value: TrType): void {
     setNewTransaction((prev) => ({
       ...prev,
-      type: result
+      type: value
     }))
   }
 
@@ -95,11 +91,12 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
         <select
           value={newTransaction.type}
           onChange={(e) => {
-            setType(e.target.value)
+            setType(e.target.value as TrType)
+            console.log(e.target.value)
           }}
         >
-          <option value="+">Income</option>
-          <option value="-">Expense</option>
+          <option value={TrType.Income}>Income</option>
+          <option value={TrType.Expense}>Expense</option>
         </select>
       </div>
       <div className="flex flex-col gap-1 max-w-[232px] w-full">

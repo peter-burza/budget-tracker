@@ -58,33 +58,33 @@ const descriptions: Partial<Record<Category, string>> = {
   [Category.Other]: 'Miscellaneous income or expense.',
 };
 
-function pad(num: number): string {
-  return num.toString().padStart(2, '0');
-}
+// function pad(num: number): string {
+//   return num.toString().padStart(2, '0');
+// }
 
-export const FAKE_TRANSACTIONS: Transaction[] = [];
+// export const FAKE_TRANSACTIONS: Transaction[] = [];
 
-let txCounter = 1;
+// let txCounter = 1;
 
-for (let year = 2022; year <= 2024; year++) {
-  for (let month = 1; month <= 12; month++) {
-    for (let i = 0; i < 5; i++) {
-      const category = categoryList[(txCounter + i) % categoryList.length];
-      const type = i % 2 === 0 ? '+' : '-';
-      const amount = type === '+' ? 3000 + (i * 100) : 100 + (i * 50);
-      const day = pad(i + 1);
-      const date = `${year}-${pad(month)}-${day}`;
-      FAKE_TRANSACTIONS.push({
-        id: `tx${pad(txCounter++)}`,
-        amount,
-        type,
-        date,
-        category,
-        description: descriptions[category] || 'General transaction.'
-      });
-    }
-  }
-}
+// for (let year = 2022; year <= 2024; year++) {
+//   for (let month = 1; month <= 12; month++) {
+//     for (let i = 0; i < 5; i++) {
+//       const category = categoryList[(txCounter + i) % categoryList.length];
+//       const type = i % 2 === 0 ? '+' : '-';
+//       const amount = type === '+' ? 3000 + (i * 100) : 100 + (i * 50);
+//       const day = pad(i + 1);
+//       const date = `${year}-${pad(month)}-${day}`;
+//       FAKE_TRANSACTIONS.push({
+//         id: `tx${pad(txCounter++)}`,
+//         amount,
+//         type,
+//         date,
+//         category,
+//         description: descriptions[category] || 'General transaction.'
+//       });
+//     }
+//   }
+// }
 
 export const CURRENCIES: Record<string, Currency> = {
   USD: { code: 'USD', symbol: '$', name: 'United States Dollar' },

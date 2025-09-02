@@ -71,9 +71,9 @@ export default function Home() {
   // }
 
 
-  async function deleteTransaction(deleteTrId: string) {
+  async function deleteTransaction(deleteTrId: string | undefined) {
     // Guard closes
-    if (isLoading) return
+    if (isLoading || deleteTrId === undefined) return
     if (!currentUser?.uid) {
       throw new Error("User is not authenticated");
     }

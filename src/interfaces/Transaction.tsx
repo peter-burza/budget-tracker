@@ -201,10 +201,19 @@ export const CategoryIcons: Record<Category, JSX.Element> = {
   )
 }
 
+
+// export enum Category {
+//   Salary = 'Salary',
+
+export enum TrType {
+  Income = 'income',
+  Expense = 'expense'
+}
+
 export interface Transaction {
   readonly id?: string
   amount: number
-  type: '+' | '-'
+  type: TrType.Income | TrType.Expense
   date: string
   category: Category
   description?: string

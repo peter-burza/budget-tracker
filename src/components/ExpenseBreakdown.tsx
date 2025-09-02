@@ -1,6 +1,6 @@
 'use client'
 
-import { Category, Transaction } from "@/interfaces/Transaction";
+import { Category, Transaction, TrType } from "@/interfaces/Transaction";
 import ResponsiveHeader from "./ui/ResponsiveHeader";
 import { JSX } from "@emotion/react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
@@ -42,7 +42,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
   }, [totalAscending, dateFilteredTransactions])
 
   function getExpenseBreakdown(): CategorySummary[] {
-    const expenses = dateFilteredTransactions.filter(t => t.type === "-")
+    const expenses = dateFilteredTransactions.filter(t => t.type === TrType.Expense)
     const categoryMap = new Map<Category, number>()
 
     expenses.forEach(t => {

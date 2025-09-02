@@ -3,7 +3,7 @@
 import { JSX } from '@emotion/react/jsx-runtime';
 import React, { useEffect, useMemo, useState } from 'react';
 import TransactionCard from './TransactionCard';
-import { Category, Transaction } from '@/interfaces/Transaction';
+import { Category, Transaction, TrType } from '@/interfaces/Transaction';
 import ResponsiveHeader from './ui/ResponsiveHeader';
 import Modal from './Modal';
 import { Currency } from "@/types";
@@ -15,7 +15,7 @@ interface ListProps {
     selectedMonth: string
     selectedYear: string
     resetSignal: number
-    deleteTransaction: (deleteTrId: string) => void
+    deleteTransaction: (deleteTrId: string | undefined) => void
     screenWidth: number
     displayCategory: (category: Category) => string | JSX.Element
     isLoading: boolean
@@ -43,7 +43,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 
 const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, screenWidth, isLoading }) => {
     // Filters and sorting state
-    const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = '+', false = '-', null = all
+    const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = TrType.Income, false = TrType.Expense, null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
 
     // Sorting toggles: dateAscending can be true/false/null (null = inactive), same for amountDescending
@@ -67,7 +67,7 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
 
         // Type
         if (typeFilter !== null) {
-            list = list.filter((t) => (typeFilter ? t.type === '+' : t.type === '-'))
+            list = list.filter((t) => (typeFilter ? t.type === TrType.Expense : t.type === TrType.Income))
         }
 
         // Sorting (only one active at a time; if both null, keep natural order)

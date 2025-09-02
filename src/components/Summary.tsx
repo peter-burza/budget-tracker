@@ -1,6 +1,6 @@
 'use client'
 
-import { Transaction } from "@/interfaces/Transaction";
+import { Transaction, TrType } from "@/interfaces/Transaction";
 import { calculateTotal, handleToggle } from "@/utils";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useMemo, useState } from "react";
@@ -24,7 +24,7 @@ function fancyNumber(num: number): string {
 
 const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCurrency, totalExpense, isLoading }) => {
     const totalIncome = useMemo(() => {
-        return calculateTotal("+", dateFilteredTransactions)
+        return calculateTotal(TrType.Income, dateFilteredTransactions)
     }, [dateFilteredTransactions])
     // Modal setters
     const [showInfo, setShowInfo] = useState<boolean>(false)

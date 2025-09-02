@@ -1,6 +1,6 @@
 'use client'
 
-import { Category, CategoryIcons, Transaction } from "@/interfaces/Transaction"
+import { Category, CategoryIcons, Transaction, TrType } from "@/interfaces/Transaction"
 import { Currency } from "@/types";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useState } from "react";
@@ -10,23 +10,23 @@ interface TransactionCardProps {
     transaction: Transaction,
     selectedCurrency: Currency
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
-    deleteTransaction: (deleteTrId: string) => void
+    deleteTransaction: (deleteTrId: string | undefined) => void
     isLastIdx: boolean
     displayCategory: (category: Category)=> string | JSX.Element
 }
 
-function displayType(type: string): JSX.Element {
-    if (type === "+") return <i className="fa-solid fa-angles-up"></i>
+function displayType(type: TrType): JSX.Element {
+    if (type === TrType.Income) return <i className="fa-solid fa-angles-up"></i>
     return <i className="fa-solid fa-angles-down"></i>
 }
 
 const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, selectedCurrency, setCategoryFilter, deleteTransaction, isLastIdx, displayCategory }) => {
-    const cardStyle: string = transaction.type === "+" ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)] text-green-100' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)] text-red-100'
+    const cardStyle: string = transaction.type === TrType.Income ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)] text-green-100' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)] text-red-100'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
     function shortenDate(dateStr: string): string {
         if (screenWidth > 510) return dateStr
-        const [year, month, day] = dateStr.split("-");
+        const [year, month, day] = dateStr.split(TrType.Expense);
 
         const shortYear = year.slice(2); // "2025" → "25"
         const shortMonth = String(Number(month)); // "08" → 8

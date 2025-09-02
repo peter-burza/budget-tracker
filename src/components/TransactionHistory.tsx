@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import List, { sortDateNewestFirst } from "./List"
 import Summary from "./Summary"
 import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/utils"
-import { Category, CategoryIcons, Transaction } from "@/interfaces/Transaction"
+import { Category, CategoryIcons, Transaction, TrType } from "@/interfaces/Transaction"
 import { JSX } from "@emotion/react/jsx-runtime"
 import ExpenseBreakdown from "./ExpenseBreakdown"
 import { Currency } from "@/types"
@@ -13,7 +13,7 @@ import { Currency } from "@/types"
 interface TransactionHistoryPtops {
     transactions: Transaction[]
     selectedCurrency: Currency
-    deleteTransaction: (deleteTrId: string) => void
+    deleteTransaction: (deleteTrId: string | undefined) => void
     screenWidth: number
     isLoading: boolean
 }
@@ -59,7 +59,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
     }, [selectedYear, selectedMonth, transactions])
 
     const totalExpense = useMemo(() => {
-        return calculateTotal("-", dateFilteredTransactions)
+        return calculateTotal(TrType.Expense, dateFilteredTransactions)
     }, [dateFilteredTransactions])
 
     useEffect(() => { // to ensure that when the page is loaded and all data are fetched, the filter will set te latest Transaction date
