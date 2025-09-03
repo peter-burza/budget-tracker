@@ -8,14 +8,12 @@ interface SettingsState {
     selectedCurrency: Currency
     setBaseCurrency: (currency: Currency) => void
     setSelectedCurrency: (newCurr: Currency) => void
-    expectingTransactions: ExpectingTransaction[]
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
     baseCurrency: CURRENCIES.EUR,
-    selectedCurrency: CURRENCIES.EUR,
-    expectingTransactions: [],
-
     setBaseCurrency: (currency) => set({ baseCurrency: currency}),
+
+    selectedCurrency: CURRENCIES.EUR,
     setSelectedCurrency: (newCurr: Currency) => set({ selectedCurrency: newCurr }),
 }))
