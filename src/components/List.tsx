@@ -19,6 +19,7 @@ interface ListProps {
     screenWidth: number
     displayCategory: (category: Category) => string | JSX.Element
     isLoading: boolean
+    displayAmount: (amount: number) => string
 }
 
 export function sortDateNewestFirst(list: Transaction[]): Transaction[] {
@@ -41,7 +42,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 }
 
 
-const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, screenWidth, isLoading }) => {
+const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, displayAmount, screenWidth, isLoading }) => {
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = TrType.Income, false = TrType.Expense, null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
@@ -116,11 +117,6 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
     // Render
     return (
         <div id="transaction-list" className="flex flex-col items-center gap-4">
-            {/* {
-                isLoading ? (
-                    'Loading...'
-                ) : (
-                    <> */}
             {showInfo && (
                 <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
                     <h3>List usage info</h3>
@@ -172,6 +168,7 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
                                 key={idx}
                                 screenWidth={screenWidth}
                                 displayCategory={displayCategory}
+                                displayAmount={displayAmount}
                                 transaction={transaction}
                                 selectedCurrency={selectedCurrency}
                                 setCategoryFilter={setCategoryFilter}
@@ -191,9 +188,6 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
                     <h4><i className="fa-solid fa-arrow-up-long"></i></h4> {/* Shorten */}
                 </button>
             </div>
-            {/* </>
-                )
-            } */}
         </div>
     )
 }

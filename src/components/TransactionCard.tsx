@@ -1,9 +1,12 @@
 'use client'
 
+import { useCurrencyStore } from "@/context/CurrencyContext";
 import { Category, CategoryIcons, Transaction, TrType } from "@/interfaces/Transaction"
 import { Currency } from "@/types";
+import { roundToTwo } from "@/utils";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useState } from "react";
+import { fancyNumber } from "./Summary";
 
 interface TransactionCardProps {
     screenWidth: number
@@ -13,6 +16,7 @@ interface TransactionCardProps {
     deleteTransaction: (deleteTrId: string | undefined) => void
     isLastIdx: boolean
     displayCategory: (category: Category)=> string | JSX.Element
+    displayAmount: (amount: number) => string
 }
 
 function displayType(type: TrType): JSX.Element {
@@ -20,7 +24,7 @@ function displayType(type: TrType): JSX.Element {
     return <i className="fa-solid fa-angles-down"></i>
 }
 
-const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, selectedCurrency, setCategoryFilter, deleteTransaction, isLastIdx, displayCategory }) => {
+const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, selectedCurrency, setCategoryFilter, deleteTransaction, isLastIdx, displayCategory, displayAmount }) => {
     const cardStyle: string = transaction.type === TrType.Income ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)] text-green-100' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)] text-red-100'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
 
@@ -39,6 +43,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         setIsExpanded(!isExpanded)
     }
 
+
     return isExpanded ? (
         <tr onClick={toggleExpanded} className="clickable">
             <td colSpan={4} className="!border-none !py-[0.1rem] !px-0">
@@ -48,8 +53,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
                             <div className="flex items-stretch gap-[1px]">
                                 <h4 className={`flex-[2] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>{transaction.category}</h4>
                                 <div className={`flex flex-[1] justify-center pl-2 pr-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                    <h4>{transaction.amount}</h4>
-                                    <h4 className="-mt-[0.05rem]">{selectedCurrency.symbol}</h4>
+                                    <h4>{displayAmount(transaction.amount)}{" "}{selectedCurrency.symbol}</h4>
                                 </div>
                             </div>
                             <div className="flex items-stretch gap-[1px]">
@@ -83,7 +87,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         <tr onClick={toggleExpanded} className={`${cardStyle} clickable`}>
             <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{shortenDate(transaction.date)}</td>
             <td className={`${isLastIdx ? '!border-b-0' : ''}`} style={{}}>{displayType(transaction.type)}</td>
-            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{transaction.amount} {selectedCurrency.symbol}</td>
+            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(transaction.amount)}{" "}{selectedCurrency.symbol}</td>
             <td className={`${isLastIdx ? '!border-b-0' : ''} category-cell`} onClick={(e) => {
                 e.stopPropagation()
                 setCategoryFilter(transaction.category)

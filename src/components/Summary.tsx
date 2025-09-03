@@ -12,17 +12,18 @@ interface SummaryProps {
     selectedCurrency: Currency
     totalExpense: number
     isLoading: boolean
+    displayAmount: (amount: number) => string
 }
 
 function calculateNetBalance(totalIncome: number, totalExpense: number): number {
     return Math.abs(totalIncome - totalExpense)
 }
 
-function fancyNumber(num: number): string {
+export function fancyNumber(num: number): string {
     return num.toLocaleString()
 }
 
-const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCurrency, totalExpense, isLoading }) => {
+const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCurrency, totalExpense, isLoading, displayAmount }) => {
     const convert = useCurrencyStore((state) => state.convert)
     const [showInfo, setShowInfo] = useState<boolean>(false)
 
@@ -35,18 +36,6 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
     // const netBalance = useMemo(() = {
 
     // }, [dateFilteredTransactions])
-
-    function convertAmount(amount: number) {
-        const convertedAmount = roundToTwo(convert(amount))
-        return convertedAmount
-    }
-
-    function displayAmount(amount: number) {
-        const convertedAmount = convertAmount(amount)
-        const fanciedAmount = fancyNumber(convertedAmount)
-        return fanciedAmount
-    }
-
 
     return (
         <div id="summary" className="flex flex-col items-center gap-2 w-full">

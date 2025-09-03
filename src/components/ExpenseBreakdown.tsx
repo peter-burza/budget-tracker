@@ -14,6 +14,7 @@ interface ExpenseBreakdownProps {
   totalExpense: number
   displayCategory: (category: Category) => string | JSX.Element
   isLoading: boolean
+  displayAmount: (amount: number) => string
 }
 
 type CategorySummary = {
@@ -29,7 +30,7 @@ function sortTotalLowFirst(list: CategorySummary[]): CategorySummary[] {
   return [...list].sort((a, b) => new Date(a.total).getTime() - new Date(b.total).getTime());
 }
 
-const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayCategory, isLoading }) => {
+const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayCategory, displayAmount, isLoading }) => {
   const [totalAscending, setTotalAscending] = useState<boolean | null>(null);
 
   const orderedBreakdown = useMemo(() => {
@@ -66,43 +67,35 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
 
   return (
     <div id="expense-breakdown" className="flex flex-col items-center gap-4">
-      {/* {
-        isLoading ? (
-          'Loading...'
-        ) : (
-          <> */}
-            <h4>Expense Breakdown</h4>
-            <table className="expenses-table">
-              <thead>
-                <tr>
-                  <th className={`clickable ${totalAscending === null && 'text-[var(--color-light-blue)]'} category-table-header`} onClick={resetOrdering}>
-                    <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
-                  </th>
-                  <th className="clickable" onClick={setTotalReorder}>
-                    <ResponsiveHeader label="Total" iconClass="fa-chart-simple" screenWidth={screenWidth} />
-                    {renderSortingIcon(totalAscending)}
-                  </th>
-                  <th>
-                    <ResponsiveHeader label="Percentage" iconClass="fa-percent" screenWidth={screenWidth} />
-                  </th>
-                </tr>
-              </thead>
-              <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
-                {orderedBreakdown.map(({ category, total, percentage }, idx) => {
-                  const isLastIdx = idx === orderedBreakdown.length - 1
-                  return (
-                    <tr key={category} className="bg-sky-800">
-                      <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
-                      <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{total.toFixed(2)} {selectedCurrency.symbol}</td>
-                      <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          {/* </>
-        )
-      } */}
+      <h4>Expense Breakdown</h4>
+      <table className="expenses-table">
+        <thead>
+          <tr>
+            <th className={`clickable ${totalAscending === null && 'text-[var(--color-light-blue)]'} category-table-header`} onClick={resetOrdering}>
+              <ResponsiveHeader label="Category" iconClass="fa-icons" screenWidth={screenWidth} />
+            </th>
+            <th className="clickable" onClick={setTotalReorder}>
+              <ResponsiveHeader label="Total" iconClass="fa-chart-simple" screenWidth={screenWidth} />
+              {renderSortingIcon(totalAscending)}
+            </th>
+            <th>
+              <ResponsiveHeader label="Percentage" iconClass="fa-percent" screenWidth={screenWidth} />
+            </th>
+          </tr>
+        </thead>
+        <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
+          {orderedBreakdown.map(({ category, total, percentage }, idx) => {
+            const isLastIdx = idx === orderedBreakdown.length - 1
+            return (
+              <tr key={category} className="bg-sky-800">
+                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
+                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(total)}{" "}{selectedCurrency.symbol}</td>
+                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
