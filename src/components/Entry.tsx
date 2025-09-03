@@ -25,7 +25,14 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const cantAddEntry: boolean | undefined =
     amount === 0 ? true : false
 
-  function handleSetAmount(value: string): void {
+  function resetDefaultValues() {
+    setAmount(0)
+    setType(TrType.Expense)
+    setCategory(Category.Other)
+    setDescription('')
+  }
+
+    function handleSetAmount(value: string): void {
     const parsedValue = parseFloat(value)
     const validValue = Number.isNaN(parsedValue) ? 0 : parsedValue
     setAmount(validValue)
@@ -126,6 +133,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
             category: category,
             description: description
           })
+          resetDefaultValues()
         }}
       >
         <h5>{isLoading === true ? 'Saving...' : 'Add Transaction'}</h5>

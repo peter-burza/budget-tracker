@@ -7,13 +7,13 @@ import TransactionHistory from "../components/TransactionHistory";
 import { useAuth } from "../context/AuthContext";
 import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { useGlobalStore } from "@/context/CurrencyZustandContext";
+import { useCurrencyStore } from "@/context/CurrencyContext";
 // import { useTransactions } from "../../../context/TransactionsContext";
 
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   // const { transactions, setTransactions } = useTransactions()
-  const { selectedCurrency } = useGlobalStore()
+  const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
   const [screenWidth, setScreenWidth] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
 
