@@ -142,7 +142,7 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
 
                         <th
                             onClick={setTypeFilterToggle}
-                            className={`type-table-header ${typeFilter === true ? 'text-green-300' : typeFilter === false ? 'text-red-400' : ''} clickable`}
+                            className={`type-table-header ${typeFilter === false ? 'text-green-300' : typeFilter === true ? 'text-red-400' : ''} clickable`}
                         >
                             <ResponsiveHeader label="Type" iconClass="fa-arrow-down-up-across-line" screenWidth={screenWidth} />
                         </th>
