@@ -13,7 +13,7 @@ interface CurrencyState {
 
 export const useCurrencyStore = create<CurrencyState>((set, get, selectedCurrenty) => ({
   // selectedCurrency: CURRENCIES.USD,
-  rates: {USD: 1},
+  rates: {"EUR": 1},
 
   // setSelectedCurrency: (newCurr: Currency) => set({ selectedCurrency: newCurr }),
 

@@ -1,19 +1,22 @@
 'use client'
 
 import Entry from "../components/Entry";
-import { useEffect, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import { Transaction } from "../interfaces";
 import TransactionHistory from "../components/TransactionHistory";
 import { useAuth } from "../context/AuthContext";
-import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useSettingsStore } from "@/context/SettingsState";
+import { CURRENCIES } from "@/utils";
+import { Currency } from "@/types";
 // import { useTransactions } from "../../../context/TransactionsContext";
 
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   // const { transactions, setTransactions } = useTransactions()
   const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
+  const settings = useSettingsStore()
   const [screenWidth, setScreenWidth] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
 
@@ -80,6 +83,87 @@ export default function Home() {
     }
   }
 
+  async function fetchTransactions() { // this fetches all transactions
+    if (!currentUser) return
+    try {
+      const transactionsRef = collection(db, 'users', currentUser.uid, 'transactions')
+      const snapshot = await getDocs(transactionsRef)
+      const fetchedTransactions = snapshot.docs.map((doc) => {
+        const tr = doc.data()
+
+        return {
+          id: tr.id,
+          amount: tr.amount,
+          type: tr.type,
+          date: tr.date,
+          category: tr.category,
+          description: tr.description || ''
+        }
+      })
+      setTransactions(fetchedTransactions)
+    } catch (error: any) {
+      console.log(error.message)
+    }
+  }
+
+  const setDefaultUserSettings = (baseCurr: Currency, selectedCurr: Currency, lang: string) => {
+    settings.setBaseCurrency(baseCurr)
+    settings.setSelectedCurrency(selectedCurr)
+    settings.setLanguage(lang)
+    console.log("Default settings saved");
+  }
+
+  // Fetch User App Settings from db
+  async function fetchUserSettings() { // this fetches all User App Settings
+    if (!currentUser) return
+    // first check if we already have any settings set
+    try {
+
+      const settingsRef = doc(db, "users", currentUser.uid)
+      const settingsSnapshot = await getDoc(settingsRef)
+
+      if (settingsSnapshot.exists()) {
+        // Document already exists — return its data
+        console.log("Settings found:", settingsSnapshot.data());
+        const fetchedUS = settingsSnapshot.data();
+        setDefaultUserSettings(fetchedUS.baseCurrency, fetchedUS.selectedCurrency, fetchedUS.language)
+      } else {
+        // db save
+        console.log("New settings saved:");
+        await setDoc(settingsRef, {
+          baseCurrency: settings.baseCurrency,
+          selectedCurrency: settings.selectedCurrency,
+          language: settings.language,
+          createdAt: Date.now()
+        }, { merge: true });
+        // Local save
+        setDefaultUserSettings(settings.baseCurrency, settings.selectedCurrency, settings.language)
+      }
+
+    } catch (error: any) {
+      console.log(error.message)
+    }
+  }
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    async function fetchAll() {
+      setIsLoading(true);
+      try {
+        await Promise.allSettled([
+          fetchUserSettings(),
+          fetchTransactions()
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+
+    fetchAll();
+  }, [currentUser]);
+
   // Screen size
   useEffect(() => {
     function handleResize() {
@@ -90,35 +174,6 @@ export default function Home() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Fetch Transactions from db
-  useEffect(() => {
-    async function fetchTransactions() { // this fetches all transactions
-      if (!currentUser || isLoading) return
-      try {
-        setIsLoading(true)
-        const transactionsRef = collection(db, 'users', currentUser.uid, 'transactions')
-        const snapshot = await getDocs(transactionsRef)
-        const fetchedTransactions = snapshot.docs.map((doc) => {
-          const tr = doc.data()
-
-          return {
-            id: tr.id,
-            amount: tr.amount,
-            type: tr.type,
-            date: tr.date,
-            category: tr.category,
-            description: tr.description || ''
-          }
-        })
-        setTransactions(fetchedTransactions)
-      } catch (error: any) {
-        console.log(error.message)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchTransactions()
-  }, [currentUser])
 
   return (
     <>
