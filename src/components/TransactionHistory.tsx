@@ -2,12 +2,13 @@
 
 import React, { useEffect, useMemo, useState } from "react"
 import List, { sortDateNewestFirst } from "./List"
-import Summary from "./Summary"
-import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions } from "@/utils"
+import Summary, { fancyNumber } from "./Summary"
+import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions, roundToTwo } from "@/utils"
 import { Category, CategoryIcons, Transaction, TrType } from "@/interfaces/Transaction"
 import { JSX } from "@emotion/react/jsx-runtime"
 import ExpenseBreakdown from "./ExpenseBreakdown"
 import { Currency } from "@/types"
+import { useCurrencyStore } from "@/context/CurrencyState"
 // import { useTransactions } from "../context/TransactionsContext"
 
 interface TransactionHistoryPtops {
@@ -23,6 +24,8 @@ const OVERALL = 'overall'
 const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, selectedCurrency, deleteTransaction, screenWidth, isLoading }) => {
     // const { transactions } = useTransactions()
 
+    const convert = useCurrencyStore((state) => state.convert)
+
     const [selectedMonth, setSelectedMonth] = useState<string>("")
     const [selectedYear, setSelectedYear] = useState<string>("")
 
@@ -31,14 +34,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
 
     // Years list once
     const years = useMemo(() => [OVERALL, ...getYearsFromTransactions(transactions).sort((a, b) => Number(b) - Number(a))], [transactions])
-
-    function triggerReset() {
-        setResetSignal(() => resetSignal + 1)
-    }
-
-    function displayCategory(category: Category): string | JSX.Element {
-        return screenWidth > 510 ? category : CategoryIcons[category]
-    }
 
     const dateFilteredTransactions = useMemo(() => {
         if (transactions.length === 0 || selectedMonth == "" || selectedYear == "") return []
@@ -62,6 +57,25 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         return calculateTotal(TrType.Expense, dateFilteredTransactions)
     }, [dateFilteredTransactions])
 
+    function triggerReset() {
+        setResetSignal(() => resetSignal + 1)
+    }
+
+    function displayCategory(category: Category): string | JSX.Element {
+        return screenWidth > 510 ? category : CategoryIcons[category]
+    }
+
+    function convertAmount(amount: number) {
+        const convertedAmount = roundToTwo(convert(amount))
+        return convertedAmount
+    }
+
+    function displayAmount(amount: number) {
+        const convertedAmount = convertAmount(amount)
+        const fanciedAmount = fancyNumber(convertedAmount)
+        return fanciedAmount
+    }
+
     useEffect(() => { // to ensure that when the page is loaded and all data are fetched, the filter will set te latest Transaction date
         if (transactions.length === 0 || (selectedMonth !== "" && selectedYear !== "")) return
 
@@ -84,7 +98,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         setSelectedMonth(month)
         setSelectedYear(year)
     }, [resetSignal])
-
 
     return (
         <div id="transactions-history" className="base-container">
@@ -140,6 +153,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 selectedCurrency={selectedCurrency}
                 totalExpense={totalExpense}
                 isLoading={isLoading}
+                displayAmount={displayAmount}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <List
@@ -152,6 +166,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 screenWidth={screenWidth}
                 displayCategory={displayCategory}
                 isLoading={isLoading}
+                displayAmount={displayAmount}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <ExpenseBreakdown
@@ -161,6 +176,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 totalExpense={totalExpense}
                 displayCategory={displayCategory}
                 isLoading={isLoading}
+                displayAmount={displayAmount}
             />
         </div>
     )

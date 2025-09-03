@@ -227,3 +227,7 @@ export function calculateTotal(type: string, transactions: Transaction[]): numbe
 export function handleToggle(x: boolean, setX: React.Dispatch<React.SetStateAction<boolean>>): void {
   setX(!x)
 }
+
+export function roundToTwo(num: number): number {
+  return Math.round(num * 100) / 100
+}

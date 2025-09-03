@@ -4,6 +4,8 @@ import { Category, Transaction, TrType } from '@/interfaces/Transaction'
 import React, { useState } from 'react'
 import ResponsiveDatePicker from './ui/ResponsiveDatePicker'
 import dayjs from 'dayjs'
+import { useCurrencyStore } from '@/context/CurrencyState'
+import { useProfileStore } from '@/context/ProfileState'
 
 interface EntryProps {
   saveTransaction: (transaction: Transaction) => void
@@ -14,6 +16,11 @@ function displayAmount(amount: number): string {
   return amount === 0 ? '' : amount.toString()
 }
 
+function toBaseCurrency(amount: number, currencyCode: string, rates: Record<string, number>): number {
+  const rate = rates[currencyCode] // how many units of that currency per 1 EUR
+  if (!rate) throw new Error(`Unknown currency: ${currencyCode}`)
+  return amount / rate // divide to go from that currency to EUR
+}
 
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const [amount, setAmount] = useState<number>(0)
@@ -21,11 +28,20 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
   const [category, setCategory] = useState<Category>(Category.Other)
   const [description, setDescription] = useState<string>('')
+  const selectedCurrency = useProfileStore((state) => state.selectedCurrency)
+  const rates = useCurrencyStore((state) => state.rates)
 
   const cantAddEntry: boolean | undefined =
     amount === 0 ? true : false
 
-  function handleSetAmount(value: string): void {
+  function resetDefaultValues() {
+    setAmount(0)
+    setType(TrType.Expense)
+    setCategory(Category.Other)
+    setDescription('')
+  }
+
+    function handleSetAmount(value: string): void {
     const parsedValue = parseFloat(value)
     const validValue = Number.isNaN(parsedValue) ? 0 : parsedValue
     setAmount(validValue)
@@ -120,12 +136,13 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
         onClick={() => {
           saveTransaction({
             id: crypto.randomUUID(),
-            amount: amount,
+            amount: toBaseCurrency(amount, selectedCurrency.code, rates),
             type: type,
             date: date,
             category: category,
             description: description
           })
+          resetDefaultValues()
         }}
       >
         <h5>{isLoading === true ? 'Saving...' : 'Add Transaction'}</h5>
