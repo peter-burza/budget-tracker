@@ -19,11 +19,11 @@ export const useCurrencyStore = create<CurrencyState>((set, get, selectedCurrent
 
   fetchRates: async () => {
     try {
-      const res = await fetch(`https://v6.exchangerate-api.com/v6/a871058e46ac4dddd7291b00/latest/EUR`)
+      const res = await fetch(`https://open.er-api.com/v6/latest/EUR`)
       const data = await res.json()
       console.log(data);
       
-      set({ rates: data.conversion_rates })
+      set({ rates: data.rates })
     } catch (error) {
       console.error('Failed to fetch rates', error)
     }

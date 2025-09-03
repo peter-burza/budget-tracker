@@ -33,8 +33,6 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         const shortMonth = String(Number(month)); // "08" → 8
         const shortDay = String(Number(day));     // "05" → 5, "12" → 12
 
-        console.log(`${shortYear}-${shortMonth}-${shortDay}`);
-        
         return `${shortYear}-${shortMonth}-${shortDay}`;
     }
 
