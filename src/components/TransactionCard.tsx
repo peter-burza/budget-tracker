@@ -1,12 +1,9 @@
 'use client'
 
-import { useCurrencyStore } from "@/context/CurrencyContext";
-import { Category, CategoryIcons, Transaction, TrType } from "@/interfaces/Transaction"
+import { Category, Transaction, TrType } from "@/interfaces/Transaction"
 import { Currency } from "@/types";
-import { roundToTwo } from "@/utils";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useState } from "react";
-import { fancyNumber } from "./Summary";
 
 interface TransactionCardProps {
     screenWidth: number

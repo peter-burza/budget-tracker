@@ -5,7 +5,6 @@ import { calculateTotal, handleToggle, roundToTwo } from "@/utils"
 import React, { useMemo, useState } from "react"
 import Modal from "./Modal"
 import { Currency } from "@/types"
-import { useCurrencyStore } from "@/context/CurrencyContext"
 
 interface SummaryProps {
     dateFilteredTransactions: Transaction[]
@@ -24,7 +23,6 @@ export function fancyNumber(num: number): string {
 }
 
 const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCurrency, totalExpense, isLoading, displayAmount }) => {
-    const convert = useCurrencyStore((state) => state.convert)
     const [showInfo, setShowInfo] = useState<boolean>(false)
 
     const totalIncome = useMemo(() => {

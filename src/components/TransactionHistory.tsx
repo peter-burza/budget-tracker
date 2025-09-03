@@ -8,7 +8,7 @@ import { Category, CategoryIcons, Transaction, TrType } from "@/interfaces/Trans
 import { JSX } from "@emotion/react/jsx-runtime"
 import ExpenseBreakdown from "./ExpenseBreakdown"
 import { Currency } from "@/types"
-import { useCurrencyStore } from "@/context/CurrencyContext"
+import { useCurrencyStore } from "@/context/CurrencyState"
 // import { useTransactions } from "../context/TransactionsContext"
 
 interface TransactionHistoryPtops {
