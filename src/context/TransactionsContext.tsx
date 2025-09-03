@@ -1,6 +1,6 @@
 'use client'
 
-import { Transaction } from "@/interfaces/Transaction"
+import { Transaction } from "@/interfaces"
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react"
 
 

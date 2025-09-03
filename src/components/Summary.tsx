@@ -1,7 +1,8 @@
 'use client'
 
-import { Transaction, TrType } from "@/interfaces/Transaction"
-import { calculateTotal, handleToggle, roundToTwo } from "@/utils"
+import { Transaction } from "@/interfaces"
+import { TrType } from '@/enums'
+import { calculateTotal, handleToggle } from "@/utils"
 import React, { useMemo, useState } from "react"
 import Modal from "./Modal"
 import { Currency } from "@/types"

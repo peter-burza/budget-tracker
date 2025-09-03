@@ -1,5 +1,7 @@
-import { Category, Transaction } from "../interfaces/Transaction";
+import { JSX } from "@emotion/react/jsx-runtime";
+import { Transaction } from "../interfaces";
 import { Currency } from "../types";
+import { Category } from "@/enums";
 
 // export const FAKE_TRANSACTIONS: Transaction[] = [
 //   { id: 'tx001', amount: 3200, type: '+', date: '2025-08-01', category: Category.Salary, description: 'Received monthly salary from full-time employment, including base pay and performance bonus.' },
@@ -29,34 +31,34 @@ import { Currency } from "../types";
 // ];
 
 
-const categoryList: Category[] = Object.values(Category);
+// const categoryList: Category[] = Object.values(Category);
 
-const descriptions: Partial<Record<Category, string>> = {
-  [Category.Salary]: 'Monthly salary credited with performance bonus.',
-  [Category.Rent]: 'Paid rent including utilities and maintenance.',
-  [Category.Groceries]: 'Weekly groceries: produce, dairy, and snacks.',
-  [Category.Food]: 'Dinner at a local restaurant.',
-  [Category.InternetPhone]: 'Monthly internet and phone bill.',
-  [Category.HealthInsurance]: 'Health insurance premium payment.',
-  [Category.Savings]: 'Transferred funds to savings account.',
-  [Category.FixedExp]: 'Fixed monthly expenses like insurance.',
-  [Category.Shopping]: 'Bought clothes and accessories.',
-  [Category.Entertainment]: 'Streaming service or movie night.',
-  [Category.CarMaintenance]: 'Routine car maintenance and fuel.',
-  [Category.KidsSchool]: 'School supplies and tuition fees.',
-  [Category.Pets]: 'Vet visit and pet food.',
-  [Category.GymFitness]: 'Gym membership and fitness classes.',
-  [Category.StreamingServices]: 'Subscription for streaming platforms.',
-  [Category.Home]: 'Home office upgrades and repairs.',
-  [Category.Investment]: 'Dividend payout from stock portfolio.',
-  [Category.Vacation]: 'Travel expenses and bookings.',
-  [Category.Birthdays]: 'Birthday gifts and celebration costs.',
-  [Category.Christmass]: 'Holiday shopping and decorations.',
-  [Category.Party]: 'Party supplies and snacks.',
-  [Category.Date]: 'Romantic dinner with partner.',
-  [Category.Garden]: 'Gardening tools and plants.',
-  [Category.Other]: 'Miscellaneous income or expense.',
-};
+// const descriptions: Partial<Record<Category, string>> = {
+//   [Category.Salary]: 'Monthly salary credited with performance bonus.',
+//   [Category.Rent]: 'Paid rent including utilities and maintenance.',
+//   [Category.Groceries]: 'Weekly groceries: produce, dairy, and snacks.',
+//   [Category.Food]: 'Dinner at a local restaurant.',
+//   [Category.InternetPhone]: 'Monthly internet and phone bill.',
+//   [Category.HealthInsurance]: 'Health insurance premium payment.',
+//   [Category.Savings]: 'Transferred funds to savings account.',
+//   [Category.FixedExp]: 'Fixed monthly expenses like insurance.',
+//   [Category.Shopping]: 'Bought clothes and accessories.',
+//   [Category.Entertainment]: 'Streaming service or movie night.',
+//   [Category.CarMaintenance]: 'Routine car maintenance and fuel.',
+//   [Category.KidsSchool]: 'School supplies and tuition fees.',
+//   [Category.Pets]: 'Vet visit and pet food.',
+//   [Category.GymFitness]: 'Gym membership and fitness classes.',
+//   [Category.StreamingServices]: 'Subscription for streaming platforms.',
+//   [Category.Home]: 'Home office upgrades and repairs.',
+//   [Category.Investment]: 'Dividend payout from stock portfolio.',
+//   [Category.Vacation]: 'Travel expenses and bookings.',
+//   [Category.Birthdays]: 'Birthday gifts and celebration costs.',
+//   [Category.Christmass]: 'Holiday shopping and decorations.',
+//   [Category.Party]: 'Party supplies and snacks.',
+//   [Category.Date]: 'Romantic dinner with partner.',
+//   [Category.Garden]: 'Gardening tools and plants.',
+//   [Category.Other]: 'Miscellaneous income or expense.',
+// };
 
 // function pad(num: number): string {
 //   return num.toString().padStart(2, '0');
@@ -135,6 +137,154 @@ export const CURRENCIES: Record<string, Currency> = {
 }
 
 
+export const CategoryIcons: Record<Category, JSX.Element> = {
+  [Category.Salary]: (
+    <i
+      className="fa-solid fa-money-check-dollar"
+      title="Salary"
+    ></i>
+  ),
+  [Category.Rent]: (
+    <i
+      className="fa-solid fa-person-cane"
+      title="Rent"
+    ></i>
+  ),
+  [Category.Groceries]: (
+    <i
+      className="fa-solid fa-cart-shopping"
+      title="Groceries"
+    ></i>
+  ),
+  [Category.Food]: (
+    <i
+      className="fa-solid fa-utensils"
+      title="Food"
+    ></i>
+  ),
+  [Category.InternetPhone]: (
+    <i
+      className="fa-solid fa-globe"
+      title="Internet & Phone"
+    ></i>
+  ),
+  [Category.HealthInsurance]: (
+    <i
+      className="fa-solid fa-notes-medical"
+      title="Health Insurance"
+    ></i>
+  ),
+  [Category.Savings]: (
+    <i
+      className="fa-solid fa-piggy-bank"
+      title="Savings"
+    ></i>
+  ),
+  [Category.FixedExp]: (
+    <i
+      className="fa-solid fa-wallet"
+      title="Fixed Expenses"
+    ></i>
+  ),
+  [Category.Shopping]: (
+    <i
+      className="fa-solid fa-bag-shopping"
+      title="Shopping"
+    ></i>
+  ),
+  [Category.Entertainment]: (
+    <i
+      className="fa-solid fa-microphone-lines"
+      title="Entertainment"
+    ></i>
+  ),
+  [Category.CarMaintenance]: (
+    <i
+      className="fa-solid fa-car"
+      title="Car Maintenance"
+    ></i>
+  ),
+  [Category.KidsSchool]: (
+    <i
+      className="fa-solid fa-child"
+      title="Kids & School"
+    ></i>
+  ),
+  [Category.Pets]: (
+    <i
+      className="fa-solid fa-paw"
+      title="Pets"
+    ></i>
+  ),
+  [Category.GymFitness]: (
+    <i
+      className="fa-solid fa-dumbbell"
+      title="Gym & Fitness"
+    ></i>
+  ),
+  [Category.StreamingServices]: (
+    <i
+      className="fa-solid fa-tv"
+      title="Streaming Services"
+    ></i>
+  ),
+  [Category.Home]: (
+    <i
+      className="fa-solid fa-house-chimney"
+      title="Home"
+    ></i>
+  ),
+  [Category.Investment]: (
+    <i
+      className="fa-solid fa-money-bill-trend-up"
+      title="Investment"
+    ></i>
+  ),
+  [Category.Vacation]: (
+    <i
+      className="fa-solid fa-umbrella-beach"
+      title="Vacation"
+    ></i>
+  ),
+  [Category.Birthdays]: (
+    <i
+      className="fa-solid fa-cake-candles"
+      title="Birthdays"
+    ></i>
+  ),
+  [Category.Christmass]: (
+    <i
+      className="fa-solid fa-gift"
+      title="Christmas"
+    ></i>
+  ),
+  [Category.Party]: (
+    <i
+      className="fa-solid fa-champagne-glasses"
+      title="Party"
+    ></i>
+  ),
+  [Category.Date]: (
+    <i
+      className="fa-solid fa-heart"
+      title="Date"
+    ></i>
+  ),
+  [Category.Garden]: (
+    <i
+      className="fa-solid fa-tree"
+      title="Garden"
+    ></i>
+  ),
+  [Category.Other]: (
+    <i
+      className="fa-solid fa-star-of-life"
+      title="Other"
+    ></i>
+  )
+}
+
+// FUNCTIONS
 export function getMonthName(monthNum: string): string {
   switch (monthNum) {
     case "01":
@@ -197,7 +347,6 @@ export function getMonthNumber(monthName: string): string {
   }
 }
 
-// FUNCTIONS
 export function getMonth(date: string): string {
   return date.slice(5, 7)
 }

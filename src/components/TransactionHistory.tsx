@@ -3,8 +3,10 @@
 import React, { useEffect, useMemo, useState } from "react"
 import List, { sortDateNewestFirst } from "./List"
 import Summary, { fancyNumber } from "./Summary"
-import { calculateTotal, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions, roundToTwo } from "@/utils"
-import { Category, CategoryIcons, Transaction, TrType } from "@/interfaces/Transaction"
+import { calculateTotal, CategoryIcons, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions, roundToTwo } from "@/utils"
+import { Transaction } from "@/interfaces"
+import { Category} from '@/enums'
+import { TrType } from '@/enums'
 import { JSX } from "@emotion/react/jsx-runtime"
 import ExpenseBreakdown from "./ExpenseBreakdown"
 import { Currency } from "@/types"

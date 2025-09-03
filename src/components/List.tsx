@@ -3,7 +3,9 @@
 import { JSX } from '@emotion/react/jsx-runtime';
 import React, { useEffect, useMemo, useState } from 'react';
 import TransactionCard from './TransactionCard';
-import { Category, Transaction, TrType } from '@/interfaces/Transaction';
+import { Transaction } from '@/interfaces';
+import { Category} from '@/enums'
+import { TrType } from '@/enums'
 import ResponsiveHeader from './ui/ResponsiveHeader';
 import Modal from './Modal';
 import { Currency } from "@/types";

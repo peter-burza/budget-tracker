@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { useProfileStore } from './ProfileState';
+import { useSettingsStore } from './SettingsState';
 
 type Rates = Record<string, number>
 
@@ -30,7 +30,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get, selectedCurrent
   },
 
   convert: (amountInBaseCurr) => {
-    const selectedCurrency = useProfileStore.getState().selectedCurrency; 
+    const selectedCurrency = useSettingsStore.getState().selectedCurrency; 
     const { rates } = get()
     return amountInBaseCurr * (rates[selectedCurrency.code] || 1)
   }

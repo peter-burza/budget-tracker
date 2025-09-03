@@ -2,18 +2,18 @@
 
 import Entry from "../components/Entry";
 import { useEffect, useState } from "react"
-import { Transaction } from "../interfaces/Transaction";
+import { Transaction } from "../interfaces";
 import TransactionHistory from "../components/TransactionHistory";
 import { useAuth } from "../context/AuthContext";
 import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { useProfileStore } from "@/context/ProfileState";
+import { useSettingsStore } from "@/context/SettingsState";
 // import { useTransactions } from "../../../context/TransactionsContext";
 
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   // const { transactions, setTransactions } = useTransactions()
-  const selectedCurrency = useProfileStore((state) => state.selectedCurrency)
+  const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
   const [screenWidth, setScreenWidth] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
 

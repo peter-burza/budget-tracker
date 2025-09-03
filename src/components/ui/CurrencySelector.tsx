@@ -1,13 +1,13 @@
 'use client'
 
 import { useCurrencyStore } from '@/context/CurrencyState'
-import { useProfileStore } from '@/context/ProfileState'
+import { useSettingsStore } from '@/context/SettingsState'
 import { CURRENCIES } from '@/utils'
 import React, { useEffect } from 'react'
 
 const CurrencySelector: React.FC = () => {
-    const selectedCurrency = useProfileStore((state) => state.selectedCurrency)
-    const setSelectedCurrency = useProfileStore((state) => state.setSelectedCurrency)
+    const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
+    const setSelectedCurrency = useSettingsStore((state) => state.setSelectedCurrency)
     const fetchRates = useCurrencyStore((state) => state.fetchRates)
 
     function setCurrency(selectedCurrCode: string): void {

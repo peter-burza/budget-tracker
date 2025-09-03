@@ -1,6 +1,8 @@
 'use client'
 
-import { Category, Transaction, TrType } from "@/interfaces/Transaction";
+import { Transaction } from "@/interfaces";
+import { Category} from '@/enums'
+import { TrType } from '@/enums'
 import ResponsiveHeader from "./ui/ResponsiveHeader";
 import { JSX } from "@emotion/react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
