@@ -1,21 +1,19 @@
 'use client'
 
 import Entry from "../components/Entry";
-import { useEffect, useId, useState } from "react"
+import { useEffect, useState } from "react"
 import { Transaction } from "../interfaces";
 import TransactionHistory from "../components/TransactionHistory";
 import { useAuth } from "../context/AuthContext";
-import { collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useSettingsStore } from "@/context/SettingsState";
-import { CURRENCIES } from "@/utils";
-import { Currency } from "@/types";
 import { useCurrencyStore } from "@/context/CurrencyState";
-// import { useTransactions } from "../../../context/TransactionsContext";
+import { useTransactions } from "@/context/TransactionsContext";
 
 export default function Home() {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  // const { transactions, setTransactions } = useTransactions()
+  // const [transactions, setTransactions] = useState<Transaction[]>([])
+  const { transactions, setTransactions } = useTransactions()
   const [screenWidth, setScreenWidth] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
 

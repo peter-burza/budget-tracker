@@ -5,7 +5,7 @@ import { CURRENCIES } from '@/utils'
 import React from 'react'
 import { db } from '../../../firebase'
 import { useAuth } from '@/context/AuthContext'
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { doc, updateDoc } from 'firebase/firestore'
 
 const CurrencySelector: React.FC = () => {
     const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
@@ -23,7 +23,7 @@ const CurrencySelector: React.FC = () => {
         // local save
         setSelectedCurrency(CURRENCIES[selectedCurrCode]);
         console.log('Currency changed');
-        
+
     }
 
 

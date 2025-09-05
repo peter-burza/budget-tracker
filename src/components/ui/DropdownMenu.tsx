@@ -1,13 +1,18 @@
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { useTransactions } from '@/context/TransactionsContext'
+import { useSettingsStore } from '@/context/SettingsState'
 
 const DropdownMenu = () => {
   const { logout } = useAuth()
+  const { clearTransactions } = useTransactions()
+  const setDefaultUserSettings = useSettingsStore(state => state.setDefaultUserSettings)
 
   const logoutUser = async (): Promise<void> => {
     await logout()
-    // TransactionsContext.Clear()
+    clearTransactions()
+    setDefaultUserSettings()
   }
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
@@ -32,11 +37,10 @@ const DropdownMenu = () => {
       )}
 
       <div
-        className={`absolute right-0 mt-2 w-40 bg-[var(--background)] border border-[var(--color-light-blue)] rounded-sm z-10 duration-300 ease-in-out ${
-          isOpen
+        className={`absolute right-0 mt-2 w-40 bg-[var(--background)] border border-[var(--color-light-blue)] rounded-sm z-10 duration-300 ease-in-out ${isOpen
             ? 'opacity-100 scale-100 visible'
             : 'opacity-0 scale-95 invisible'
-        }`}
+          }`}
         style={{ boxShadow: '0 0 15px 1px var(--background)' }}
       >
         <ul>

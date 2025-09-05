@@ -1,4 +1,3 @@
-import { ExpectingTransaction } from "@/interfaces";
 import { Currency } from "@/types";
 import { CURRENCIES } from "@/utils";
 import { User } from "firebase/auth";
@@ -15,9 +14,11 @@ interface SettingsState {
     // TODO:
     // Create some enum or something for the language too
     // lang: string,
-    // setLanguage: (newLang: string) => void,
+    // setLang: (newLang: string) => void,
 
     setUserSettings: (baseCurr: Currency, selectedCurr: Currency/*, lang: string*/) => void
+    setDefaultUserSettings: () => void
+    
     fetchUserSettings: (currentUser: User | null) => void
     hasFetchedUserSettings: boolean
     setHasFetchedUserSettings: (val: boolean) => void
@@ -32,16 +33,24 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     setSelectedCurrency: (newCurr: Currency) => set({ selectedCurrency: newCurr }),
 
     // lang: "en",
-    // setLanguage: (newLang: string) => set({ lang: newLang }),
+    // setLang: (newLang: string) => set({ lang: newLang }),
     
     hasFetchedUserSettings: false,
     setHasFetchedUserSettings: (val) => set({ hasFetchedUserSettings: val}),
 
+    setDefaultUserSettings: () => {
+        const { setBaseCurrency, setSelectedCurrency/*, setLang*/ } = get()
+
+        setBaseCurrency(CURRENCIES.EUR)
+        setSelectedCurrency(CURRENCIES.EUR)
+        // setLang('en')
+    },
+
     setUserSettings: (baseCurr: Currency, selectedCurr: Currency/*, lang: string*/) => {
-        const { setBaseCurrency, setSelectedCurrency/*, setLanguage*/ } = get()
+        const { setBaseCurrency, setSelectedCurrency/*, setLang*/ } = get()
         setBaseCurrency(baseCurr)
         setSelectedCurrency(selectedCurr)
-        // setLanguage(lang)
+        // setLang(lang)
         console.log(`Settings fetched localy (baseCurr = ${baseCurr.code}  |  selectedCurr = ${selectedCurr.code})`);
     },
 

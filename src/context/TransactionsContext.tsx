@@ -7,6 +7,7 @@ import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useStat
 type TransactionsContextType = {
     transactions: Transaction[]
     setTransactions: Dispatch<SetStateAction<Transaction[]>>
+    clearTransactions: () => void
 }
 
 const TransactionsContext = createContext<TransactionsContextType | undefined>(undefined)
@@ -23,10 +24,12 @@ export function useTransactions(): TransactionsContextType {
 
 export default function TransactionsProvider({ children }: { children: ReactNode }) {
     const [transactions, setTransactions] = useState<Transaction[]>([])
+    const clearTransactions = () => {setTransactions([])}
 
     const value: TransactionsContextType = {
         transactions,
-        setTransactions
+        setTransactions,
+        clearTransactions
     }
 
     return (
