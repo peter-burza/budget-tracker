@@ -9,5 +9,4 @@ interface ExpTransactionsSTate {
 export const useExpTransactionsStore = create<ExpTransactionsSTate>((set) => ({
     expectingTransactions: [],
     setExpectingTransactions: (newExpTrs: ExpectingTransaction[]) => set({ expectingTransactions: newExpTrs }),
-
 }))

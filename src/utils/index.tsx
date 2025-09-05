@@ -380,3 +380,24 @@ export function handleToggle(x: boolean, setX: React.Dispatch<React.SetStateActi
 export function roundToTwo(num: number): number {
   return Math.round(num * 100) / 100
 }
+
+export function areTransactionSetsEqual(arr1: Transaction[], arr2: Transaction[]): boolean {
+  if (arr1.length !== arr2.length) return false;
+
+  const sortById = (a: Transaction, b: Transaction) => a.id!.localeCompare(b.id!);
+
+  const sorted1 = [...arr1].sort(sortById);
+  const sorted2 = [...arr2].sort(sortById);
+
+  return sorted1.every((tr1, index) => {
+    const tr2 = sorted2[index];
+    return (
+      tr1.id === tr2.id &&
+      tr1.amount === tr2.amount &&
+      tr1.type === tr2.type &&
+      tr1.date === tr2.date &&
+      tr1.category === tr2.category &&
+      (tr1.description || '') === (tr2.description || '')
+    );
+  });
+}

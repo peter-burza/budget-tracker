@@ -10,6 +10,7 @@ import { db } from "../../firebase";
 import { useSettingsStore } from "@/context/SettingsState";
 import { useCurrencyStore } from "@/context/CurrencyState";
 import { useTransactions } from "@/context/TransactionsContext";
+import { areTransactionSetsEqual } from "@/utils";
 
 export default function Home() {
   // const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -91,7 +92,6 @@ export default function Home() {
       const snapshot = await getDocs(transactionsRef)
       const fetchedTransactions = snapshot.docs.map((doc) => {
         const tr = doc.data()
-
         return {
           id: tr.id,
           amount: tr.amount,
@@ -101,7 +101,11 @@ export default function Home() {
           description: tr.description || ''
         }
       })
-      setTransactions(fetchedTransactions)
+
+      if (!areTransactionSetsEqual(transactions, fetchedTransactions)) {
+        setTransactions(fetchedTransactions)
+        console.log('Transaction history fetched');
+      }
     } catch (error: any) {
       console.log(error.message)
     }
