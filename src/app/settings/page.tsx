@@ -14,12 +14,6 @@ const SettingsPage: React.FC<SettingsPageProps> = () => {
                 <p>Select Currency:</p>
                 <CurrencySelector />
             </div>
-
-            <div className="flex flex-col gap-1 max-w-[232px] w-full">
-                <p>Manage monthly expecting transactions</p>
-                <CurrencySelector />
-            </div>
-
         </div>
     )
 }

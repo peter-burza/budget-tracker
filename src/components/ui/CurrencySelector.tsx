@@ -1,16 +1,29 @@
 'use client'
 
-import { useCurrencyStore } from '@/context/CurrencyState'
 import { useSettingsStore } from '@/context/SettingsState'
 import { CURRENCIES } from '@/utils'
-import React, { useEffect } from 'react'
+import React from 'react'
+import { db } from '../../../firebase'
+import { useAuth } from '@/context/AuthContext'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
 const CurrencySelector: React.FC = () => {
     const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
     const setSelectedCurrency = useSettingsStore((state) => state.setSelectedCurrency)
+    const { currentUser } = useAuth()
 
-    function setCurrency(selectedCurrCode: string): void {
+    async function setCurrency(selectedCurrCode: string): Promise<void> {
+        //db save
+        if (currentUser) {
+            const userRef = doc(db, 'users', currentUser.uid)
+            updateDoc(userRef, {
+                selectedCurrency: CURRENCIES[selectedCurrCode]
+            })
+        }
+        // local save
         setSelectedCurrency(CURRENCIES[selectedCurrCode]);
+        console.log('Currency changed');
+        
     }
 
 
