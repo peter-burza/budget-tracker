@@ -1,9 +1,16 @@
 import { create } from 'zustand'
 import { useSettingsStore } from './SettingsState';
+import { Currency } from '@/types';
+import { CURRENCIES } from '@/utils';
 
 type Rates = Record<string, number>
 
 interface CurrencyState {
+  baseCurrency: Currency
+  setBaseCurrency: (currency: Currency) => void
+
+  selectedCurrency: Currency
+  setSelectedCurrency: (newCurr: Currency) => void
   // selectedCurrency: Currency
   rates: Rates
   lastRatesFetch: number
@@ -14,12 +21,16 @@ interface CurrencyState {
 }
 
 export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurrenty*/) => ({
+  baseCurrency: CURRENCIES.EUR,
+  setBaseCurrency: (currency) => set({ baseCurrency: currency}),
+
+  selectedCurrency: CURRENCIES.EUR,
+  setSelectedCurrency: (newCurr: Currency) => set({ selectedCurrency: newCurr }),
+
   // selectedCurrency: CURRENCIES.USD,
   rates: {"EUR": 1},
   lastRatesFetch: 0,
   setLastRatesFetch: (newTimestamp) => set({lastRatesFetch: newTimestamp}),
-
-  // setSelectedCurrency: (newCurr: Currency) => set({ selectedCurrency: newCurr }),
 
   fetchRates: async () => {
     const { setLastRatesFetch, lastRatesFetch } = get()
@@ -39,8 +50,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurre
   },
 
   convert: (amountInBaseCurr) => {
-    const selectedCurrency = useSettingsStore.getState().selectedCurrency; 
-    const { rates } = get()
+    const { selectedCurrency, rates } = get()
   
     return amountInBaseCurr * (rates[selectedCurrency.code] || 1)
   }

@@ -6,7 +6,6 @@ import React, { useState } from 'react'
 import ResponsiveDatePicker from './ui/ResponsiveDatePicker'
 import dayjs from 'dayjs'
 import { useCurrencyStore } from '@/context/CurrencyState'
-import { useSettingsStore } from '@/context/SettingsState'
 import { TrType } from '@/enums'
 
 interface EntryProps {
@@ -30,7 +29,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
   const [category, setCategory] = useState<Category>(Category.Other)
   const [description, setDescription] = useState<string>('')
-  const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
+  const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
   const rates = useCurrencyStore((state) => state.rates)
 
   const cantAddEntry: boolean | undefined =

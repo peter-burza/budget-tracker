@@ -20,7 +20,7 @@ export default function Home() {
 
   const { currentUser } = useAuth()
 
-  const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
+  const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
   const fetchUserSettings = useSettingsStore((state) => state.fetchUserSettings)
   const fetchRates = useCurrencyStore((state) => state.fetchRates)
 

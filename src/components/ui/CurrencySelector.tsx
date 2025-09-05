@@ -1,15 +1,15 @@
 'use client'
 
-import { useSettingsStore } from '@/context/SettingsState'
 import { CURRENCIES } from '@/utils'
 import React from 'react'
 import { db } from '../../../firebase'
 import { useAuth } from '@/context/AuthContext'
 import { doc, updateDoc } from 'firebase/firestore'
+import { useCurrencyStore } from '@/context/CurrencyState'
 
 const CurrencySelector: React.FC = () => {
-    const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
-    const setSelectedCurrency = useSettingsStore((state) => state.setSelectedCurrency)
+    const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
+    const setSelectedCurrency = useCurrencyStore((state) => state.setSelectedCurrency)
     const { currentUser } = useAuth()
 
     async function setCurrency(selectedCurrCode: string): Promise<void> {

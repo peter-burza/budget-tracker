@@ -85,7 +85,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      console.log('Authenticating user...')
+      // console.log('Authenticating user...')
       setIsLoadingUser(true)
       try {
         setCurrentUser(user)

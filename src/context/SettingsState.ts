@@ -7,11 +7,6 @@ import { db } from "../../firebase";
 import { useCurrencyStore } from "./CurrencyState";
 
 interface SettingsState {
-    baseCurrency: Currency
-    setBaseCurrency: (currency: Currency) => void
-
-    selectedCurrency: Currency
-    setSelectedCurrency: (newCurr: Currency) => void
     // TODO:
     // Create some enum or something for the language too
     // lang: string,
@@ -27,11 +22,6 @@ interface SettingsState {
 
 
 export const useSettingsStore = create<SettingsState>((set, get) => ({
-    baseCurrency: CURRENCIES.EUR,
-    setBaseCurrency: (currency) => set({ baseCurrency: currency}),
-
-    selectedCurrency: CURRENCIES.EUR,
-    setSelectedCurrency: (newCurr: Currency) => set({ selectedCurrency: newCurr }),
 
     // lang: "en",
     // setLang: (newLang: string) => set({ lang: newLang }),
@@ -40,7 +30,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     setHasFetchedUserSettings: (val) => set({ hasFetchedUserSettings: val}),
 
     setDefaultUserSettings: () => {
-        const { setBaseCurrency, setSelectedCurrency/*, setLang*/ } = get()
+        const {setSelectedCurrency, setBaseCurrency} = useCurrencyStore.getState();
 
         setBaseCurrency(CURRENCIES.EUR)
         setSelectedCurrency(CURRENCIES.EUR)
@@ -48,7 +38,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     },
 
     setUserSettings: (baseCurr: Currency, selectedCurr: Currency/*, lang: string*/) => {
-        const { setBaseCurrency, setSelectedCurrency/*, setLang*/ } = get()
+        const {setSelectedCurrency, setBaseCurrency} = useCurrencyStore.getState();
         setBaseCurrency(baseCurr)
         setSelectedCurrency(selectedCurr)
         // setLang(lang)
@@ -57,7 +47,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
       // Fetch User App Settings from db
     fetchUserSettings: async (currentUser: User | null) => { // this fetches all User App Settings
-        const { setUserSettings, baseCurrency, selectedCurrency/*, lang*/, hasFetchedUserSettings, setHasFetchedUserSettings } = get()
+        const { setUserSettings/*, lang*/, hasFetchedUserSettings, setHasFetchedUserSettings } = get()
+        const {selectedCurrency, baseCurrency} = useCurrencyStore.getState();
 
         if (!currentUser || hasFetchedUserSettings) return
         // first check if we already have any settings set
