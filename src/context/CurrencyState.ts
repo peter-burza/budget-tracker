@@ -11,7 +11,7 @@ interface CurrencyState {
   convert: (amountInBaseCurr: number) => number
 }
 
-export const useCurrencyStore = create<CurrencyState>((set, get, selectedCurrenty) => ({
+export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurrenty*/) => ({
   // selectedCurrency: CURRENCIES.USD,
   rates: {"EUR": 1},
 
@@ -21,9 +21,10 @@ export const useCurrencyStore = create<CurrencyState>((set, get, selectedCurrent
     try {
       const res = await fetch(`https://open.er-api.com/v6/latest/EUR`)
       const data = await res.json()
-      console.log(data);
       
       set({ rates: data.rates })
+      console.log('Exchange rates fetched');
+      
     } catch (error) {
       console.error('Failed to fetch rates', error)
     }
@@ -32,6 +33,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get, selectedCurrent
   convert: (amountInBaseCurr) => {
     const selectedCurrency = useSettingsStore.getState().selectedCurrency; 
     const { rates } = get()
+  
     return amountInBaseCurr * (rates[selectedCurrency.code] || 1)
   }
 

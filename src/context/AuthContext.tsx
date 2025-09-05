@@ -21,6 +21,7 @@ import {
   useState,
   ReactNode
 } from 'react'
+import { useSettingsStore } from './SettingsState'
 
 // Define the shape of the context
 interface AuthContextType {
@@ -52,6 +53,7 @@ interface AuthProviderProps {
 
 // Provider component
 export default function AuthProvider({ children }: AuthProviderProps) {
+  const setHasFetchedUserSettings = useSettingsStore(state => state.setHasFetchedUserSettings)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true)
 
@@ -72,6 +74,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async () => {
     setCurrentUser(null)
+    setHasFetchedUserSettings(false)
+
     return await signOut(auth)
   }
 

@@ -5,22 +5,25 @@ import { useEffect, useId, useState } from "react"
 import { Transaction } from "../interfaces";
 import TransactionHistory from "../components/TransactionHistory";
 import { useAuth } from "../context/AuthContext";
-import { collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useSettingsStore } from "@/context/SettingsState";
 import { CURRENCIES } from "@/utils";
 import { Currency } from "@/types";
+import { useCurrencyStore } from "@/context/CurrencyState";
 // import { useTransactions } from "../../../context/TransactionsContext";
 
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   // const { transactions, setTransactions } = useTransactions()
-  const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
-  const settings = useSettingsStore()
   const [screenWidth, setScreenWidth] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
 
   const { currentUser } = useAuth()
+
+  const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
+  const fetchUserSettings = useSettingsStore((state) => state.fetchUserSettings)
+  const fetchRates = useCurrencyStore((state) => state.fetchRates)
 
 
   async function saveTransaction(newTr: Transaction) {
@@ -106,45 +109,6 @@ export default function Home() {
     }
   }
 
-  const setDefaultUserSettings = (baseCurr: Currency, selectedCurr: Currency, lang: string) => {
-    settings.setBaseCurrency(baseCurr)
-    settings.setSelectedCurrency(selectedCurr)
-    settings.setLanguage(lang)
-    console.log("Default settings saved");
-  }
-
-  // Fetch User App Settings from db
-  async function fetchUserSettings() { // this fetches all User App Settings
-    if (!currentUser) return
-    // first check if we already have any settings set
-    try {
-
-      const settingsRef = doc(db, "users", currentUser.uid)
-      const settingsSnapshot = await getDoc(settingsRef)
-
-      if (settingsSnapshot.exists()) {
-        // Document already exists — return its data
-        console.log("Settings found:", settingsSnapshot.data());
-        const fetchedUS = settingsSnapshot.data();
-        setDefaultUserSettings(fetchedUS.baseCurrency, fetchedUS.selectedCurrency, fetchedUS.language)
-      } else {
-        // db save
-        console.log("New settings saved:");
-        await setDoc(settingsRef, {
-          baseCurrency: settings.baseCurrency,
-          selectedCurrency: settings.selectedCurrency,
-          language: settings.language,
-          createdAt: Date.now()
-        }, { merge: true });
-        // Local save
-        setDefaultUserSettings(settings.baseCurrency, settings.selectedCurrency, settings.language)
-      }
-
-    } catch (error: any) {
-      console.log(error.message)
-    }
-  }
-
   useEffect(() => {
     if (!currentUser) return;
 
@@ -152,7 +116,7 @@ export default function Home() {
       setIsLoading(true);
       try {
         await Promise.allSettled([
-          fetchUserSettings(),
+          fetchUserSettings(currentUser),
           fetchTransactions()
         ]);
       } finally {
@@ -173,6 +137,11 @@ export default function Home() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Fetch rates on app startup
+  useEffect(() => {
+    fetchRates()
+  }, [fetchRates])
 
 
   return (

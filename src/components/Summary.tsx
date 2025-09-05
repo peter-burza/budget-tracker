@@ -32,9 +32,6 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
     }, [dateFilteredTransactions])
     const netBalance = calculateNetBalance(totalIncome, totalExpense)
 
-    // const netBalance = useMemo(() = {
-
-    // }, [dateFilteredTransactions])
 
     return (
         <div id="summary" className="flex flex-col items-center gap-2 w-full">

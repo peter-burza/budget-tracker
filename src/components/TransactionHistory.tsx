@@ -30,8 +30,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
 
     const [selectedMonth, setSelectedMonth] = useState<string>("")
     const [selectedYear, setSelectedYear] = useState<string>("")
-
-
     const [resetSignal, setResetSignal] = useState<number>(0)
 
     // Years list once
@@ -59,6 +57,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         return calculateTotal(TrType.Expense, dateFilteredTransactions)
     }, [dateFilteredTransactions])
 
+
     function triggerReset() {
         setResetSignal(() => resetSignal + 1)
     }
@@ -78,6 +77,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         return fanciedAmount
     }
 
+
     useEffect(() => { // to ensure that when the page is loaded and all data are fetched, the filter will set te latest Transaction date
         if (transactions.length === 0 || (selectedMonth !== "" && selectedYear !== "")) return
 
@@ -88,7 +88,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         setSelectedMonth(month)
         setSelectedYear(year)
     }, [transactions])
-
 
     useEffect(() => { // to ensure set Latest Transaction date after reset button is hitten
         if (transactions.length === 0) return
@@ -101,6 +100,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         setSelectedYear(year)
     }, [resetSignal])
 
+    
     return (
         <div id="transactions-history" className="base-container">
             <h3>Transactions History</h3>

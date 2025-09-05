@@ -8,15 +8,11 @@ import React, { useEffect } from 'react'
 const CurrencySelector: React.FC = () => {
     const selectedCurrency = useSettingsStore((state) => state.selectedCurrency)
     const setSelectedCurrency = useSettingsStore((state) => state.setSelectedCurrency)
-    const fetchRates = useCurrencyStore((state) => state.fetchRates)
 
     function setCurrency(selectedCurrCode: string): void {
         setSelectedCurrency(CURRENCIES[selectedCurrCode]);
     }
 
-    useEffect(() => {
-        fetchRates()
-    }, [fetchRates])
 
     return (
         <select
