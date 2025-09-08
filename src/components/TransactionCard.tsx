@@ -1,11 +1,12 @@
 'use client'
 
 import { Transaction } from "@/interfaces"
-import { Category} from '@/enums'
+import { Category } from '@/enums'
 import { TrType } from '@/enums'
 import { Currency } from "@/types";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useState } from "react";
+import Modal from "./Modal";
 
 interface TransactionCardProps {
     screenWidth: number
@@ -14,7 +15,7 @@ interface TransactionCardProps {
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
     deleteTransaction: (deleteTrId: string | undefined) => void
     isLastIdx: boolean
-    displayCategory: (category: Category)=> string | JSX.Element
+    displayCategory: (category: Category) => string | JSX.Element
     displayAmount: (amount: number) => string
 }
 
@@ -26,6 +27,7 @@ function displayType(type: TrType): JSX.Element {
 const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, selectedCurrency, setCategoryFilter, deleteTransaction, isLastIdx, displayCategory, displayAmount }) => {
     const cardStyle: string = transaction.type === TrType.Income ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)] text-green-100' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)] text-red-100'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
+    const [deleteQuestion, setDeleteQuestion] = useState<boolean>(false)
 
     function shortenDate(dateStr: string): string {
         if (screenWidth > 510) return dateStr
@@ -42,46 +44,76 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         setIsExpanded(!isExpanded)
     }
 
+    function toggleShowDeleteQ() {
+        setDeleteQuestion(!deleteQuestion)
+    }
+
+    function yesDelete() {
+        deleteTransaction(transaction.id)
+        toggleShowDeleteQ()
+        toggleExpanded()
+    }
+
 
     return isExpanded ? (
-        <tr onClick={toggleExpanded} className="clickable">
-            <td colSpan={4} className="!border-none !py-[0.1rem] !px-0">
-                <div className="flex flex-col gap-[1px]">
-                    <div className="flex items-stretch gap-[1px]">
-                        <div className="flex flex-col flex-[12] gap-[1px]">
-                            <div className="flex items-stretch gap-[1px]">
-                                <h4 className={`flex-[2] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>{transaction.category}</h4>
-                                <div className={`flex flex-[1] justify-center pl-2 pr-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                    <h4>{displayAmount(transaction.amount)}{" "}{selectedCurrency.symbol}</h4>
-                                </div>
-                            </div>
-                            <div className="flex items-stretch gap-[1px]">
-                                <h5 className={`flex-[1] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>Date</h5>
-                                <div className={`flex flex-[2] justify-center px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                    <h5>{transaction.date}</h5>
-                                </div>
-                            </div>
-                            <div className="flex items-stretch gap-[1px]">
-                                <div className={`flex-[10] ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                    <p className="m-1.5">{transaction.description !== '' ? transaction.description : 'No description...'}</p>
-                                </div>
-                            </div>
+        <>
+            {deleteQuestion
+                && <Modal handleCloseModal={toggleShowDeleteQ}>
+                    <div className="flex flex-col gap-2 justify-center items-center">
+                        <div className="flex flex-col items-center">
+                            <p>Are you sure?</p>
+                            <small>(This will delete the transaction permanently.)</small>
                         </div>
-                        <div className="flex flex-col flex-[1] items-stretch gap-[1px]">
-                            <div className={`flex flex-col flex-[1] justify-center items-center px-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                {displayType(transaction.type)}
-                            </div>
-                            <button onClick={(e) => {
-                                e.stopPropagation()
-                                deleteTransaction(transaction.id)
-                            }} className={`flex flex-col flex-[1] justify-center items-center px-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)] cursor-pointer group hover:opacity-75 duration-100`}>
-                                <i className="fa-solid fa-trash-can text-red-300 group-hover:text-red-400"></i>
+                        <div className="flex justify-evenly gap-1 w-full -mb-2.5">
+                            <button onClick={yesDelete} className="secondary-btn !p-0.75 items-center">
+                                <p className="px-2">Yes</p>
+                            </button>
+                            <button onClick={toggleShowDeleteQ} className="secondary-btn !p-0.75 items-center">
+                                <p className="px-2">No</p>
                             </button>
                         </div>
                     </div>
-                </div>
-            </td>
-        </tr>
+                </Modal>
+            }
+            <tr onClick={toggleExpanded} className="clickable">
+                <td colSpan={4} className="!border-none !py-[0.1rem] !px-0">
+                    <div className="flex flex-col gap-[1px]">
+                        <div className="flex items-stretch gap-[1px]">
+                            <div className="flex flex-col flex-[12] gap-[1px]">
+                                <div className="flex items-stretch gap-[1px]">
+                                    <h4 className={`flex-[2] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>{transaction.category}</h4>
+                                    <div className={`flex flex-[1] justify-center pl-2 pr-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                                        <h4>{displayAmount(transaction.amount)}{" "}{selectedCurrency.symbol}</h4>
+                                    </div>
+                                </div>
+                                <div className="flex items-stretch gap-[1px]">
+                                    <h5 className={`flex-[1] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>Date</h5>
+                                    <div className={`flex flex-[2] justify-center px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                                        <h5>{transaction.date}</h5>
+                                    </div>
+                                </div>
+                                <div className="flex items-stretch gap-[1px]">
+                                    <div className={`flex-[10] ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                                        <p className="m-1.5">{transaction.description !== '' ? transaction.description : 'No description...'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex flex-col flex-[1] items-stretch gap-[1px]">
+                                <div className={`flex flex-col flex-[1] justify-center items-center px-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
+                                    {displayType(transaction.type)}
+                                </div>
+                                <button onClick={(e) => {
+                                    e.stopPropagation()
+                                    toggleShowDeleteQ()
+                                }} className={`flex flex-col flex-[1] justify-center items-center px-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)] cursor-pointer group hover:opacity-75 duration-100`}>
+                                    <i className="fa-solid fa-trash-can text-red-300 group-hover:text-red-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </>
     ) : (
         <tr onClick={toggleExpanded} className={`${cardStyle} clickable`}>
             <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{shortenDate(transaction.date)}</td>

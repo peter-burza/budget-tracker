@@ -1,13 +1,14 @@
 'use client'
 
 import { Transaction } from "@/interfaces";
-import { Category} from '@/enums'
+import { Category } from '@/enums'
 import { TrType } from '@/enums'
 import ResponsiveHeader from "./ui/ResponsiveHeader";
 import { JSX } from "@emotion/react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
 import { renderSortingIcon } from "./List";
 import { Currency } from "@/types";
+import { useTransactions } from "@/context/TransactionsContext";
 
 interface ExpenseBreakdownProps {
   dateFilteredTransactions: Transaction[];
@@ -33,6 +34,7 @@ function sortTotalLowFirst(list: CategorySummary[]): CategorySummary[] {
 }
 
 const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayCategory, displayAmount, isLoading }) => {
+  const { transactions } = useTransactions()
   const [totalAscending, setTotalAscending] = useState<boolean | null>(null);
 
   const orderedBreakdown = useMemo(() => {
@@ -86,16 +88,28 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
           </tr>
         </thead>
         <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
-          {orderedBreakdown.map(({ category, total, percentage }, idx) => {
-            const isLastIdx = idx === orderedBreakdown.length - 1
-            return (
-              <tr key={category} className="bg-sky-800">
-                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
-                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(total)}{" "}{selectedCurrency.symbol}</td>
-                <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
+          {dateFilteredTransactions.length > 0
+            ? orderedBreakdown.map(({ category, total, percentage }, idx) => {
+              const isLastIdx = idx === orderedBreakdown.length - 1
+              return (
+                <tr key={category} className="bg-sky-800">
+                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
+                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(total)}{" "}{selectedCurrency.symbol}</td>
+                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
+                </tr>
+              );
+            })
+            : (
+              <tr>
+                <td colSpan={3} className="text-center py-4">
+                  <p className="text-gray-400">
+                    {transactions.length > 0
+                      ? 'No transactions for selected period.'
+                      : 'No transactions detected.'}
+                  </p>
+                </td>
               </tr>
-            );
-          })}
+            )}
         </tbody>
       </table>
     </div>

@@ -1,13 +1,15 @@
 'use client'
 
 import { Transaction } from "@/interfaces"
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react"
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useMemo, useState } from "react"
+import { text } from "stream/consumers"
 
 
 type TransactionsContextType = {
     transactions: Transaction[]
     setTransactions: Dispatch<SetStateAction<Transaction[]>>
     clearTransactions: () => void
+    isDuplicate: (id: string) => boolean
 }
 
 const TransactionsContext = createContext<TransactionsContextType | undefined>(undefined)
@@ -24,12 +26,22 @@ export function useTransactions(): TransactionsContextType {
 
 export default function TransactionsProvider({ children }: { children: ReactNode }) {
     const [transactions, setTransactions] = useState<Transaction[]>([])
-    const clearTransactions = () => {setTransactions([])}
+
+    const trSignatures = useMemo(() => {
+        if (transactions.length !== 0) console.log(`trSignatures update (${transactions.map((t) => t.signature)})`);
+        return new Set<string>(transactions.map(tx => tx.signature))
+    }, [transactions])
+
+    const clearTransactions = () => { setTransactions([]) }
+    const isDuplicate = (signature: string) => {
+        return trSignatures.has(signature)
+    }
 
     const value: TransactionsContextType = {
         transactions,
         setTransactions,
-        clearTransactions
+        clearTransactions,
+        isDuplicate
     }
 
     return (

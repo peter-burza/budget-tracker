@@ -4,12 +4,13 @@ import { JSX } from '@emotion/react/jsx-runtime';
 import React, { useEffect, useMemo, useState } from 'react';
 import TransactionCard from './TransactionCard';
 import { Transaction } from '@/interfaces';
-import { Category} from '@/enums'
+import { Category } from '@/enums'
 import { TrType } from '@/enums'
 import ResponsiveHeader from './ui/ResponsiveHeader';
 import Modal from './Modal';
 import { Currency } from "@/types";
 import { handleToggle } from '@/utils';
+import { useTransactions } from '@/context/TransactionsContext';
 
 interface ListProps {
     selectedCurrency: Currency
@@ -45,6 +46,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 
 
 const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, displayAmount, screenWidth, isLoading }) => {
+    const { transactions } = useTransactions()
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = TrType.Income, false = TrType.Expense, null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
@@ -123,9 +125,9 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
                 <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
                     <h3>List usage info</h3>
                     <ul className="flex flex-col gap-2">
-                        <li className='bg-[#23374e] p-1.5'>1. Click on a transaction for more details.</li>
-                        <li className='bg-[#23374e] p-1.5'>2. To filter and reorder, click on table headers.</li>
-                        <li className='bg-[#23374e] p-1.5'>3. For category filtering, click on a specific category.</li>
+                        <li className='p-1.5'>1. Click on a transaction for more details.</li>
+                        <li className='p-1.5'>2. To filter and reorder, click on table headers.</li>
+                        <li className='p-1.5'>3. For category filtering, click on a specific category.</li>
                     </ul>
 
                 </Modal>)}
@@ -163,22 +165,32 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
                 </thead>
 
                 <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
-                    {transactionsList.slice(0, transactionCount).map((transaction, idx) => {
-                        const isLastIdx = idx === transactionsList.length - 1;
-                        return (
-                            <TransactionCard
-                                key={idx}
-                                screenWidth={screenWidth}
-                                displayCategory={displayCategory}
-                                displayAmount={displayAmount}
-                                transaction={transaction}
-                                selectedCurrency={selectedCurrency}
-                                setCategoryFilter={setCategoryFilter}
-                                deleteTransaction={deleteTransaction}
-                                isLastIdx={isLastIdx}
-                            />
-                        )
-                    })}
+                    {transactionsList.length > 0
+                        ? transactionsList.slice(0, transactionCount).map((transaction, idx) => {
+                            const isLastIdx = idx === transactionsList.length - 1;
+                            return (
+                                <TransactionCard
+                                    key={idx}
+                                    screenWidth={screenWidth}
+                                    displayCategory={displayCategory}
+                                    displayAmount={displayAmount}
+                                    transaction={transaction}
+                                    selectedCurrency={selectedCurrency}
+                                    setCategoryFilter={setCategoryFilter}
+                                    deleteTransaction={deleteTransaction}
+                                    isLastIdx={isLastIdx}
+                                />
+                            )
+                        })
+                        : <tr>
+                            <td colSpan={4} className="text-center py-4">
+                                <p className="text-gray-400">
+                                    {transactions.length > 0
+                                        ? 'No transactions for selected period.'
+                                        : 'No transactions detected.'}
+                                </p>
+                            </td>
+                        </tr>}
                 </tbody>
             </table>
 

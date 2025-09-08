@@ -32,10 +32,6 @@ export default function Home() {
       throw new Error("User is not authenticated");
     }
 
-    // // Look for identical transactions
-    // // when user tries to add transaction with same stats (amount, type, category, date etc.), ask him if he really want to add another identical transaction (via Modal -> yes/no button)
-    // if (transactions)
-
     // Save try
     try {
       setIsLoading(true)
@@ -43,6 +39,7 @@ export default function Home() {
       const savingTransactionOnDb = await setDoc(trRef, {
         id: newTr.id,
         amount: newTr.amount,
+        signature: newTr.signature,
         type: newTr.type,
         date: newTr.date,
         category: newTr.category,
@@ -65,7 +62,7 @@ export default function Home() {
     if (!currentUser?.uid) {
       throw new Error("User is not authenticated");
     }
-
+    
     // ask if user is sure to delete this transaction
 
     // Delete try
@@ -95,6 +92,7 @@ export default function Home() {
         return {
           id: tr.id,
           amount: tr.amount,
+          signature: tr.signature,
           type: tr.type,
           date: tr.date,
           category: tr.category,

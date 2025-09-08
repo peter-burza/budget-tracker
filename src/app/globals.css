@@ -124,6 +124,10 @@ textarea {
   border-radius: 0.1rem;
 }
 
+input[type="checkbox"] {
+  box-shadow: unset;
+}
+
 input:hover,
 select:hover,
 textarea:hover,
@@ -245,7 +249,7 @@ table tbody tr:hover .category-cell:hover {
   position: relative;
   z-index: 101;
   margin: 0 auto;
-  border: 1px solid var(--background);
+  border: 1px solid var(--color-light-blue);
   background: var(--background-muted);
   padding: 1rem;
   display: flex;
@@ -255,7 +259,7 @@ table tbody tr:hover .category-cell:hover {
   gap: 0.75rem;
   /* max-height: 95vh; */
   max-width: 85%;
-  overflow-y: auto;      
+  overflow-y: auto;
 }
 
 .modal-content p {
@@ -264,8 +268,8 @@ table tbody tr:hover .category-cell:hover {
 
 .close-button {  
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 0.25rem;
+  right: 0.25rem;
   padding: 0.2rem 0.1rem;
   color: var(--color-red);
   border: 1.5px solid var(--color-red);
@@ -275,7 +279,7 @@ table tbody tr:hover .category-cell:hover {
 }
 
 .close-button:hover {
-  border: 1.5px solid var(--background);
+  border: 1.5px solid transparent;
   opacity: 0.9;
 }
 

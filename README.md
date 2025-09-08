@@ -23,20 +23,13 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Tasks ✏️
 
-- vlozit currency selector
-- Nastavit ukladanie nastaveni
+- saving of the settings (currency select) does not save on new user firestore...
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
 - Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej navsteve v dany den spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
 - Pripojit investicie, suhrn kam a kolko som investoval...
 - Remove blue border on focus of DatePicker MUI Material feature
 - Add feature, when user tries to add transaction with same stats (amount, type, category, date etc.), ask him if he really want to add another identical transaction (via Modal -> yes/no button)
-- When user clickes on delete transaction button - ask him: "Are you sure?"...
-- currency zmena by mala zahrnat aj nejaky prepocet podla aktualnych kurzov?
-- incorrect ordering of income/expense/null in List
-
-#### Consultations:
-- prekonzultovat context pre transactions a setTransactions. Asi ani netreba - pouziva sa iba v page.tsx a TransactionsHistory.tsx. Dalej sa uz posiela odfiltrovany transactions list
 
 
 #### LATER TASKS:
@@ -44,13 +37,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - First fetch of data after login, will be from last 5 years maybe? to prevent long waiting after login... or maybe last 1000 transactions? up to descusion
 - Zjednotit vysku selectov v New Entry
 - finish styling of date select (Mui Material component) - [blue border on focus, width on resize...]... pain in the ass :D
-- If the deletion causes the filtered list to become empty, you might want to show a message like:
-        {dateFilteredTransactions.length === 0 && (
-        <p className="text-gray-400">No transactions for selected filters.</p>
-        )}
-- when you have opend Dropdown menu and click outside of the menu, close the menu
-- ked odstranim transakciu, tak po jej odstraneni ostane otvoreny akoby detail ale dalsej transakcie.. opravit aby neostalo nic dalsie otvorene.
-- close button na modaly (ked kliknes na i ikonu vyysvetliviek)
+
+
+#### Consultations:
+
 
 
 #### DONE TASKS ✅
@@ -70,3 +60,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - type default Expense
 - z typu v transaction spravit enum a bude nie + a - ale boolean (true/false)
 - prekopat entry, break new transaction into more useState variables and setNewTransaction az ked sa submitne, aj to id z tade vyhodit potom...
+- vlozit currency selector
+- Nastavit ukladanie nastaveni
+- incorrect ordering of income/expense/null in List
+- currency zmena by mala zahrnat aj nejaky prepocet podla aktualnych kurzov?
+- when you have opend Dropdown menu and click outside of the menu, close the menu
+- ked odstranim transakciu, tak po jej odstraneni ostane otvoreny akoby detail ale dalsej transakcie.. opravit aby neostalo nic dalsie otvorene.
+- close button na modaly (ked kliknes na i ikonu vyysvetliviek)
+- If the deletion causes the filtered list to become empty, you might want to show a message like:
+        {dateFilteredTransactions.length === 0 && (
+        <p className="text-gray-400">No transactions for selected filters.</p>
+        )}
+- When user clickes on delete transaction button - ask him: "Are you sure?"...

@@ -39,7 +39,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
                 <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
                     <h3>Summary</h3>
                     <ul className="flex flex-col gap-2">
-                        <li className='bg-[#23374e] p-1.5'>Basic info of the selected period.</li>
+                        <li className='p-1.5'>Basic info of the selected period.</li>
                     </ul >
 
                 </Modal>)}
