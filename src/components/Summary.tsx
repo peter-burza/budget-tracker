@@ -32,17 +32,20 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
     }, [dateFilteredTransactions])
     const netBalance = calculateNetBalance(totalIncome, totalExpense)
 
+    function toggleShowInfo() {
+        setShowInfo(!showInfo)
+    }
 
     return (
         <div id="summary" className="flex flex-col items-center gap-2 w-full">
-            {showInfo && (
-                <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
-                    <h3>Summary</h3>
-                    <ul className="flex flex-col gap-2">
-                        <li className='p-1.5'>Basic info of the selected period.</li>
-                    </ul >
 
-                </Modal>)}
+            <Modal onClose={toggleShowInfo} isOpen={showInfo}>
+                <h3>Summary</h3>
+                <ul className="flex flex-col gap-2">
+                    <li className='p-1.5'>Basic info of the selected period.</li>
+                </ul >
+            </Modal>
+
             <div className='flex gap-2 items-center'>
                 <h4>Summary</h4>
                 <i onClick={() => { handleToggle(showInfo, setShowInfo) }} className="fa-solid fa-circle-info clickable duration-200 text-sky-300"></i>

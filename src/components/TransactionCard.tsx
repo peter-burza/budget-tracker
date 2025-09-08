@@ -57,24 +57,24 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
 
     return isExpanded ? (
         <>
-            {deleteQuestion
-                && <Modal handleCloseModal={toggleShowDeleteQ}>
-                    <div className="flex flex-col gap-2 justify-center items-center">
-                        <div className="flex flex-col items-center">
-                            <p>Are you sure?</p>
-                            <small>(This will delete the transaction permanently.)</small>
-                        </div>
-                        <div className="flex justify-evenly gap-1 w-full -mb-2.5">
-                            <button onClick={yesDelete} className="secondary-btn !p-0.75 items-center">
-                                <p className="px-2">Yes</p>
-                            </button>
-                            <button onClick={toggleShowDeleteQ} className="secondary-btn !p-0.75 items-center">
-                                <p className="px-2">No</p>
-                            </button>
-                        </div>
+        
+            <Modal onClose={toggleShowDeleteQ} isOpen={deleteQuestion} onConfirm={yesDelete}>
+                <div className="flex flex-col gap-2 justify-center items-center">
+                    <div className="flex flex-col items-center">
+                        <p>Are you sure?</p>
+                        <small>(This will delete the transaction permanently.)</small>
                     </div>
-                </Modal>
-            }
+                    <div className="flex justify-evenly gap-1 w-full -mb-2.5">
+                        <button onClick={yesDelete} className="secondary-btn !p-0.75 items-center">
+                            <p className="px-2">Yes</p>
+                        </button>
+                        <button onClick={toggleShowDeleteQ} className="secondary-btn !p-0.75 items-center">
+                            <p className="px-2">No</p>
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
             <tr onClick={toggleExpanded} className="clickable">
                 <td colSpan={4} className="!border-none !py-[0.1rem] !px-0">
                     <div className="flex flex-col gap-[1px]">

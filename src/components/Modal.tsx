@@ -1,34 +1,59 @@
-import { useEffect, useState } from "react";
-import React from "react";
-import ReactDOM from 'react-dom';
+import { useEffect, useState } from "react"
+import React from "react"
+import ReactDOM from 'react-dom'
 
 interface ModalProps {
+    isOpen: boolean
+    onConfirm?: () => void
+    onClose: () => void
     children: React.ReactNode
-    handleCloseModal(): void
 }
 
-const Modal: React.FC<ModalProps> = ({ children, handleCloseModal }) => {
-    const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, children }) => {
+    const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null)
 
     useEffect(() => {
-        const el = document.getElementById("portal");
-        setPortalRoot(el);
-    }, []);
+        const el = document.getElementById("portal")
+        setPortalRoot(el)
+    }, [])
 
-    if (!portalRoot) return null
+    useEffect(() => {
+        if (!isOpen) return
+
+        const handleEnterDown = (e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+                e.preventDefault()
+                if (onConfirm) {
+                    onConfirm()
+                    return
+                }
+                onClose()
+            }
+            if (e.key === 'Escape') {
+                e.preventDefault()
+                onClose()
+            }
+        }
+
+        document.addEventListener('keydown', handleEnterDown)
+        return () => document.removeEventListener('keydown', handleEnterDown)
+    }, [isOpen, onConfirm])
+    
+
+    if (!isOpen || !portalRoot) return null
 
     return ReactDOM.createPortal(
         <div className="modal-container">
-            <button onClick={handleCloseModal} className="modal-underlay" />
+            <button onClick={onClose} className="modal-underlay" />
             <div className="modal-content">
-                <button className="flex items-center close-button" onClick={handleCloseModal}>
+                <button className="flex items-center close-button" onClick={onClose}>
                     <i className="fa-solid fa-xmark"></i>
                 </button>
                 {children}
             </div>
         </div>,
         portalRoot
-    );
+    )
 }
 
 export default Modal

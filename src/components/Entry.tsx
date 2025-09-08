@@ -37,7 +37,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const [category, setCategory] = useState<Category>(Category.Other)
   const [description, setDescription] = useState<string>('')
 
-  const [showDuplicateTRQ, setShowDuplicateTRQ] = useState<boolean>(false)
+  const [showDuplicateTrQ, setShowDuplicateTRQ] = useState<boolean>(false)
   const [dontAskAgain, setDontAskAgain] = useState<boolean>(false)
 
   const { isDuplicate } = useTransactions()
@@ -79,10 +79,6 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     setDescription(value)
   }
 
-  function toggleShowDuplicateTrQ() {
-    setShowDuplicateTRQ(!showDuplicateTRQ)
-  }
-
   function handleSaveTr() {
     const signature = returnSignature(amount, type, category, description, date)
     if (isDuplicate(signature) && !dontAskAgain) {
@@ -105,38 +101,41 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     resetDefaultValues()
   }
 
+  function onModalConfirm() {
+    saveTr()
+    toggleShowDuplicateTrQ()
+  }
+
+  function toggleShowDuplicateTrQ() {
+    setShowDuplicateTRQ(!showDuplicateTrQ)
+  }
+
+
   return (
     <>
-      {
-        showDuplicateTRQ &&
-        <Modal handleCloseModal={toggleShowDuplicateTrQ}>
-          <p className='px-5 pt-2 text-center'>You are trying to add a duplicate transaction.</p>
-          <div className="flex justify-evenly gap-1 w-full -mb-2.5">
-            <button
-              onClick={() => {
-                saveTr()
-                toggleShowDuplicateTrQ()
-              }}
-              className='secondary-btn !p-0.75 items-center'>
-              <p className='px-2'>Confirm</p>
-            </button>
-            <button onClick={toggleShowDuplicateTrQ} className='secondary-btn !p-0.75 items-center'>
-              <p className='px-2'>Cancel</p>
-            </button>
-          </div>
-          <div className='flex gap-2 w-full'>
-            <input
-              className='max-w-4'
-              type="checkbox"
-              checked={dontAskAgain}
-              onChange={(e) => setDontAskAgain(e.target.checked)}
-            />
-            <p>Don't ask again</p>
-          </div>
-        </Modal>
-
-      }
-
+    
+      <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={onModalConfirm}>
+        <p className='px-5 pt-2 text-center'>You are trying to add a duplicate transaction.</p>
+        <div className="flex justify-evenly gap-1 w-full -mb-2.5">
+          <button
+            onClick={onModalConfirm}
+            className='secondary-btn !p-0.75 items-center'>
+            <p className='px-2'>Confirm</p>
+          </button>
+          <button onClick={toggleShowDuplicateTrQ} className='secondary-btn !p-0.75 items-center'>
+            <p className='px-2'>Cancel</p>
+          </button>
+        </div>
+        <div className='flex gap-2 w-full'>
+          <input
+            className='max-w-4'
+            type="checkbox"
+            checked={dontAskAgain}
+            onChange={(e) => setDontAskAgain(e.target.checked)}
+          />
+          <p>Don't ask again</p>
+        </div>
+      </Modal>
 
       <div
         id="transaction-entry"

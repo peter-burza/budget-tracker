@@ -109,6 +109,10 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
         setAmountAscending((prev) => (prev === false ? true : false))
     }
 
+    function toggleShowInfo() {
+        setShowInfo(!showInfo)
+    }
+
     // Reset filters and reordering
     useEffect(() => {
         setCategoryFilter(null)
@@ -121,16 +125,17 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
     // Render
     return (
         <div id="transaction-list" className="flex flex-col items-center gap-4">
-            {showInfo && (
-                <Modal handleCloseModal={() => { setShowInfo(!showInfo) }}>
-                    <h3>List usage info</h3>
-                    <ul className="flex flex-col gap-2">
-                        <li className='p-1.5'>1. Click on a transaction for more details.</li>
-                        <li className='p-1.5'>2. To filter and reorder, click on table headers.</li>
-                        <li className='p-1.5'>3. For category filtering, click on a specific category.</li>
-                    </ul>
 
-                </Modal>)}
+            <Modal onClose={toggleShowInfo} isOpen={showInfo}>
+                <h3>List usage info</h3>
+                <ul className="flex flex-col gap-2">
+                    <li className='p-1.5'>1. Click on a transaction for more details.</li>
+                    <li className='p-1.5'>2. To filter and reorder, click on table headers.</li>
+                    <li className='p-1.5'>3. For category filtering, click on a specific category.</li>
+                </ul>
+
+            </Modal>
+
             <div className='flex gap-2 items-center'>
                 <h4>List</h4>
                 <i onClick={() => { handleToggle(showInfo, setShowInfo) }} className="fa-solid fa-circle-info clickable duration-200 text-sky-300"></i>
