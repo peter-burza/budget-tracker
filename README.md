@@ -39,6 +39,13 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 #### Consultations:
 
+-Do we want to have precise historical exchanging system? which means: when user changes the currency: 
+{
+        in the list he will see the amounts exchanged according historical exchange rates from that day 
+        || 
+        in the list he will see the amounts exchanged by actual exchange rates
+} 
+It depends what we want to
 
 
 #### DONE TASKS ✅
