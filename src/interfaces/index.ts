@@ -12,4 +12,5 @@ export interface Transaction {
 
 export interface ExpectingTransaction extends Transaction {
     time: number
+    // repeatPeriod:
 }

@@ -28,7 +28,6 @@ export default function TransactionsProvider({ children }: { children: ReactNode
     const [transactions, setTransactions] = useState<Transaction[]>([])
 
     const trSignatures = useMemo(() => {
-        if (transactions.length !== 0) console.log(`trSignatures update (${transactions.map((t) => t.signature)})`);
         return new Set<string>(transactions.map(tx => tx.signature))
     }, [transactions])
 

@@ -24,12 +24,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### Tasks ✏️
 
 - saving of the settings (currency select) does not save on new user firestore...
-- Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
+- Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej navsteve v dany den spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
 - Pripojit investicie, suhrn kam a kolko som investoval...
-- Remove blue border on focus of DatePicker MUI Material feature
-- Add feature, when user tries to add transaction with same stats (amount, type, category, date etc.), ask him if he really want to add another identical transaction (via Modal -> yes/no button)
 
 
 #### LATER TASKS:
@@ -72,3 +70,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
         <p className="text-gray-400">No transactions for selected filters.</p>
         )}
 - When user clickes on delete transaction button - ask him: "Are you sure?"...
+- Add feature, when user tries to add transaction with same stats (amount, type, category, date etc.), ask him if he really want to add another identical transaction (via Modal -> yes/no button)

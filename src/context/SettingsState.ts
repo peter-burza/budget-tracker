@@ -1,7 +1,7 @@
 import { Currency } from "@/types";
 import { CURRENCIES } from "@/utils";
 import { User } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { create } from "zustand";
 import { db } from "../../firebase";
 import { useCurrencyStore } from "./CurrencyState";
@@ -42,7 +42,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         setBaseCurrency(baseCurr)
         setSelectedCurrency(selectedCurr)
         // setLang(lang)
-        console.log(`Settings fetched localy (baseCurr = ${baseCurr.code}  |  selectedCurr = ${selectedCurr.code})`);
+        // console.log(`Settings: (baseCurr = ${baseCurr.code}  |  selectedCurr = ${selectedCurr.code})`);
     },
 
       // Fetch User App Settings from db
@@ -63,15 +63,15 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
                 setUserSettings(userData.baseCurrency, userData.selectedCurrency/*, userData.lang*/)
             } else {
                 // db save
-                await updateDoc(userDocRef, {
+                await setDoc(userDocRef, {
                 baseCurrency: baseCurrency,
                 selectedCurrency: selectedCurrency,
                 // lang: lang,
                 });
                 
                 // Local save
+                console.log("New settings saved");
                 setUserSettings(baseCurrency, selectedCurrency/*, lang*/)
-                console.log("New settings saved:");
             }
 
         } catch (error: any) {

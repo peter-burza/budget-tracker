@@ -29,3 +29,8 @@ export enum Category {
   Garden = 'Garden',
   Other = 'Other'
 }
+
+export enum Period {
+  monthly = 1
+  
+}
