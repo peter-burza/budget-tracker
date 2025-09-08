@@ -30,7 +30,7 @@ export enum Category {
   Other = 'Other'
 }
 
-export enum Period {
-  monthly = 1
-  
-}
+// export enum Period {
+//   monthly = 0,
+//   weekly = 1
+// }

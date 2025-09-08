@@ -83,7 +83,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
                                 <div className="flex items-stretch gap-[1px]">
                                     <h4 className={`flex-[2] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>{transaction.category}</h4>
                                     <div className={`flex flex-[1] justify-center pl-2 pr-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                        <h4>{displayAmount(transaction.amount)}{" "}{selectedCurrency.symbol}</h4>
+                                        <h4>{displayAmount(transaction.baseAmount)}{" "}{selectedCurrency.symbol}</h4>
                                     </div>
                                 </div>
                                 <div className="flex items-stretch gap-[1px]">
@@ -118,7 +118,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         <tr onClick={toggleExpanded} className={`${cardStyle} clickable`}>
             <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{shortenDate(transaction.date)}</td>
             <td className={`${isLastIdx ? '!border-b-0' : ''}`} style={{}}>{displayType(transaction.type)}</td>
-            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(transaction.amount)}{" "}{selectedCurrency.symbol}</td>
+            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(transaction.baseAmount)}{" "}{selectedCurrency.symbol}</td>
             <td className={`${isLastIdx ? '!border-b-0' : ''} category-cell`} onClick={(e) => {
                 e.stopPropagation()
                 setCategoryFilter(transaction.category)

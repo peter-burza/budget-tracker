@@ -23,6 +23,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Tasks ✏️
 
+- add for the base currency on the begining, right after the registration
+- dorobit saving transactions - (pridat origAmount, origCurrency, baseAmount)
 - saving of the settings (currency select) does not save on new user firestore...
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach

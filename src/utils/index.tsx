@@ -368,7 +368,7 @@ export function getYearsFromTransactions(transactions: Transaction[]): string[] 
 
 export function calculateTotal(type: string, transactions: Transaction[]): number {
     const filteredTransactions = transactions.filter(t => (t.type === type))
-    const amounts = filteredTransactions.map(t => t.amount)
+    const amounts = filteredTransactions.map(t => t.baseAmount)
     const totalAmount = amounts.reduce((sum, t) => sum + t, 0)
     return totalAmount
 }
@@ -393,7 +393,9 @@ export function areTransactionSetsEqual(arr1: Transaction[], arr2: Transaction[]
     const tr2 = sorted2[index];
     return (
       tr1.id === tr2.id &&
-      tr1.amount === tr2.amount &&
+      tr1.baseAmount === tr2.baseAmount &&
+      tr1.origAmount === tr2.origAmount &&
+      tr1.orig_currency === tr2.orig_currency &&
       tr1.type === tr2.type &&
       tr1.date === tr2.date &&
       tr1.category === tr2.category &&

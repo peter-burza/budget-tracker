@@ -27,7 +27,7 @@ export default function Home() {
 
   async function saveTransaction(newTr: Transaction) {
     // Guard closes
-    if (!newTr.id || !newTr?.amount || isLoading) return
+    if (!newTr.id || !newTr?.baseAmount || isLoading) return
     if (!currentUser?.uid) {
       throw new Error("User is not authenticated");
     }
@@ -38,7 +38,9 @@ export default function Home() {
       const trRef = doc(db, "users", currentUser?.uid, "transactions", newTr.id)
       const savingTransactionOnDb = await setDoc(trRef, {
         id: newTr.id,
-        amount: newTr.amount,
+        baseAmount: newTr.baseAmount,
+        origAmount: newTr.origAmount,
+        orig_currency: newTr.orig_currency,
         signature: newTr.signature,
         type: newTr.type,
         date: newTr.date,
@@ -62,7 +64,7 @@ export default function Home() {
     if (!currentUser?.uid) {
       throw new Error("User is not authenticated");
     }
-    
+
     // ask if user is sure to delete this transaction
 
     // Delete try
@@ -91,7 +93,9 @@ export default function Home() {
         const tr = doc.data()
         return {
           id: tr.id,
-          amount: tr.amount,
+          baseAmount: tr.baseAmount,
+          origAmount: tr.origAmount,
+          orig_currency: tr.orig_currency,
           signature: tr.signature,
           type: tr.type,
           date: tr.date,

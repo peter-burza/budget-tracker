@@ -9,6 +9,7 @@ import { useCurrencyStore } from '@/context/CurrencyState'
 import { TrType } from '@/enums'
 import Modal from './Modal'
 import { useTransactions } from '@/context/TransactionsContext'
+import { Currency } from '@/types'
 
 interface EntryProps {
   saveTransaction: (transaction: Transaction) => void
@@ -19,19 +20,20 @@ function displayAmount(amount: number): string {
   return amount === 0 ? '' : amount.toString()
 }
 
-function toBaseCurrency(amount: number, currencyCode: string, rates: Record<string, number>): number {
+function toBaseCurrency(origAmount: number, currencyCode: string, rates: Record<string, number>): number {
   const rate = rates[currencyCode] // how many units of that currency per 1 EUR
   if (!rate) throw new Error(`Unknown currency: ${currencyCode}`)
-  return amount / rate // divide to go from that currency to EUR
+  const baseAmount = origAmount / rate  // divide to go from that currency to EUR
+  return baseAmount
 }
 
-function returnSignature(amount: number, type: TrType, category: Category, description: string, date: string) {
-  return `${amount}|${type}|${category}|${description}|${date}`
+function returnSignature(origAmount: number, baseAmount: number, orig_currency: Currency, type: TrType, category: Category, description: string, date: string) {
+  return `${origAmount}|${baseAmount}|${orig_currency}|${type}|${category}|${description}|${date}`
 }
 
 
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
-  const [amount, setAmount] = useState<number>(0)
+  const [origAmount, setOrigAmount] = useState<number>(0)
   const [type, setType] = useState<TrType>(TrType.Expense)
   const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
   const [category, setCategory] = useState<Category>(Category.Other)
@@ -45,10 +47,10 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const rates = useCurrencyStore((state) => state.rates)
 
   const cantAddEntry: boolean | undefined =
-    amount === 0 ? true : false
+    origAmount === 0 ? true : false
 
   function resetDefaultValues() {
-    setAmount(0)
+    setOrigAmount(0)
     setType(TrType.Expense)
     setCategory(Category.Other)
     setDescription('')
@@ -57,7 +59,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   function handleSetAmount(value: string): void {
     const parsedValue = parseFloat(value)
     const validValue = Number.isNaN(parsedValue) ? 0 : parsedValue
-    setAmount(validValue)
+    setOrigAmount(validValue)
   }
 
   function handleSetType(value: TrType): void {
@@ -80,7 +82,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   }
 
   function handleSaveTr() {
-    const signature = returnSignature(amount, type, category, description, date)
+    const signature = returnSignature(origAmount, toBaseCurrency(origAmount, selectedCurrency.code, rates), selectedCurrency, type, category, description, date)
     if (isDuplicate(signature) && !dontAskAgain) {
       toggleShowDuplicateTrQ()
       return
@@ -91,8 +93,10 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   function saveTr() {
     saveTransaction({
       id: crypto.randomUUID(),
-      signature: returnSignature(amount, type, category, description, date),
-      amount: toBaseCurrency(amount, selectedCurrency.code, rates),
+      signature: returnSignature(origAmount, toBaseCurrency(origAmount, selectedCurrency.code, rates), selectedCurrency, type, category, description, date),
+      baseAmount: toBaseCurrency(origAmount, selectedCurrency.code, rates),
+      origAmount: origAmount,
+      orig_currency: selectedCurrency,
       type: type,
       date: date,
       category: category,
@@ -113,7 +117,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
 
   return (
     <>
-    
+
       <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={onModalConfirm}>
         <p className='px-5 pt-2 text-center'>You are trying to add a duplicate transaction.</p>
         <div className="flex justify-evenly gap-1 w-full -mb-2.5">
@@ -145,7 +149,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
         <div className="flex flex-col gap-1 max-w-[232px] w-full">
           <p>Amount:</p>
           <input
-            value={displayAmount(amount)}
+            value={displayAmount(origAmount)}
             onChange={(e) => {
               handleSetAmount(e.target.value)
             }}

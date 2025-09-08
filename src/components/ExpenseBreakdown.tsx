@@ -51,7 +51,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
     const categoryMap = new Map<Category, number>()
 
     expenses.forEach(t => {
-      categoryMap.set(t.category, (categoryMap.get(t.category) || 0) + t.amount);
+      categoryMap.set(t.category, (categoryMap.get(t.category) || 0) + t.baseAmount);
     });
 
     return Array.from(categoryMap.entries()).map(([category, total]) => ({
