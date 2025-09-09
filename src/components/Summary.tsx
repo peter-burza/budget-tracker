@@ -61,7 +61,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, selectedCur
                 </div>
 
                 <div className="flex gap-2 w-full items-center justify-center bg-[var(--color-list-bg-red)] text-red-200 p-1 border-1 border-[var(--color-dark-blue)]">
-                    <h4>Expence:</h4>
+                    <h4>Expense:</h4>
                     <div className="flex gap-1">
                         <h4>- {displayAmount(totalExpense)}</h4>
                         <h4 className="flex items-center -mt-[0.15rem]">{selectedCurrency.symbol}</h4>
