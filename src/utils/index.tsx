@@ -2,6 +2,7 @@ import { JSX } from "@emotion/react/jsx-runtime";
 import { Transaction } from "../interfaces";
 import { Currency } from "../types";
 import { Category } from "@/enums";
+import { useCurrencyStore } from "@/context/CurrencyState";
 
 // export const FAKE_TRANSACTIONS: Transaction[] = [
 //   { id: 'tx001', amount: 3200, type: '+', date: '2025-08-01', category: Category.Salary, description: 'Received monthly salary from full-time employment, including base pay and performance bonus.' },
@@ -367,10 +368,10 @@ export function getYearsFromTransactions(transactions: Transaction[]): string[] 
 }
 
 export function calculateTotal(type: string, transactions: Transaction[]): number {
-    const filteredTransactions = transactions.filter(t => (t.type === type))
-    const amounts = filteredTransactions.map(t => t.amount)
-    const totalAmount = amounts.reduce((sum, t) => sum + t, 0)
-    return totalAmount
+  const filteredTransactions = transactions.filter(t => (t.type === type))
+  const amounts = filteredTransactions.map(t => t.baseAmount)
+  const totalAmount = amounts.reduce((sum, t) => sum + t, 0)
+  return totalAmount
 }
 
 export function handleToggle(x: boolean, setX: React.Dispatch<React.SetStateAction<boolean>>): void {
@@ -393,7 +394,7 @@ export function areTransactionSetsEqual(arr1: Transaction[], arr2: Transaction[]
     const tr2 = sorted2[index];
     return (
       tr1.id === tr2.id &&
-      tr1.amount === tr2.amount &&
+      tr1.baseAmount === tr2.baseAmount &&
       tr1.type === tr2.type &&
       tr1.date === tr2.date &&
       tr1.category === tr2.category &&

@@ -17,7 +17,7 @@ interface CurrencyState {
   setLastRatesFetch: (newTime: number) => void
   // setSelectedCurrency: (item: Currency) => void
   fetchRates: () => Promise<void>
-  convert: (amountInBaseCurr: number) => number
+  convert: (amountInBaseCurr: number, currency: Currency) => number
 }
 
 export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurrenty*/) => ({
@@ -49,10 +49,9 @@ export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurre
     }
   },
 
-  convert: (amountInBaseCurr) => {
-    const { selectedCurrency, rates } = get()
-  
-    return amountInBaseCurr * (rates[selectedCurrency.code] || 1)
+  convert: (amountInBaseCurr, currency) => {
+    const { rates } = get()
+    return amountInBaseCurr * (rates[currency.code] || 1)
   }
 
 }))

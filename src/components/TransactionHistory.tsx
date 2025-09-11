@@ -25,6 +25,7 @@ const OVERALL = 'overall'
 
 const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, selectedCurrency, deleteTransaction, screenWidth, isLoading }) => {
     // const { transactions } = useTransactions()
+    const baseCurrency = useCurrencyStore(state => state.baseCurrency)
 
     const convert = useCurrencyStore((state) => state.convert)
 
@@ -66,13 +67,13 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         return screenWidth > 510 ? category : CategoryIcons[category]
     }
 
-    function convertAmount(amount: number) {
-        const convertedAmount = roundToTwo(convert(amount))
+    function convertAmount(amount: number, currency: Currency) {
+        const convertedAmount = roundToTwo(convert(amount, currency))
         return convertedAmount
     }
 
-    function displayAmount(amount: number) {
-        const convertedAmount = convertAmount(amount)
+    function displayAmount(amount: number, currency: Currency) {
+        const convertedAmount = currency === baseCurrency ? amount : convertAmount(amount, currency)
         const fanciedAmount = fancyNumber(convertedAmount)
         return fanciedAmount
     }
@@ -152,14 +153,14 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
             </div>
             <Summary
                 dateFilteredTransactions={dateFilteredTransactions}
-                selectedCurrency={selectedCurrency}
+                // selectedCurrency={selectedCurrency}
                 totalExpense={totalExpense}
                 isLoading={isLoading}
                 displayAmount={displayAmount}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <List
-                selectedCurrency={selectedCurrency}
+                // selectedCurrency={selectedCurrency}
                 dateFilteredTransactions={dateFilteredTransactions}
                 deleteTransaction={deleteTransaction}
                 selectedMonth={selectedMonth}
@@ -168,7 +169,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 screenWidth={screenWidth}
                 displayCategory={displayCategory}
                 isLoading={isLoading}
-                displayAmount={displayAmount}
+                // displayAmount={displayAmount}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <ExpenseBreakdown

@@ -1,44 +1,48 @@
 'use client'
 
-import { Transaction } from "@/interfaces";
+import { Transaction } from "@/interfaces"
 import { Category } from '@/enums'
 import { TrType } from '@/enums'
-import ResponsiveHeader from "./ui/ResponsiveHeader";
-import { JSX } from "@emotion/react/jsx-runtime";
-import { useEffect, useMemo, useState } from "react";
-import { renderSortingIcon } from "./List";
-import { Currency } from "@/types";
-import { useTransactions } from "@/context/TransactionsContext";
+import ResponsiveHeader from "./ui/ResponsiveHeader"
+import { JSX } from "@emotion/react/jsx-runtime"
+import { useEffect, useMemo, useState } from "react"
+import { renderSortingIcon } from "./List"
+import { Currency } from "@/types"
+import { useTransactions } from "@/context/TransactionsContext"
+import { getMostUsedCurrency } from "./Summary"
+import { useCurrencyStore } from "@/context/CurrencyState"
 
 interface ExpenseBreakdownProps {
-  dateFilteredTransactions: Transaction[];
+  dateFilteredTransactions: Transaction[]
   screenWidth: number
   selectedCurrency: Currency
   totalExpense: number
   displayCategory: (category: Category) => string | JSX.Element
   isLoading: boolean
-  displayAmount: (amount: number) => string
+  displayAmount: (amount: number, currency: Currency) => string
 }
 
 type CategorySummary = {
   category: Category
   total: number
   percentage: number
-};
+  currency: Currency
+}
 
 function sortTotalHighFirst(list: CategorySummary[]): CategorySummary[] {
-  return [...list].sort((a, b) => new Date(b.total).getTime() - new Date(a.total).getTime());
+  return [...list].sort((a, b) => new Date(b.total).getTime() - new Date(a.total).getTime())
 }
 function sortTotalLowFirst(list: CategorySummary[]): CategorySummary[] {
-  return [...list].sort((a, b) => new Date(a.total).getTime() - new Date(b.total).getTime());
+  return [...list].sort((a, b) => new Date(a.total).getTime() - new Date(b.total).getTime())
 }
 
 const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayCategory, displayAmount, isLoading }) => {
+    const baseCurrency = useCurrencyStore(state => state.baseCurrency)
   const { transactions } = useTransactions()
-  const [totalAscending, setTotalAscending] = useState<boolean | null>(null);
+  const [totalAscending, setTotalAscending] = useState<boolean | null>(null)
 
   const orderedBreakdown = useMemo(() => {
-    const breakdown = getExpenseBreakdown();
+    const breakdown = getExpenseBreakdown()
     if (totalAscending !== null) {
       return totalAscending === false ? sortTotalHighFirst(breakdown) : sortTotalLowFirst(breakdown)
     }
@@ -48,25 +52,53 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
 
   function getExpenseBreakdown(): CategorySummary[] {
     const expenses = dateFilteredTransactions.filter(t => t.type === TrType.Expense)
-    const categoryMap = new Map<Category, number>()
+    const categoryMap: Record<string, { transactions: typeof expenses, totalAmount: number }> = {}
+
+    // getMostUsedCurrency()
+
+    // const categoryMap = new Map<Category, number>()
 
     expenses.forEach(t => {
-      categoryMap.set(t.category, (categoryMap.get(t.category) || 0) + t.amount);
-    });
+      // categoryMap.set(t.category, (categoryMap.get(t.category) || 0) + t.baseAmount)
+      const category = t.category as Category
+      if (!category) return
 
-    return Array.from(categoryMap.entries()).map(([category, total]) => ({
-      category,
-      total,
-      percentage: totalExpense ? (total / totalExpense) * 100 : 0,
-    }));
+      if (!categoryMap[category]) {
+        categoryMap[category] = {
+          transactions: [],
+          totalAmount: 0
+        }
+      }
+
+      categoryMap[category].transactions.push(t)
+      categoryMap[category].totalAmount += t.baseAmount
+    })
+    
+    return Object.entries(categoryMap).map(([categoryKey, data]) => {
+      const category = categoryKey as Category
+      const mostUsedCurrency = getMostUsedCurrency(data.transactions, baseCurrency);
+
+      return {
+        category,
+        total: data.totalAmount,
+        percentage: totalExpense ? (data.totalAmount / totalExpense) * 100 : 0,
+        currency: mostUsedCurrency,
+      };
+    });
   }
 
+  // function getExpenseBreakdown(): CategorySummary[] {
+  //   const expenses = dateFilteredTransactions.filter(t => t.type === TrType.Expense)
+
+
+  // }
+
   function setTotalReorder(): void {
-    setTotalAscending((prev) => (prev === false ? true : false));
+    setTotalAscending((prev) => (prev === false ? true : false))
   }
 
   function resetOrdering(): void {
-    setTotalAscending(null);
+    setTotalAscending(null)
   }
 
   return (
@@ -89,15 +121,15 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
         </thead>
         <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
           {dateFilteredTransactions.length > 0
-            ? orderedBreakdown.map(({ category, total, percentage }, idx) => {
+            ? orderedBreakdown.map(({ category, total, percentage, currency }, idx) => {
               const isLastIdx = idx === orderedBreakdown.length - 1
               return (
                 <tr key={category} className="bg-sky-800">
                   <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
-                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(total)}{" "}{selectedCurrency.symbol}</td>
+                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(total, currency)}{" "}{currency.symbol}</td>
                   <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
                 </tr>
-              );
+              )
             })
             : (
               <tr>
@@ -113,7 +145,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
         </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
-export default ExpenseBreakdown;
+export default ExpenseBreakdown

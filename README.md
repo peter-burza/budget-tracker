@@ -24,21 +24,37 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### Tasks ✏️
 
 - CURRENCY:
-        - zmena Transaction interface: add:
-                - amount - to je amount v urcenej mene (1)
-                - currency - urcena mena (USD)
-                - baseAmount - zadana ciastka v base mene (0.84)
-        - v liste sa bude zobrazovat vzdy transakcia vo vykonanej mene,
-        - v Summary bude celkova ciastka v mene ktoru sme pouzivali najviac, a po rozkliknuti bude rozdelenie (v kazdej mene summary zvlast, ze kolko sme platili v kazdej mene zvlast)
-        - Expense Breakdown - zobrazit tak isto vsetky vydaje v mene v ktorej sa dany mesiac platilo najviac/ alebo neviem este...
-        - v Entry si bude moct urcit menu danej transakcie
-        - uzivatel si na zaciatku (po registracii) urci aku menu chce v aplikacii pouzivat (dalej ju nebude moct menit) -
-                k tomu by som dal este vysvetlivku ze ak bude ale aj platit v inej mene, bude mu zaznamenana dana mena, ze moze vykonavat transakcie aj v inej mene ako je nim urcena baseCurrency.
-- po registracii sa spytat na base currency
+        - zmena Transaction interface: add: 
+                                                                                - origAmount - to je amount v urcenej mene (1)
+                                                                                - baseAmount - zadana ciastka v base mene (0.84)
+                                                                                - origCurrency - urcena mena (USD)
+                                                                                - exchange rate of:   basecurrency - origCurrency
+        ENTRY:
+                                                                                - user si bude moct urcit menu danej transakcie
+                                                                                - primarne bude selectnuta mena ktora je aj baseCurrency
+                - uzivatel si na zaciatku (po registracii) urci aku menu chce v aplikacii pouzivat tym sa nastavi jeho baseCurrency, ktora sa uz pre jeho ucet nikdy nezmeni, tzn. vsetky transakcie sa budu do databazy ukladat v origAmount | baseAmount | origCurrency | (baseCurrency - toto uz bude nastavene od zaciatku v settings of the user), ale vsetky kalkulacie budu vykonane vzdy v baseCurrency.
+                        - k tomu by som dal este vysvetlivku ze ak bude ale aj platit v inej mene, bude si moct zaznamenat pre danu transakciu akukolvek menu bude chciet, ze moze vykonavat transakcie aj v inej mene ako je nim urcena baseCurrency. 
+        SUMMARY:
+                                                                                - celkova ciastka bude v mene v ktorej bolo vykonanych najviac transakcii, a po rozkliknuti bude rozdelenie (ze kolko sme platili/zarobili v kazdej mene zvlast). tak dosiahneme presny prehlad o tom kolko som v akej mene minul ale zaroven aj celkovu ciastku, v mene ktoru najcastejsie pouzivam (ak som 3 mesiace sluzobne v zahranici, mam tam summary v danej mene, ktoru som vtedy pouzival)
+                - v pripade ze je summary v inej mene ako je baseCurrency - pridat moznost exchangenut si summary do baseCurrency (exchange rate of every transaction to baseCurrency is saved for every transaction.) ale v rozdeleni bude pekne vidiet stale suma v realne minutych currencies (max nastavit zase na onclick exchange to base)
+        LIST:
+                                                                                - bude sa zobrazovat vzdy transakcia vo vykonanej mene,
+                                                                                - v header zmenit iconu pre amount na "fa-coins"
+                - transakcie ktore niesu v baseCurrency - ked user klikne na danu TypedAmount premeni sa mu na exchangnutu do baseCurrency
+        EXPENSE BREAKDOWN:
+                - zobrazit tak isto vsetky vydaje v mene v ktorej sa dany mesiac platilo najviac, a ked user rozklikne jednotlivo kategorie, tak sa vyroluju sucty transakcii z danej kategorie v jednotlivych menach
+                - chovanie sa exchangingu rovnako ako v liste
+        - ODSTRANIT: 
+                - selected currency
+                - currency selector
+        -pri displaying and converting of summaries, use the historical rates that you have
+        
+
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej navsteve v dany den spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
 - Pripojit investicie, suhrn kam a kolko som investoval...
+- add exchange calculator
 
 
 #### LATER TASKS:

@@ -1,19 +1,19 @@
-'use client';
+'use client'
 
-import { JSX } from '@emotion/react/jsx-runtime';
-import React, { useEffect, useMemo, useState } from 'react';
-import TransactionCard from './TransactionCard';
-import { Transaction } from '@/interfaces';
+import { JSX } from '@emotion/react/jsx-runtime'
+import React, { useEffect, useMemo, useState } from 'react'
+import TransactionCard from './TransactionCard'
+import { Transaction } from '@/interfaces'
 import { Category } from '@/enums'
 import { TrType } from '@/enums'
-import ResponsiveHeader from './ui/ResponsiveHeader';
-import Modal from './Modal';
-import { Currency } from "@/types";
-import { handleToggle } from '@/utils';
-import { useTransactions } from '@/context/TransactionsContext';
+import ResponsiveHeader from './ui/ResponsiveHeader'
+import Modal from './Modal'
+import { Currency } from "@/types"
+import { handleToggle } from '@/utils'
+import { useTransactions } from '@/context/TransactionsContext'
 
 interface ListProps {
-    selectedCurrency: Currency
+    // selectedCurrency: Currency
     dateFilteredTransactions: Transaction[]
     selectedMonth: string
     selectedYear: string
@@ -22,20 +22,20 @@ interface ListProps {
     screenWidth: number
     displayCategory: (category: Category) => string | JSX.Element
     isLoading: boolean
-    displayAmount: (amount: number) => string
+    // displayAmount: (amount: number) => string
 }
 
 export function sortDateNewestFirst(list: Transaction[]): Transaction[] {
-    return [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return [...list].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 function sortDateOldestFirst(list: Transaction[]): Transaction[] {
-    return [...list].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return [...list].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 }
 function sortAmountHighFirst(list: Transaction[]): Transaction[] {
-    return [...list].sort((a, b) => b.amount - a.amount);
+    return [...list].sort((a, b) => b.baseAmount - a.baseAmount)
 }
 function sortAmountLowFirst(list: Transaction[]): Transaction[] {
-    return [...list].sort((a, b) => a.amount - b.amount);
+    return [...list].sort((a, b) => a.baseAmount - b.baseAmount)
 }
 
 export function renderSortingIcon(sorted: boolean | null): JSX.Element {
@@ -45,18 +45,18 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 }
 
 
-const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, displayAmount, screenWidth, isLoading }) => {
+const List: React.FC<ListProps> = ({ dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, /*displayAmount,*/ screenWidth, isLoading }) => {
     const { transactions } = useTransactions()
     // Filters and sorting state
-    const [typeFilter, setTypeFilter] = useState<boolean | null>(null); // true = TrType.Income, false = TrType.Expense, null = all
-    const [categoryFilter, setCategoryFilter] = useState<Category | null>(null);
+    const [typeFilter, setTypeFilter] = useState<boolean | null>(null) // true = TrType.Income, false = TrType.Expense, null = all
+    const [categoryFilter, setCategoryFilter] = useState<Category | null>(null)
 
     // Sorting toggles: dateAscending can be true/false/null (null = inactive), same for amountDescending
-    const [dateAscending, setDateAscending] = useState<boolean | null>(false);
-    const [amountAscending, setAmountAscending] = useState<boolean | null>(null);
+    const [dateAscending, setDateAscending] = useState<boolean | null>(false)
+    const [amountAscending, setAmountAscending] = useState<boolean | null>(null)
 
     // UI state
-    const [transactionCount, setTransactionCount] = useState<number>(10);
+    const [transactionCount, setTransactionCount] = useState<number>(10)
 
     // Modal setters
     const [showInfo, setShowInfo] = useState<boolean>(false)
@@ -75,7 +75,7 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
             list = list.filter((t) => (typeFilter ? t.type === TrType.Expense : t.type === TrType.Income))
         }
 
-        // Sorting (only one active at a time; if both null, keep natural order)
+        // Sorting (only one active at a time if both null, keep natural order)
         if (dateAscending !== null) {
             list = dateAscending ? sortDateOldestFirst(list) : sortDateNewestFirst(list)
         } else if (amountAscending !== null) {
@@ -85,14 +85,14 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
             list = sortDateNewestFirst(list)
         }
 
-        return list;
+        return list
     }, [
         dateFilteredTransactions,
         categoryFilter,
         typeFilter,
         dateAscending,
         amountAscending,
-    ]);
+    ])
 
     // Handlers
     function setTypeFilterToggle() {
@@ -158,7 +158,7 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
 
                         <th onClick={setAmountReorder} className='clickable'>
                             <div className='flex items-center justify-center'>
-                                <ResponsiveHeader label="Amount" symbol={selectedCurrency.symbol} screenWidth={screenWidth} />
+                                <ResponsiveHeader label="Amount" iconClass='fa-coins' screenWidth={screenWidth} />
                                 {renderSortingIcon(amountAscending)}
                             </div>
                         </th>
@@ -172,15 +172,15 @@ const List: React.FC<ListProps> = ({ selectedCurrency, dateFilteredTransactions,
                 <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
                     {transactionsList.length > 0
                         ? transactionsList.slice(0, transactionCount).map((transaction, idx) => {
-                            const isLastIdx = idx === transactionsList.length - 1;
+                            const isLastIdx = idx === transactionsList.length - 1
                             return (
                                 <TransactionCard
                                     key={idx}
                                     screenWidth={screenWidth}
                                     displayCategory={displayCategory}
-                                    displayAmount={displayAmount}
+                                    // displayAmount={displayAmount}
                                     transaction={transaction}
-                                    selectedCurrency={selectedCurrency}
+                                    // selectedCurrency={selectedCurrency}
                                     setCategoryFilter={setCategoryFilter}
                                     deleteTransaction={deleteTransaction}
                                     isLastIdx={isLastIdx}
