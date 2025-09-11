@@ -13,15 +13,11 @@ interface SummaryProps {
     dateFilteredTransactions: Transaction[]
     totalExpense: number
     isLoading: boolean
-    displayAmount: (amount: number, currency: Currency) => string
+  displayAmount: (amount: number, rate?: number) => string
 }
 
 function calculateNetBalance(totalIncome: number, totalExpense: number): number {
     return Math.abs(totalIncome - totalExpense)
-}
-
-export function fancyNumber(num: number): string {
-    return num.toLocaleString()
 }
 
 export function getMostUsedCurrency(transactions: Transaction[], baseCurrency: Currency) {
@@ -51,8 +47,8 @@ export function getMostUsedCurrency(transactions: Transaction[], baseCurrency: C
 const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpense, isLoading, displayAmount }) => {
     const baseCurrency = useCurrencyStore(state => state.baseCurrency)
     const [showInfo, setShowInfo] = useState<boolean>(false)
-    const [showIncomeDetails, setShowIncomeDetails] = useState<boolean>(true)
-    const [showExpenseDetails, setShowExpenseDetails] = useState<boolean>(true)
+    const [showIncomeDetails, setShowIncomeDetails] = useState<boolean>(false)
+    const [showExpenseDetails, setShowExpenseDetails] = useState<boolean>(false)
 
     const totalIncome = useMemo(() => {
         const calculatedTotal = calculateTotal(TrType.Income, dateFilteredTransactions)
@@ -94,8 +90,8 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
                 <div onClick={() => toggleShowDetails(TrType.Income)} className="flex gap-2 w-full items-center justify-between bg-[var(--color-list-bg-green)] text-green-200 p-1 px-3 border-1 border-[var(--color-dark-blue)] clickable">
                     <h4>Income:</h4>
                     <div className="flex gap-2">
-                        <h4>{displayAmount(totalIncome, mostUsedCurrency)}</h4>
-                        <h4 className="flex items-center">{mostUsedCurrency.symbol}</h4>
+                        <h4>{displayAmount(totalIncome)}</h4>
+                        <h4 className="flex items-center">{baseCurrency.symbol}</h4>
                     </div>
                 </div>
                 <SummaryDetails
@@ -107,8 +103,8 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
                 <div onClick={() => toggleShowDetails(TrType.Expense)} className="flex gap-2 w-full items-center justify-between bg-[var(--color-list-bg-red)] text-red-200 p-1 px-3 border-1 border-[var(--color-dark-blue)] clickable">
                     <h4>Expense:</h4>
                     <div className="flex gap-2">
-                        <h4>- {displayAmount(totalExpense, mostUsedCurrency)}</h4>
-                        <h4 className="flex items-center">{mostUsedCurrency.symbol}</h4>
+                        <h4>- {displayAmount(totalExpense)}</h4>
+                        <h4 className="flex items-center">{baseCurrency.symbol}</h4>
                     </div>
                 </div>
                 <SummaryDetails
@@ -120,8 +116,8 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
                 <div className="flex gap-2 w-full items-center justify-between bg-sky-800 text-sky-200 p-1 px-3 border-1 border-[var(--color-dark-blue)]">
                     <h5>Net Balance:</h5>
                     <div className="flex items-center gap-2">
-                        <h5>{totalExpense > totalIncome && '- '} {displayAmount(netBalance, mostUsedCurrency)}</h5>
-                        <h5 className="flex items-center">{mostUsedCurrency.symbol}</h5>
+                        <h5>{totalExpense > totalIncome && '- '} {displayAmount(netBalance)}</h5>
+                        <h5 className="flex items-center">{baseCurrency.symbol}</h5>
                     </div>
 
                 </div>

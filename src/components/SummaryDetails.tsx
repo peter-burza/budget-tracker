@@ -48,9 +48,9 @@ const SummaryDetails: React.FC<SummaryDetailsProps> = ({ type, dateFilteredTrans
                 ) : (
                     <div className="flex flex-col gap-1 w-full items-end bg-[var(--color-list-bg-red)] text-red-200 p-1 mb-1 px-3 border-1 border-[var(--color-dark-blue)]">
                         {
-                            currencyIncomes.map((c) => {
+                            currencyIncomes.map((c, idx) => {
                                 return (
-                                    <div>{c.amount}{"  "}{CURRENCIES[c.currency].symbol}</div>
+                                    <div key={idx} >{c.amount}{"  "}{CURRENCIES[c.currency].symbol}</div>
                                 )
                             })
                         }

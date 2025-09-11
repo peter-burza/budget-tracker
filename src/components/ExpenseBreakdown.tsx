@@ -19,7 +19,7 @@ interface ExpenseBreakdownProps {
   totalExpense: number
   displayCategory: (category: Category) => string | JSX.Element
   isLoading: boolean
-  displayAmount: (amount: number, currency: Currency) => string
+  displayAmount: (amount: number, rate?: number) => string
 }
 
 type CategorySummary = {
@@ -126,7 +126,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
               return (
                 <tr key={category} className="bg-sky-800">
                   <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
-                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(total, currency)}{" "}{currency.symbol}</td>
+                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(total)}{" "}{baseCurrency.symbol}</td>
                   <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
                 </tr>
               )

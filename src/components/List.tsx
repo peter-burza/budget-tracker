@@ -32,10 +32,10 @@ function sortDateOldestFirst(list: Transaction[]): Transaction[] {
     return [...list].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 }
 function sortAmountHighFirst(list: Transaction[]): Transaction[] {
-    return [...list].sort((a, b) => b.baseAmount - a.baseAmount)
+    return [...list].sort((a, b) => b.origAmount - a.origAmount)
 }
 function sortAmountLowFirst(list: Transaction[]): Transaction[] {
-    return [...list].sort((a, b) => a.baseAmount - b.baseAmount)
+    return [...list].sort((a, b) => a.origAmount - b.origAmount)
 }
 
 export function renderSortingIcon(sorted: boolean | null): JSX.Element {

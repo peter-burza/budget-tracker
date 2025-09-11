@@ -48,7 +48,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         setDeleteQuestion(!deleteQuestion)
     }
 
-    function yesDelete() {
+    function deleteTr() {
         deleteTransaction(transaction.id)
         toggleShowDeleteQ()
         toggleExpanded()
@@ -69,14 +69,14 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
     ) : (
         <>
 
-            <Modal onClose={toggleShowDeleteQ} isOpen={deleteQuestion} onConfirm={yesDelete}>
+            <Modal onClose={toggleShowDeleteQ} isOpen={deleteQuestion} onConfirm={deleteTr}>
                 <div className="flex flex-col gap-2 justify-center items-center">
                     <div className="flex flex-col items-center">
                         <p>Are you sure?</p>
                         <small>(This will delete the transaction permanently.)</small>
                     </div>
                     <div className="flex justify-evenly gap-1 w-full -mb-2.5">
-                        <button onClick={yesDelete} className="secondary-btn !p-0.75 items-center">
+                        <button onClick={deleteTr} className="secondary-btn !p-0.75 items-center">
                             <p className="px-2">Yes</p>
                         </button>
                         <button onClick={toggleShowDeleteQ} className="secondary-btn !p-0.75 items-center">

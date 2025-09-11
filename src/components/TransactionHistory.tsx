@@ -2,15 +2,15 @@
 
 import React, { useEffect, useMemo, useState } from "react"
 import List, { sortDateNewestFirst } from "./List"
-import Summary, { fancyNumber } from "./Summary"
-import { calculateTotal, CategoryIcons, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions, roundToTwo } from "@/utils"
+import { calculateTotal, CategoryIcons, fancyNumber, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions, roundToTwo } from "@/utils"
 import { Transaction } from "@/interfaces"
-import { Category} from '@/enums'
+import { Category } from '@/enums'
 import { TrType } from '@/enums'
 import { JSX } from "@emotion/react/jsx-runtime"
 import ExpenseBreakdown from "./ExpenseBreakdown"
 import { Currency } from "@/types"
 import { useCurrencyStore } from "@/context/CurrencyState"
+import Summary from "./Summary"
 // import { useTransactions } from "../context/TransactionsContext"
 
 interface TransactionHistoryPtops {
@@ -67,14 +67,14 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         return screenWidth > 510 ? category : CategoryIcons[category]
     }
 
-    function convertAmount(amount: number, currency: Currency) {
-        const convertedAmount = roundToTwo(convert(amount, currency))
+    function convertAmount(amount: number, rate: number) {
+        const convertedAmount = roundToTwo(convert(amount, rate))
         return convertedAmount
     }
 
-    function displayAmount(amount: number, currency: Currency) {
-        const convertedAmount = currency === baseCurrency ? amount : convertAmount(amount, currency)
-        const fanciedAmount = fancyNumber(convertedAmount)
+    function displayAmount(amount: number, rate?: number) {
+        const modifiedAmount = rate ? convertAmount(amount, rate) : amount
+        const fanciedAmount = fancyNumber(modifiedAmount)
         return fanciedAmount
     }
 
@@ -101,7 +101,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         setSelectedYear(year)
     }, [resetSignal])
 
-    
+
     return (
         <div id="transactions-history" className="base-container">
             <h3>Transactions History</h3>
@@ -169,7 +169,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 screenWidth={screenWidth}
                 displayCategory={displayCategory}
                 isLoading={isLoading}
-                // displayAmount={displayAmount}
+            // displayAmount={displayAmount}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
             <ExpenseBreakdown

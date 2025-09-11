@@ -402,3 +402,7 @@ export function areTransactionSetsEqual(arr1: Transaction[], arr2: Transaction[]
     );
   });
 }
+
+export function fancyNumber(num: number): string {
+  return num.toFixed(2).toLocaleString()
+}
