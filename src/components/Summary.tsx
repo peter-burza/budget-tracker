@@ -2,7 +2,7 @@
 
 import { Transaction } from "@/interfaces"
 import { TrType } from '@/enums'
-import { calculateTotal, CURRENCIES, handleToggle } from "@/utils"
+import { calculateTotal, calculateTotalSimplier, CURRENCIES, handleToggle } from "@/utils"
 import React, { useMemo, useState } from "react"
 import Modal from "./Modal"
 import { Currency } from "@/types"
@@ -13,7 +13,7 @@ interface SummaryProps {
     dateFilteredTransactions: Transaction[]
     totalExpense: number
     isLoading: boolean
-  displayAmount: (amount: number, rate?: number) => string
+    displayAmount: (amount: number, rate?: number) => string
 }
 
 function calculateNetBalance(totalIncome: number, totalExpense: number): number {
@@ -46,20 +46,32 @@ export function getMostUsedCurrency(transactions: Transaction[], baseCurrency: C
 
 const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpense, isLoading, displayAmount }) => {
     const baseCurrency = useCurrencyStore(state => state.baseCurrency)
+    const selectedCurrency = useCurrencyStore(state => state.selectedCurrency)
+    const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
     const [showInfo, setShowInfo] = useState<boolean>(false)
     const [showIncomeDetails, setShowIncomeDetails] = useState<boolean>(false)
     const [showExpenseDetails, setShowExpenseDetails] = useState<boolean>(false)
 
     const totalIncome = useMemo(() => {
-        const calculatedTotal = calculateTotal(TrType.Income, dateFilteredTransactions)
+        const convertedTrAmounts = dateFilteredTransactions.map((t) => {
+            return (
+                baseCurrency === selectedCurrency
+                    ? t.baseAmount
+                    : t.currency === selectedCurrency
+                        ? t.origAmount
+                        : convertGlobalFunc(t.currency.code, selectedCurrency.code, t.origAmount)
+            )
+        })
+
+        const calculatedTotal = calculateTotalSimplier(TrType.Income, convertedTrAmounts)
         return calculatedTotal
     }, [dateFilteredTransactions])
 
     const netBalance = calculateNetBalance(totalIncome, totalExpense)
 
-    const mostUsedCurrency = useMemo(() => {
-        return getMostUsedCurrency(dateFilteredTransactions, baseCurrency)
-    }, [dateFilteredTransactions])
+    // const mostUsedCurrency = useMemo(() => {
+    //     return getMostUsedCurrency(dateFilteredTransactions, baseCurrency)
+    // }, [dateFilteredTransactions])
 
     function toggleShowInfo() {
         setShowInfo(!showInfo)

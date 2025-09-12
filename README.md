@@ -23,6 +23,14 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Tasks ✏️
 
+
+
+
+# WHERE TO CONTINUE:
+
+Summary => totalIncome calculation => in calculateTotalSimplier() - finish it
+
+
 - CURRENCY:
         - zmena Transaction interface: add: 
                                                                                 - origAmount - to je amount v urcenej mene (1)
@@ -47,7 +55,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
                 - selected currency
                 - currency selector
         
-
+- rates fetchovat pri kazdej konverzii, pridat aj historical - use this API: https://frankfurter.dev/
 - Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej navsteve v dany den spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
@@ -104,3 +112,6 @@ It depends what we want to
 - When user clickes on delete transaction button - ask him: "Are you sure?"...
 - Add feature, when user tries to add transaction with same stats (amount, type, category, date etc.), ask him if he really want to add another identical transaction (via Modal -> yes/no button)
 - saving of the settings (currency select) does not save on new user firestore...
+
+
+

@@ -374,6 +374,11 @@ export function calculateTotal(type: string, transactions: Transaction[]): numbe
   return totalAmount
 }
 
+export function calculateTotalSimplier(type: string, amounts: (number | Promise<number | null>)[]): number {
+  const totalAmount = amounts.reduce((sum, t) => sum + t, 0)
+  return totalAmount
+}
+
 export function handleToggle(x: boolean, setX: React.Dispatch<React.SetStateAction<boolean>>): void {
   setX(!x)
 }

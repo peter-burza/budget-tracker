@@ -34,7 +34,7 @@ function returnSignature(amount: number, type: TrType, category: Category, descr
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const { isDuplicate } = useTransactions()
   const baseCurrency = useCurrencyStore((state) => state.baseCurrency)
-  // const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
+  const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
   const rates = useCurrencyStore((state) => state.rates)
 
   const [typedAmount, setTypedAmount] = useState<number>(0)
@@ -42,7 +42,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
   const [category, setCategory] = useState<Category>(Category.Other)
   const [description, setDescription] = useState<string>('')
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>(baseCurrency)
+  const [newTrCurrency, setNewTrCurrency] = useState<Currency>(baseCurrency)
 
   const [showDuplicateTrQ, setShowDuplicateTRQ] = useState<boolean>(false)
   const [dontAskAgain, setDontAskAgain] = useState<boolean>(false)
@@ -55,7 +55,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     setType(TrType.Expense)
     setCategory(Category.Other)
     setDescription('')
-    setSelectedCurrency(baseCurrency)
+    setNewTrCurrency(baseCurrency)
   }
 
   function handleSetAmount(value: string): void {
@@ -82,7 +82,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   }
 
   function handleSetCurrency(selectedCurrCode: string): void {
-    setSelectedCurrency(CURRENCIES[selectedCurrCode]);
+    setNewTrCurrency(CURRENCIES[selectedCurrCode]);
   }
 
   function handleSaveTr() {
@@ -100,16 +100,16 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
       signature: returnSignature(typedAmount, type, category, description, date),
       origAmount: typedAmount,
       baseAmount: (
-        selectedCurrency === baseCurrency
+        newTrCurrency === baseCurrency
           ? typedAmount
-          : toBaseCurrency(typedAmount, selectedCurrency.code, rates[selectedCurrency.code])
+          : toBaseCurrency(typedAmount, newTrCurrency.code, rates[newTrCurrency.code])
       ),
-      currency: selectedCurrency,
+      currency: newTrCurrency,
       type: type,
       date: date,
       category: category,
       description: description,
-      exchangeRate: rates[selectedCurrency.code]
+      exchangeRate: rates[newTrCurrency.code]
     })
     resetDefaultValues()
   }
@@ -180,7 +180,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
             />
             <select
               id="currency_select"
-              value={selectedCurrency.code}
+              value={newTrCurrency.code}
               onChange={(e) => handleSetCurrency(e.target.value)}
               className="absolute right-0 top-0 h-full !w-[68px] px-2 bg-transparent text-inherit cursor-pointer border-none !shadow-none text-right"
             >

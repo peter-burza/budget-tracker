@@ -18,6 +18,7 @@ interface CurrencyState {
   // setSelectedCurrency: (item: Currency) => void
   fetchRates: () => Promise<void>
   convert: (amountInBaseCurr: number, currency: number) => number
+  convertGlobalFunc: (from: string, to: string, amount: number, date?: string) => Promise<number | null>
 }
 
 export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurrenty*/) => ({
@@ -50,8 +51,26 @@ export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurre
   },
 
   convert: (amountInBaseCurr, rate) => {
-    const { rates } = get()
     return amountInBaseCurr * rate
+  },
+
+  convertGlobalFunc: async (from, to, amount, date) => {
+    const endpoint = `https://api.frankfurter.dev/v1/${date || 'latest'}?base=${from}&symbols=${to}`
+    try {
+      const response = await fetch(endpoint)
+      const data = await response.json()
+
+      if (!data.rates || !data.rates[to]) {
+        throw new Error(`Rate for ${to} not found`)
+      }
+
+      const convertedAmount = amount * data.rates[to]
+      return Math.round(convertedAmount * 100) / 100
+    } catch (error) {
+      console.error('Conversion failed:', error)
+      return null
+    }
   }
+
 
 }))
