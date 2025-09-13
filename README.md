@@ -60,6 +60,7 @@ Summary => totalIncome calculation => in calculateTotalSimplier() - finish it
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej navsteve v dany den spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
 - Pripojit investicie, suhrn kam a kolko som investoval...
+- pridat graf/kolac...
 - add exchange calculator
 
 

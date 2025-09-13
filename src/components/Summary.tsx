@@ -2,8 +2,8 @@
 
 import { Transaction } from "@/interfaces"
 import { TrType } from '@/enums'
-import { calculateTotal, calculateTotalSimplier, CURRENCIES, handleToggle } from "@/utils"
-import React, { useMemo, useState } from "react"
+import { calculateTotalSimplier, CURRENCIES, handleToggle, roundToTwo } from "@/utils"
+import React, { useEffect, useMemo, useState } from "react"
 import Modal from "./Modal"
 import { Currency } from "@/types"
 import { useCurrencyStore } from "@/context/CurrencyState"
@@ -20,52 +20,55 @@ function calculateNetBalance(totalIncome: number, totalExpense: number): number 
     return Math.abs(totalIncome - totalExpense)
 }
 
-export function getMostUsedCurrency(transactions: Transaction[], baseCurrency: Currency) {
-    const frequencyMap: Record<string, number> = {}
+// export function getMostUsedCurrency(transactions: Transaction[], baseCurrency: Currency) {
+//     const frequencyMap: Record<string, number> = {}
 
-    for (const tx of transactions) {
-        const currencyCode = tx.currency?.code
+//     for (const tx of transactions) {
+//         const currencyCode = tx.currency?.code
 
-        if (!currencyCode) continue
-        frequencyMap[currencyCode] = (frequencyMap[currencyCode] || 0) + 1
-    }
+//         if (!currencyCode) continue
+//         frequencyMap[currencyCode] = (frequencyMap[currencyCode] || 0) + 1
+//     }
 
-    let mostUsedCurr: Currency = baseCurrency
-    let maxCount = 0
+//     let mostUsedCurr: Currency = baseCurrency
+//     let maxCount = 0
 
-    for (const [code, count] of Object.entries(frequencyMap)) {
-        if (count > maxCount) {
-            mostUsedCurr = CURRENCIES[code]
-            maxCount = count
-        }
-    }
+//     for (const [code, count] of Object.entries(frequencyMap)) {
+//         if (count > maxCount) {
+//             mostUsedCurr = CURRENCIES[code]
+//             maxCount = count
+//         }
+//     }
 
-    return mostUsedCurr
-}
+//     return mostUsedCurr
+// }
 
 
 const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpense, isLoading, displayAmount }) => {
     const baseCurrency = useCurrencyStore(state => state.baseCurrency)
     const selectedCurrency = useCurrencyStore(state => state.selectedCurrency)
     const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
+
     const [showInfo, setShowInfo] = useState<boolean>(false)
     const [showIncomeDetails, setShowIncomeDetails] = useState<boolean>(false)
     const [showExpenseDetails, setShowExpenseDetails] = useState<boolean>(false)
+    const [totalIncome, setTotalIncome] = useState<number>(0)
 
-    const totalIncome = useMemo(() => {
-        const convertedTrAmounts = dateFilteredTransactions.map((t) => {
-            return (
-                baseCurrency === selectedCurrency
-                    ? t.baseAmount
-                    : t.currency === selectedCurrency
-                        ? t.origAmount
-                        : convertGlobalFunc(t.currency.code, selectedCurrency.code, t.origAmount)
-            )
-        })
 
-        const calculatedTotal = calculateTotalSimplier(TrType.Income, convertedTrAmounts)
-        return calculatedTotal
-    }, [dateFilteredTransactions])
+    // const totalIncome = useMemo(() => {
+    //     const convertedTrAmounts = dateFilteredTransactions.map((t) => {
+    //         return (
+    //             baseCurrency === selectedCurrency
+    //                 ? t.baseAmount
+    //                 : t.currency === selectedCurrency
+    //                     ? t.origAmount
+    //                     : convertGlobalFunc(t.currency.code, selectedCurrency.code, t.origAmount)
+    //         )
+    //     })
+
+    //     const calculatedTotal = calculateTotalSimplier(TrType.Income, convertedTrAmounts)
+    //     return calculatedTotal
+    // }, [dateFilteredTransactions])
 
     const netBalance = calculateNetBalance(totalIncome, totalExpense)
 
@@ -81,6 +84,23 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
         if (type === TrType.Income) setShowIncomeDetails(!showIncomeDetails)
         else setShowExpenseDetails(!showExpenseDetails)
     }
+
+    // TotalIncome calculation
+    useEffect(() => {
+        const filteredTransactions = dateFilteredTransactions.filter(t => (t.type === TrType.Income))
+        const convertedTrAmountsPromises = filteredTransactions.map((t) => {
+            return baseCurrency.code === selectedCurrency.code
+                ? Promise.resolve(t.baseAmount)
+                : t.currency.code === selectedCurrency.code
+                    ? Promise.resolve(t.origAmount)
+                    : convertGlobalFunc(t.currency.code, selectedCurrency.code, t.origAmount)
+        })
+
+        Promise.all(convertedTrAmountsPromises).then((resolvedAmounts) => {
+            const total = calculateTotalSimplier(resolvedAmounts)
+            setTotalIncome(roundToTwo(total))
+        })
+    }, [dateFilteredTransactions, selectedCurrency])
 
 
     return (
@@ -102,8 +122,8 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
                 <div onClick={() => toggleShowDetails(TrType.Income)} className="flex gap-2 w-full items-center justify-between bg-[var(--color-list-bg-green)] text-green-200 p-1 px-3 border-1 border-[var(--color-dark-blue)] clickable">
                     <h4>Income:</h4>
                     <div className="flex gap-2">
-                        <h4>{displayAmount(totalIncome)}</h4>
-                        <h4 className="flex items-center">{baseCurrency.symbol}</h4>
+                        <h4>{totalIncome}</h4>
+                        <h4 className="flex items-center">{selectedCurrency.symbol}</h4>
                     </div>
                 </div>
                 <SummaryDetails
@@ -115,8 +135,8 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
                 <div onClick={() => toggleShowDetails(TrType.Expense)} className="flex gap-2 w-full items-center justify-between bg-[var(--color-list-bg-red)] text-red-200 p-1 px-3 border-1 border-[var(--color-dark-blue)] clickable">
                     <h4>Expense:</h4>
                     <div className="flex gap-2">
-                        <h4>- {displayAmount(totalExpense)}</h4>
-                        <h4 className="flex items-center">{baseCurrency.symbol}</h4>
+                        <h4>- {totalExpense}</h4>
+                        <h4 className="flex items-center">{selectedCurrency.symbol}</h4>
                     </div>
                 </div>
                 <SummaryDetails
@@ -129,7 +149,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
                     <h5>Net Balance:</h5>
                     <div className="flex items-center gap-2">
                         <h5>{totalExpense > totalIncome && '- '} {displayAmount(netBalance)}</h5>
-                        <h5 className="flex items-center">{baseCurrency.symbol}</h5>
+                        <h5 className="flex items-center">{selectedCurrency.symbol}</h5>
                     </div>
 
                 </div>

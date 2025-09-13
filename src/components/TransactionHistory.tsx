@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react"
 import List, { sortDateNewestFirst } from "./List"
-import { calculateTotal, CategoryIcons, fancyNumber, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions, roundToTwo } from "@/utils"
+import { calculateTotalSimplier, CategoryIcons, fancyNumber, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions, roundToTwo } from "@/utils"
 import { Transaction } from "@/interfaces"
 import { Category } from '@/enums'
 import { TrType } from '@/enums'
@@ -26,12 +26,14 @@ const OVERALL = 'overall'
 const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, selectedCurrency, deleteTransaction, screenWidth, isLoading }) => {
     // const { transactions } = useTransactions()
     const baseCurrency = useCurrencyStore(state => state.baseCurrency)
+    const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
 
     const convert = useCurrencyStore((state) => state.convert)
 
     const [selectedMonth, setSelectedMonth] = useState<string>("")
     const [selectedYear, setSelectedYear] = useState<string>("")
     const [resetSignal, setResetSignal] = useState<number>(0)
+    const [totalExpense, setTotalExpense] = useState<number>(0)
 
     // Years list once
     const years = useMemo(() => [OVERALL, ...getYearsFromTransactions(transactions).sort((a, b) => Number(b) - Number(a))], [transactions])
@@ -54,9 +56,9 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         return list
     }, [selectedYear, selectedMonth, transactions])
 
-    const totalExpense = useMemo(() => {
-        return calculateTotal(TrType.Expense, dateFilteredTransactions)
-    }, [dateFilteredTransactions])
+    // const totalExpense = useMemo(() => {
+    //     return calculateTotal(TrType.Expense, dateFilteredTransactions)
+    // }, [dateFilteredTransactions])
 
 
     function triggerReset() {
@@ -78,6 +80,25 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         return fanciedAmount
     }
 
+
+    // TotalExpence calculation
+    useEffect(() => {
+        const filteredTransactions = dateFilteredTransactions.filter(t => (t.type === TrType.Expense))
+        const convertedTrAmountsPromises = filteredTransactions.map((t) => {
+            // console.log('selectedCuency: ' + selectedCurrency.code + ' | ' + 'transaction curr: ' + t.currency.code);
+            
+            return baseCurrency.code === selectedCurrency.code
+                ? Promise.resolve(t.baseAmount)
+                : t.currency.code === selectedCurrency.code
+                    ? Promise.resolve(t.origAmount)
+                    : convertGlobalFunc(t.currency.code, selectedCurrency.code, t.origAmount)
+        })
+
+        Promise.all(convertedTrAmountsPromises).then((resolvedAmounts) => {
+            const total = calculateTotalSimplier(resolvedAmounts)
+            setTotalExpense(roundToTwo(total))
+        })
+    }, [dateFilteredTransactions, selectedCurrency])
 
     useEffect(() => { // to ensure that when the page is loaded and all data are fetched, the filter will set te latest Transaction date
         if (transactions.length === 0 || (selectedMonth !== "" && selectedYear !== "")) return

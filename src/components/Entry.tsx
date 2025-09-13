@@ -2,7 +2,7 @@
 
 import { Transaction } from '@/interfaces'
 import { Category } from '@/enums'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ResponsiveDatePicker from './ui/ResponsiveDatePicker'
 import dayjs from 'dayjs'
 import { useCurrencyStore } from '@/context/CurrencyState'
@@ -26,8 +26,8 @@ function toBaseCurrency(amount: number, currencyCode: string, rate: number): num
   return amount / rate // divide to go from that currency to EUR
 }
 
-function returnSignature(amount: number, type: TrType, category: Category, description: string, date: string) {
-  return `${amount}|${type}|${category}|${description}|${date}`
+function returnSignature(amount: number, type: TrType, category: Category, description: string, date: string, newTrCurrency: string) {
+  return `${amount}|${type}|${category}|${description}|${date}|${newTrCurrency}`
 }
 
 
@@ -42,7 +42,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
   const [category, setCategory] = useState<Category>(Category.Other)
   const [description, setDescription] = useState<string>('')
-  const [newTrCurrency, setNewTrCurrency] = useState<Currency>(baseCurrency)
+  const [newTrCurrency, setNewTrCurrency] = useState<Currency>(selectedCurrency)
 
   const [showDuplicateTrQ, setShowDuplicateTRQ] = useState<boolean>(false)
   const [dontAskAgain, setDontAskAgain] = useState<boolean>(false)
@@ -55,7 +55,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     setType(TrType.Expense)
     setCategory(Category.Other)
     setDescription('')
-    setNewTrCurrency(baseCurrency)
+    setNewTrCurrency(selectedCurrency)
   }
 
   function handleSetAmount(value: string): void {
@@ -86,7 +86,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   }
 
   function handleSaveTr() {
-    const signature = returnSignature(typedAmount, type, category, description, date)
+    const signature = returnSignature(typedAmount, type, category, description, date, newTrCurrency.code)
     if (isDuplicate(signature) && !dontAskAgain) {
       toggleShowDuplicateTrQ()
       return
@@ -97,7 +97,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   function saveTr() {
     saveTransaction({
       id: crypto.randomUUID(),
-      signature: returnSignature(typedAmount, type, category, description, date),
+      signature: returnSignature(typedAmount, type, category, description, date, newTrCurrency.code),
       origAmount: typedAmount,
       baseAmount: (
         newTrCurrency === baseCurrency
@@ -123,6 +123,10 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     setShowDuplicateTRQ(!showDuplicateTrQ)
   }
 
+
+  useEffect(() => {
+    setNewTrCurrency(selectedCurrency)
+  }, [selectedCurrency])
 
   return (
     <>

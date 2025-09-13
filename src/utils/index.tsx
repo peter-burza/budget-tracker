@@ -1,7 +1,7 @@
 import { JSX } from "@emotion/react/jsx-runtime";
 import { Transaction } from "../interfaces";
 import { Currency } from "../types";
-import { Category } from "@/enums";
+import { Category, TrType } from "@/enums";
 import { useCurrencyStore } from "@/context/CurrencyState";
 
 // export const FAKE_TRANSACTIONS: Transaction[] = [
@@ -367,16 +367,11 @@ export function getYearsFromTransactions(transactions: Transaction[]): string[] 
   return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
 }
 
-export function calculateTotal(type: string, transactions: Transaction[]): number {
-  const filteredTransactions = transactions.filter(t => (t.type === type))
-  const amounts = filteredTransactions.map(t => t.baseAmount)
-  const totalAmount = amounts.reduce((sum, t) => sum + t, 0)
-  return totalAmount
-}
-
-export function calculateTotalSimplier(type: string, amounts: (number | Promise<number | null>)[]): number {
-  const totalAmount = amounts.reduce((sum, t) => sum + t, 0)
-  return totalAmount
+export function calculateTotalSimplier(amounts: number[]): number {
+  return amounts.reduce((sum, amount) => {
+    // console.log(sum + amount);
+    return sum + amount
+  }, 0);
 }
 
 export function handleToggle(x: boolean, setX: React.Dispatch<React.SetStateAction<boolean>>): void {

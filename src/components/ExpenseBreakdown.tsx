@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react"
 import { renderSortingIcon } from "./List"
 import { Currency } from "@/types"
 import { useTransactions } from "@/context/TransactionsContext"
-import { getMostUsedCurrency } from "./Summary"
+// import { getMostUsedCurrency } from "./Summary"
 import { useCurrencyStore } from "@/context/CurrencyState"
 
 interface ExpenseBreakdownProps {
@@ -76,13 +76,13 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
     
     return Object.entries(categoryMap).map(([categoryKey, data]) => {
       const category = categoryKey as Category
-      const mostUsedCurrency = getMostUsedCurrency(data.transactions, baseCurrency);
+      // const mostUsedCurrency = getMostUsedCurrency(data.transactions, baseCurrency);
 
       return {
         category,
         total: data.totalAmount,
         percentage: totalExpense ? (data.totalAmount / totalExpense) * 100 : 0,
-        currency: mostUsedCurrency,
+        currency: selectedCurrency
       };
     });
   }
