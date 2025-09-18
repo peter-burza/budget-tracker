@@ -85,8 +85,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
     useEffect(() => {
         const filteredTransactions = dateFilteredTransactions.filter(t => (t.type === TrType.Expense))
         const convertedTrAmountsPromises = filteredTransactions.map((t) => {
-            // console.log('selectedCuency: ' + selectedCurrency.code + ' | ' + 'transaction curr: ' + t.currency.code);
-            
             return baseCurrency.code === selectedCurrency.code
                 ? Promise.resolve(t.baseAmount)
                 : t.currency.code === selectedCurrency.code

@@ -2,10 +2,9 @@
 
 import { Transaction } from "@/interfaces"
 import { TrType } from '@/enums'
-import { calculateTotalSimplier, CURRENCIES, handleToggle, roundToTwo } from "@/utils"
+import { calculateTotalSimplier, handleToggle, roundToTwo } from "@/utils"
 import React, { useEffect, useMemo, useState } from "react"
 import Modal from "./Modal"
-import { Currency } from "@/types"
 import { useCurrencyStore } from "@/context/CurrencyState"
 import SummaryDetails from "./SummaryDetails"
 
@@ -100,6 +99,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
             const total = calculateTotalSimplier(resolvedAmounts)
             setTotalIncome(roundToTwo(total))
         })
+        // calculateTotal(TrType.Income, dateFilteredTransactions, setTotalIncome, baseCurrency.code, selectedCurrency.code)
     }, [dateFilteredTransactions, selectedCurrency])
 
 

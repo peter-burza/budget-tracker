@@ -4,6 +4,8 @@ import { Currency } from "../types";
 import { Category, TrType } from "@/enums";
 import { useCurrencyStore } from "@/context/CurrencyState";
 
+// const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
+
 // export const FAKE_TRANSACTIONS: Transaction[] = [
 //   { id: 'tx001', amount: 3200, type: '+', date: '2025-08-01', category: Category.Salary, description: 'Received monthly salary from full-time employment, including base pay and performance bonus.' },
 //   { id: 'tx002', amount: 850, type: '-', date: '2025-08-02', category: Category.Rent, description: 'Paid rent for downtown apartment, including utilities and maintenance fees.' },
@@ -367,12 +369,36 @@ export function getYearsFromTransactions(transactions: Transaction[]): string[] 
   return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
 }
 
+// Calculate total Income / Expense
+// export function calculateTotal(
+//   type: TrType,
+//   transactions: Transaction[],
+//   setTotal: React.Dispatch<React.SetStateAction<number>>,
+//   baseCurrCode: string,
+//   selectedCurrCode: string
+// ): void {
+//   const filteredTransactions = transactions.filter(t => (t.type === type))
+//   const convertedTrAmountsPromises = filteredTransactions.map((t) => {
+//     return baseCurrCode === selectedCurrCode
+//       ? Promise.resolve(t.baseAmount)
+//       : t.currency.code === selectedCurrCode
+//         ? Promise.resolve(t.origAmount)
+//         : convertGlobalFunc(t.currency.code, selectedCurrCode, t.origAmount)
+//   })
+
+//   Promise.all(convertedTrAmountsPromises).then((resolvedAmounts) => {
+//     const total = calculateTotalSimplier(resolvedAmounts)
+//     setTotal(roundToTwo(total))
+//   })
+// }
+
 export function calculateTotalSimplier(amounts: number[]): number {
   return amounts.reduce((sum, amount) => {
-    // console.log(sum + amount);
+    console.log(sum + amount);
     return sum + amount
   }, 0);
 }
+
 
 export function handleToggle(x: boolean, setX: React.Dispatch<React.SetStateAction<boolean>>): void {
   setX(!x)

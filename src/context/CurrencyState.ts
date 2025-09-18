@@ -62,8 +62,7 @@ export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurre
     try {
       const response = await fetch(endpoint)
       const data = await response.json()
-      console.log(data)
-      console.log(from + ' => ' + to)
+      // console.log(from + ' => ' + to)
       
       if (!data.rates || !data.rates[to]) {
         throw new Error(`Rate for ${to} not found`)

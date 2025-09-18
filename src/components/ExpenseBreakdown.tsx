@@ -37,20 +37,14 @@ function sortTotalLowFirst(list: CategorySummary[]): CategorySummary[] {
 }
 
 const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayCategory, displayAmount, isLoading }) => {
-    const baseCurrency = useCurrencyStore(state => state.baseCurrency)
+  const baseCurrency = useCurrencyStore(state => state.baseCurrency)
+  const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
   const { transactions } = useTransactions()
   const [totalAscending, setTotalAscending] = useState<boolean | null>(null)
+  const [orderedBreakdown, setOrderedBreakdown] = useState<CategorySummary[]>([])
 
-  const orderedBreakdown = useMemo(() => {
-    const breakdown = getExpenseBreakdown()
-    if (totalAscending !== null) {
-      return totalAscending === false ? sortTotalHighFirst(breakdown) : sortTotalLowFirst(breakdown)
-    }
 
-    return breakdown
-  }, [totalAscending, dateFilteredTransactions])
-
-  function getExpenseBreakdown(): CategorySummary[] {
+  async function getExpenseBreakdown(): Promise<CategorySummary[]> {
     const expenses = dateFilteredTransactions.filter(t => t.type === TrType.Expense)
     const categoryMap: Record<string, { transactions: typeof expenses, totalAmount: number }> = {}
 
@@ -58,40 +52,38 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
 
     // const categoryMap = new Map<Category, number>()
 
-    expenses.forEach(t => {
-      // categoryMap.set(t.category, (categoryMap.get(t.category) || 0) + t.baseAmount)
+    for (const t of expenses) {
       const category = t.category as Category
-      if (!category) return
+      if (!category) continue
 
       if (!categoryMap[category]) {
         categoryMap[category] = {
           transactions: [],
-          totalAmount: 0
+          totalAmount: 0,
         }
       }
 
+      const additionAmount =
+        baseCurrency.code === selectedCurrency.code
+          ? t.baseAmount
+          : t.currency.code === selectedCurrency.code
+            ? t.origAmount
+            : await convertGlobalFunc(t.currency.code, selectedCurrency.code, t.origAmount)
+
       categoryMap[category].transactions.push(t)
-      categoryMap[category].totalAmount += t.baseAmount
-    })
-    
+      categoryMap[category].totalAmount += additionAmount
+    }
+
     return Object.entries(categoryMap).map(([categoryKey, data]) => {
       const category = categoryKey as Category
-      // const mostUsedCurrency = getMostUsedCurrency(data.transactions, baseCurrency);
-
       return {
         category,
         total: data.totalAmount,
         percentage: totalExpense ? (data.totalAmount / totalExpense) * 100 : 0,
         currency: selectedCurrency
-      };
-    });
+      }
+    })
   }
-
-  // function getExpenseBreakdown(): CategorySummary[] {
-  //   const expenses = dateFilteredTransactions.filter(t => t.type === TrType.Expense)
-
-
-  // }
 
   function setTotalReorder(): void {
     setTotalAscending((prev) => (prev === false ? true : false))
@@ -100,6 +92,22 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
   function resetOrdering(): void {
     setTotalAscending(null)
   }
+
+
+  useEffect(() => {
+    async function fetchBreakdown() {
+      const breakdown = await getExpenseBreakdown()
+      if (totalAscending !== null) {
+        const result = totalAscending === false ? sortTotalHighFirst(breakdown) : sortTotalLowFirst(breakdown)
+        setOrderedBreakdown(result)
+      }
+
+      setOrderedBreakdown(breakdown)
+    }
+
+    fetchBreakdown()
+  }, [totalAscending, dateFilteredTransactions])
+
 
   return (
     <div id="expense-breakdown" className="flex flex-col items-center gap-4">
@@ -126,7 +134,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
               return (
                 <tr key={category} className="bg-sky-800">
                   <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
-                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(total)}{" "}{baseCurrency.symbol}</td>
+                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{total}{" "}{selectedCurrency.symbol}</td>
                   <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
                 </tr>
               )

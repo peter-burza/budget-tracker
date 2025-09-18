@@ -61,7 +61,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   function handleSetAmount(value: string): void {
     const parsedValue = parseFloat(value)
     const validValue = Number.isNaN(parsedValue) ? 0 : parsedValue
-    setTypedAmount(validValue)
+    setTypedAmount(Math.abs(validValue))
   }
 
   function handleSetType(value: TrType): void {
