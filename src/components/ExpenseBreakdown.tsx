@@ -11,6 +11,7 @@ import { Currency } from "@/types"
 import { useTransactions } from "@/context/TransactionsContext"
 // import { getMostUsedCurrency } from "./Summary"
 import { useCurrencyStore } from "@/context/CurrencyState"
+import { roundToTwo } from "@/utils"
 
 interface ExpenseBreakdownProps {
   dateFilteredTransactions: Transaction[]
@@ -48,12 +49,8 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
     const expenses = dateFilteredTransactions.filter(t => t.type === TrType.Expense)
     const categoryMap: Record<string, { transactions: typeof expenses, totalAmount: number }> = {}
 
-    // getMostUsedCurrency()
-
-    // const categoryMap = new Map<Category, number>()
-
-    for (const t of expenses) {
-      const category = t.category as Category
+    for (const e of expenses) {
+      const category = e.category as Category
       if (!category) continue
 
       if (!categoryMap[category]) {
@@ -63,15 +60,15 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
         }
       }
 
-      const additionAmount =
+      const amountAddition =
         baseCurrency.code === selectedCurrency.code
-          ? t.baseAmount
-          : t.currency.code === selectedCurrency.code
-            ? t.origAmount
-            : await convertGlobalFunc(t.currency.code, selectedCurrency.code, t.origAmount)
+          ? e.baseAmount
+          : e.currency.code === selectedCurrency.code
+            ? e.origAmount
+            : await convertGlobalFunc(e.currency.code, selectedCurrency.code, e.origAmount)
 
-      categoryMap[category].transactions.push(t)
-      categoryMap[category].totalAmount += additionAmount
+      categoryMap[category].transactions.push(e)
+      categoryMap[category].totalAmount += roundToTwo(amountAddition)
     }
 
     return Object.entries(categoryMap).map(([categoryKey, data]) => {
@@ -97,12 +94,22 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
   useEffect(() => {
     async function fetchBreakdown() {
       const breakdown = await getExpenseBreakdown()
-      if (totalAscending !== null) {
-        const result = totalAscending === false ? sortTotalHighFirst(breakdown) : sortTotalLowFirst(breakdown)
-        setOrderedBreakdown(result)
-      }
-
-      setOrderedBreakdown(breakdown)
+      const newOrderedBreakdown =
+        totalAscending !== null
+          ? (
+            totalAscending === false
+              ? sortTotalHighFirst(breakdown)
+              : sortTotalLowFirst(breakdown)
+          )
+          : breakdown
+      setOrderedBreakdown(newOrderedBreakdown)
+          // if (totalAscending !== null) {
+      //   const result = totalAscending === false ? sortTotalHighFirst(breakdown) : sortTotalLowFirst(breakdown)
+      //   setOrderedBreakdown(result)
+      // }
+      // console.log('We are setting orderedBD to breakdown not ordered!');
+      
+      // setOrderedBreakdown(breakdown)
     }
 
     fetchBreakdown()
