@@ -121,7 +121,7 @@ select,
 textarea {
   box-shadow: 0 0 1.5px 1px white;
   transition-duration: 200ms;
-  border-radius: 0.1rem;
+  border-radius: 0.25rem;
 }
 
 input[type="checkbox"] {
@@ -134,7 +134,7 @@ textarea:hover,
 input:focus,
 select:focus,
 textarea:focus {
-  /* box-shadow: unset; */
+  box-shadow: unset;
 }
 
 input,
@@ -285,4 +285,70 @@ table tbody tr:hover .category-cell:hover {
   .category-table-header {
     width: 30% !important
   }
+}
+
+
+
+
+
+
+.custom-root {
+  margin-top: 0 !important;
+}
+
+.hide-element {
+  display: none !important;
+}
+
+.custom-header {
+  padding-bottom: 8px;
+  background: white !important;
+}
+
+.month-style {
+  padding: 8px 0;
+}
+
+.selected-month {
+  background: gray !important;
+  padding: 8px 0;
+}
+
+.react-datepicker__input-container input {
+  border: none;
+}
+
+.react-datepicker {
+  border-radius: 0.25rem !important;
+}
+
+.react-datepicker__month-container {
+  min-width: 232px;
+  border-radius: 0.15rem;
+}
+
+/* Layout the months in a 3-column grid */
+.react-datepicker__month-wrapper {
+  display: flex;
+  justify-content: space-around;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0px;
+  /* padding: 4px 0px; */
+}
+
+/* Style each month cell */
+.react-datepicker__month-text {
+  padding: 6px;
+  width: 3rem !important;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+/* Highlight selected month */
+.react-datepicker__month-text--keyboard-selected,
+.selected-month {
+  background-color: #007bff;
+  color: white;
 }

@@ -14,7 +14,16 @@ export interface Transaction {
   exchangeRate: number // 1 (baseCurrency) = exchangeRate (origCurrency)
 }
 
-export interface ExpectingTransaction extends Transaction {
-    time: number
-    // repeatPeriod:
+export interface ExpectingTransaction {
+  readonly id?: string
+  signature: string
+  origAmount: number
+  baseAmount: number
+  currency: Currency
+  type: TrType.Income | TrType.Expense
+  repeatDay?: number
+  startDate?: string
+  category: Category
+  description?: string
+  exchangeRate: number // 1 (baseCurrency) = exchangeRate (origCurrency)
 }

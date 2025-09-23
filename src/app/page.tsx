@@ -1,21 +1,21 @@
 'use client'
 
-import Entry from "../components/Entry";
+import Entry from "../components/Entry"
 import { useEffect, useState } from "react"
-import { Transaction } from "../interfaces";
-import TransactionHistory from "../components/TransactionHistory";
-import { useAuth } from "../context/AuthContext";
-import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
-import { db } from "../../firebase";
-import { useSettingsStore } from "@/context/SettingsState";
-import { useCurrencyStore } from "@/context/CurrencyState";
-import { useTransactions } from "@/context/TransactionsContext";
-import { areTransactionSetsEqual } from "@/utils";
+import { Transaction } from "../interfaces"
+import TransactionHistory from "../components/TransactionHistory"
+import { useAuth } from "../context/AuthContext"
+import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore"
+import { db } from "../../firebase"
+import { useSettingsStore } from "@/context/SettingsState"
+import { useCurrencyStore } from "@/context/CurrencyState"
+import { useTransactions } from "@/context/TransactionsContext"
+import { areTransactionSetsEqual } from "@/utils"
 
 export default function Home() {
   // const [transactions, setTransactions] = useState<Transaction[]>([])
   const { transactions, setTransactions } = useTransactions()
-  const [screenWidth, setScreenWidth] = useState(0);
+  const [screenWidth, setScreenWidth] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
 
   const { currentUser } = useAuth()
@@ -29,7 +29,7 @@ export default function Home() {
     // Guard closes
     if (!newTr.id || !newTr?.baseAmount || isLoading) return
     if (!currentUser?.uid) {
-      throw new Error("User is not authenticated");
+      throw new Error("User is not authenticated")
     }
 
     // Save try
@@ -50,7 +50,7 @@ export default function Home() {
         createdAt: serverTimestamp(),
       })
       setTransactions((prev) => [...prev, newTr])
-      console.log('Transaction (id: ' + newTr.id + ') saved successfully');
+      console.log('Transaction (id: ' + newTr.id + ') saved successfully')
     } catch (error: any) {
       console.log(error.message)
     } finally {
@@ -63,7 +63,7 @@ export default function Home() {
     // Guard closes
     if (isLoading || deleteTrId === undefined) return
     if (!currentUser?.uid) {
-      throw new Error("User is not authenticated");
+      throw new Error("User is not authenticated")
     }
 
     // ask if user is sure to delete this transaction
@@ -77,7 +77,7 @@ export default function Home() {
 
       const updatedTransactions = transactions.filter(t => (t.id !== deleteTrId))
       setTransactions(updatedTransactions)
-      console.log('Transaction (id: ' + deleteTrId + ') deleted successfully');
+      console.log('Transaction (id: ' + deleteTrId + ') deleted successfully')
     } catch (error: any) {
       console.log(error.message)
     } finally {
@@ -108,7 +108,7 @@ export default function Home() {
 
       if (!areTransactionSetsEqual(transactions, fetchedTransactions)) {
         setTransactions(fetchedTransactions)
-        console.log('Transaction history fetched');
+        console.log('Transaction history fetched')
       }
     } catch (error: any) {
       console.log(error.message)
@@ -116,33 +116,33 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser) return
 
     async function fetchAll() {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
         await Promise.allSettled([
           fetchUserSettings(currentUser),
           fetchTransactions()
-        ]);
+        ])
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
 
 
-    fetchAll();
-  }, [currentUser]);
+    fetchAll()
+  }, [currentUser])
 
   // Screen size
   useEffect(() => {
     function handleResize() {
-      setScreenWidth(window.innerWidth);
+      setScreenWidth(window.innerWidth)
     }
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // Fetch rates on app startup
   useEffect(() => {
@@ -164,5 +164,5 @@ export default function Home() {
         isLoading={isLoading}
       />
     </>
-  );
+  )
 }

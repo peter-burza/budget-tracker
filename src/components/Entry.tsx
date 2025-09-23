@@ -17,18 +17,19 @@ interface EntryProps {
   isLoading: boolean
 }
 
-function handleDisplayZero(amount: number): string {
+export function handleDisplayZero(amount: number): string {
   return amount === 0 ? '' : amount.toString()
 }
 
-function toBaseCurrency(amount: number, currencyCode: string, rate: number): number {
+export function toBaseCurrency(amount: number, currencyCode: string, rate: number): number {
   if (!rate) throw new Error(`Unknown currency: ${currencyCode}`)
   return amount / rate // divide to go from that currency to EUR
 }
 
-function returnSignature(amount: number, type: TrType, category: Category, description: string, date: string, newTrCurrency: string) {
-  return `${amount}|${type}|${category}|${description}|${date}|${newTrCurrency}`
+export function returnSignature(...parts: (string | number | TrType | Category)[]): string {
+  return parts.join('|');
 }
+
 
 
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
@@ -159,18 +160,6 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
         className="base-container"
       >
         <h3>New Entry</h3>
-        {/* <div className="flex flex-col gap-1 max-w-[232px] w-full">
-          <p>Amount:</p>
-          <input
-            value={handleDisplayZero(origAmount)}
-            onChange={(e) => {
-              handleSetAmount(e.target.value)
-            }}
-            type="number"
-            step="any"
-            placeholder="e.g. 4.99"
-          />
-        </div> */}
         <div className="flex flex-col gap-1 max-w-[232px] w-full">
           <p>Amount:</p>
           <div className="group relative w-full">
