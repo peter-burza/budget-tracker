@@ -33,9 +33,7 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
     const { screenWidth } = useAppStore()
     const { currentUser } = useAuth()
 
-    // const [repeatDayReorder, setRepeatDayReorder] = useState<>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
-
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null) // true = TrType.Income, false = TrType.Expense, null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null)
     const [amountAscending, setAmountAscending] = useState<boolean | null>(null)
@@ -76,14 +74,11 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
     ])
 
 
-    function setRepeatDayReorder() {
-        setAmountAscending
+    function setPayDayReorder() {
+        setAmountAscending(null)
         setPayDayAscending((prev) => (prev === false ? true : false))
     }
 
-    function setPayDayReorder() {
-
-    }
     // Handlers
     function setTypeFilterToggle() {
         setTypeFilter((prev) => (prev === null ? true : prev === true ? false : null))
@@ -125,7 +120,7 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
             <table className="list-table">
                 <thead>
                     <tr>
-                        <th onClick={setRepeatDayReorder} className='clickable'>
+                        <th onClick={setPayDayReorder} className='clickable'>
                             <ResponsiveHeader label="Pay day" iconClass="fa-calendar-days" screenWidth={screenWidth} />
                             {renderSortingIcon(payDayAscending)}
                         </th>
