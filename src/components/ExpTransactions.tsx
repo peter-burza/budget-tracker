@@ -88,6 +88,7 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
         setPayDayAscending(null)
         setAmountAscending((prev) => (prev === false ? true : false))
     }
+
     async function deleteExpTransaction(deleteTrId: string | undefined) {
         // Guard closes
         if (isLoading || deleteTrId === undefined) return
@@ -112,6 +113,10 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
         } finally {
             setIsLoading(false)
         }
+    }
+
+    function processExpTransactions() {
+
     }
 
 
@@ -173,6 +178,20 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
                         </tr>}
                 </tbody>
             </table>
+            {
+                expTransactions.length > 10
+                &&
+                <div className="flex gap-4 w-full justify-center">
+                    <button onClick={() => setTransactionCount((tC) => tC + 10)} className="expand-shorten-btn" disabled={transactionCount >= transactionsList.length}>
+                        <h4><i className="fa-solid fa-arrow-down-long"></i></h4> {/* Expand */}
+                    </button>
+                    <button onClick={() => setTransactionCount((tC) => tC - 10)} className="expand-shorten-btn" disabled={transactionCount <= 10}>
+                        <h4><i className="fa-solid fa-arrow-up-long"></i></h4> {/* Shorten */}
+                    </button>
+                </div>
+            }
+
+            <hr className="text-[var(--color-dark-blue)] w-[70%] mb-2 mt-2" />
 
             {
                 !showAddExpectingTR
