@@ -1,22 +1,22 @@
 'use client'
 
-import { Transaction } from "@/interfaces"
+import { ExpectingTransaction, Transaction } from "@/interfaces"
 import { Category } from '@/enums'
 import { TrType } from '@/enums'
-import { Currency } from "@/types";
 import { JSX } from "@emotion/react/jsx-runtime";
 import React, { useState } from "react";
 import Modal from "./Modal";
+import { displayCategory } from "@/utils";
 
 interface TransactionCardProps {
     screenWidth: number
-    transaction: Transaction,
-    selectedCurrency: Currency
+    transaction: Transaction | ExpectingTransaction,
+    // selectedCurrency: Currency
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
     deleteTransaction: (deleteTrId: string | undefined) => void
     isLastIdx: boolean
-    displayCategory: (category: Category) => string | JSX.Element
-    displayAmount: (amount: number) => string
+    // displayCategory: (category: Category) => string | JSX.Element
+    // displayAmount: (amount: number) => string
 }
 
 function displayType(type: TrType): JSX.Element {
@@ -24,7 +24,7 @@ function displayType(type: TrType): JSX.Element {
     return <i className="fa-solid fa-angles-down"></i>
 }
 
-const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, selectedCurrency, setCategoryFilter, deleteTransaction, isLastIdx, displayCategory, displayAmount }) => {
+const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, setCategoryFilter, deleteTransaction, isLastIdx/*, displayAmount*/ }) => {
     const cardStyle: string = transaction.type === TrType.Income ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)] text-green-100' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)] text-red-100'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
     const [deleteQuestion, setDeleteQuestion] = useState<boolean>(false)
@@ -48,24 +48,35 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
         setDeleteQuestion(!deleteQuestion)
     }
 
-    function yesDelete() {
+    function deleteTr() {
         deleteTransaction(transaction.id)
         toggleShowDeleteQ()
         toggleExpanded()
     }
 
 
-    return isExpanded ? (
+    return !isExpanded ? 
+    (
+        <tr onClick={toggleExpanded} className={`${cardStyle} clickable`}>
+            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{'date' in transaction ? shortenDate(transaction.date) : transaction.payDay}</td>
+            <td className={`${isLastIdx ? '!border-b-0' : ''}`} style={{}}>{displayType(transaction.type)}</td>
+            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{transaction.origAmount}{" "}{transaction.currency.symbol}</td>
+            <td className={`${isLastIdx ? '!border-b-0' : ''} category-cell`} onClick={(e) => {
+                e.stopPropagation()
+                setCategoryFilter(transaction.category)
+            }}>{displayCategory(transaction.category, screenWidth)}</td>
+        </tr>
+    ) : (
         <>
-        
-            <Modal onClose={toggleShowDeleteQ} isOpen={deleteQuestion} onConfirm={yesDelete}>
+
+            <Modal onClose={toggleShowDeleteQ} isOpen={deleteQuestion} onConfirm={deleteTr}>
                 <div className="flex flex-col gap-2 justify-center items-center">
                     <div className="flex flex-col items-center">
                         <p>Are you sure?</p>
                         <small>(This will delete the transaction permanently.)</small>
                     </div>
                     <div className="flex justify-evenly gap-1 w-full -mb-2.5">
-                        <button onClick={yesDelete} className="secondary-btn !p-0.75 items-center">
+                        <button onClick={deleteTr} className="secondary-btn !p-0.75 items-center">
                             <p className="px-2">Yes</p>
                         </button>
                         <button onClick={toggleShowDeleteQ} className="secondary-btn !p-0.75 items-center">
@@ -83,13 +94,13 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
                                 <div className="flex items-stretch gap-[1px]">
                                     <h4 className={`flex-[2] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>{transaction.category}</h4>
                                     <div className={`flex flex-[1] justify-center pl-2 pr-1 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                        <h4>{displayAmount(transaction.amount)}{" "}{selectedCurrency.symbol}</h4>
+                                        <h4>{transaction.origAmount}{" "}{transaction.currency.symbol}</h4>
                                     </div>
                                 </div>
                                 <div className="flex items-stretch gap-[1px]">
-                                    <h5 className={`flex-[1] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>Date</h5>
+                                    <h5 className={`flex-[1] px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>{'date' in transaction ? 'Date' : 'Pay day'}</h5>
                                     <div className={`flex flex-[2] justify-center px-2 py-1 ${cardStyle} !border-1 !border-[var(--color-dark-blue)]`}>
-                                        <h5>{transaction.date}</h5>
+                                        <h5>{'date' in transaction ? transaction.date : transaction.payDay}</h5>
                                     </div>
                                 </div>
                                 <div className="flex items-stretch gap-[1px]">
@@ -114,16 +125,6 @@ const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transact
                 </td>
             </tr>
         </>
-    ) : (
-        <tr onClick={toggleExpanded} className={`${cardStyle} clickable`}>
-            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{shortenDate(transaction.date)}</td>
-            <td className={`${isLastIdx ? '!border-b-0' : ''}`} style={{}}>{displayType(transaction.type)}</td>
-            <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayAmount(transaction.amount)}{" "}{selectedCurrency.symbol}</td>
-            <td className={`${isLastIdx ? '!border-b-0' : ''} category-cell`} onClick={(e) => {
-                e.stopPropagation()
-                setCategoryFilter(transaction.category)
-            }}>{displayCategory(transaction.category)}</td>
-        </tr>
     )
 }
 

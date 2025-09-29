@@ -2,62 +2,66 @@
 
 import { Transaction } from '@/interfaces'
 import { Category } from '@/enums'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ResponsiveDatePicker from './ui/ResponsiveDatePicker'
 import dayjs from 'dayjs'
 import { useCurrencyStore } from '@/context/CurrencyState'
 import { TrType } from '@/enums'
 import Modal from './Modal'
 import { useTransactions } from '@/context/TransactionsContext'
+import { Currency } from '@/types'
+import { CURRENCIES, getCurrentDate } from '@/utils'
 
 interface EntryProps {
   saveTransaction: (transaction: Transaction) => void
   isLoading: boolean
 }
 
-function displayAmount(amount: number): string {
+export function handleDisplayZero(amount: number): string {
   return amount === 0 ? '' : amount.toString()
 }
 
-function toBaseCurrency(amount: number, currencyCode: string, rates: Record<string, number>): number {
-  const rate = rates[currencyCode] // how many units of that currency per 1 EUR
+export function toBaseCurrency(amount: number, currencyCode: string, rate: number): number {
   if (!rate) throw new Error(`Unknown currency: ${currencyCode}`)
   return amount / rate // divide to go from that currency to EUR
 }
 
-function returnSignature(amount: number, type: TrType, category: Category, description: string, date: string) {
-  return `${amount}|${type}|${category}|${description}|${date}`
+export function returnSignature(...parts: (string | number | TrType | Category)[]): string {
+  return parts.join('|');
 }
 
 
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
-  const [amount, setAmount] = useState<number>(0)
-  const [type, setType] = useState<TrType>(TrType.Expense)
-  const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
-  const [category, setCategory] = useState<Category>(Category.Other)
-  const [description, setDescription] = useState<string>('')
-
-  const [showDuplicateTrQ, setShowDuplicateTRQ] = useState<boolean>(false)
-  const [dontAskAgain, setDontAskAgain] = useState<boolean>(false)
-
   const { isDuplicate } = useTransactions()
+  const baseCurrency = useCurrencyStore((state) => state.baseCurrency)
   const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
   const rates = useCurrencyStore((state) => state.rates)
 
-  const cantAddEntry: boolean | undefined =
-    amount === 0 ? true : false
+  const [typedAmount, setTypedAmount] = useState<number>(0)
+  const [type, setType] = useState<TrType>(TrType.Expense)
+  const [date, setDate] = useState<string>(getCurrentDate('YYYY-MM-DD'))
+  const [category, setCategory] = useState<Category>(Category.Other)
+  const [description, setDescription] = useState<string>('')
+  const [newTrCurrency, setNewTrCurrency] = useState<Currency>(selectedCurrency)
+  const [showDuplicateTrQ, setShowDuplicateTRQ] = useState<boolean>(false)
+  const [dontAskAgain, setDontAskAgain] = useState<boolean>(false)
+
+  const cantAddEntry: boolean | undefined = typedAmount === 0 ? true : false
+  const trSignatureStructure = [typedAmount, type, category, description, date, newTrCurrency.code]
+
 
   function resetDefaultValues() {
-    setAmount(0)
+    setTypedAmount(0)
     setType(TrType.Expense)
     setCategory(Category.Other)
     setDescription('')
+    setNewTrCurrency(selectedCurrency)
   }
 
   function handleSetAmount(value: string): void {
     const parsedValue = parseFloat(value)
     const validValue = Number.isNaN(parsedValue) ? 0 : parsedValue
-    setAmount(validValue)
+    setTypedAmount(Math.abs(validValue))
   }
 
   function handleSetType(value: TrType): void {
@@ -65,9 +69,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   }
 
   function handleSetCategory(value: Category): void {
-    // if (value !== undefined) {
     setCategory(value)
-    // }
   }
 
   function handleSetDate(value: dayjs.Dayjs): void {
@@ -79,8 +81,12 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     setDescription(value)
   }
 
+  function handleSetCurrency(selectedCurrCode: string): void {
+    setNewTrCurrency(CURRENCIES[selectedCurrCode]);
+  }
+
   function handleSaveTr() {
-    const signature = returnSignature(amount, type, category, description, date)
+    const signature = returnSignature(...trSignatureStructure)
     if (isDuplicate(signature) && !dontAskAgain) {
       toggleShowDuplicateTrQ()
       return
@@ -91,17 +97,24 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   function saveTr() {
     saveTransaction({
       id: crypto.randomUUID(),
-      signature: returnSignature(amount, type, category, description, date),
-      amount: toBaseCurrency(amount, selectedCurrency.code, rates),
+      signature: returnSignature(...trSignatureStructure),
+      origAmount: typedAmount,
+      baseAmount: (
+        newTrCurrency === baseCurrency
+          ? typedAmount
+          : toBaseCurrency(typedAmount, newTrCurrency.code, rates[newTrCurrency.code])
+      ),
+      currency: newTrCurrency,
       type: type,
       date: date,
       category: category,
-      description: description
+      description: description,
+      exchangeRate: rates[newTrCurrency.code]
     })
     resetDefaultValues()
   }
 
-  function onModalConfirm() {
+  function saveDuplicateTR() {
     saveTr()
     toggleShowDuplicateTrQ()
   }
@@ -111,14 +124,17 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   }
 
 
+  useEffect(() => {
+    setNewTrCurrency(selectedCurrency)
+  }, [selectedCurrency])
+
   return (
     <>
-    
-      <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={onModalConfirm}>
-        <p className='px-5 pt-2 text-center'>You are trying to add a duplicate transaction.</p>
+      <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={saveDuplicateTR}>
+        <p className='px-5 pt-2'>You are trying to add a duplicate transaction.</p>
         <div className="flex justify-evenly gap-1 w-full -mb-2.5">
           <button
-            onClick={onModalConfirm}
+            onClick={saveDuplicateTR}
             className='secondary-btn !p-0.75 items-center'>
             <p className='px-2'>Confirm</p>
           </button>
@@ -137,6 +153,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
         </div>
       </Modal>
 
+
       <div
         id="transaction-entry"
         className="base-container"
@@ -144,16 +161,34 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
         <h3>New Entry</h3>
         <div className="flex flex-col gap-1 max-w-[232px] w-full">
           <p>Amount:</p>
-          <input
-            value={displayAmount(amount)}
-            onChange={(e) => {
-              handleSetAmount(e.target.value)
-            }}
-            type="number"
-            step="any"
-            placeholder="e.g. 4.99"
-          />
+          <div className="group relative w-full">
+            <input
+              value={handleDisplayZero(typedAmount)}
+              onChange={(e) => handleSetAmount(e.target.value)}
+              type="number"
+              step="any"
+              placeholder="e.g. 4.99"
+              className="w-full pr-[70px] group-hover:!shadow-none" // leave space for the select
+            />
+            <select
+              id="currency_select"
+              value={newTrCurrency.code}
+              onChange={(e) => handleSetCurrency(e.target.value)}
+              className="absolute right-0 top-0 h-full !w-[68px] px-2 bg-transparent text-inherit cursor-pointer border-none !shadow-none text-right"
+            >
+              {Object.values(CURRENCIES).map((currency) => (
+                <option
+                  key={currency.code}
+                  value={currency.code}
+                  title={`${currency.code}  -  ${currency.name}  -  ${currency.symbol}`}
+                >
+                  {currency.code}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+
         <div className="flex flex-col gap-1 max-w-[232px] w-full">
           <p>Type:</p>
           <select
@@ -166,6 +201,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
             <option value={TrType.Expense}>Expense</option>
           </select>
         </div>
+
         <div className="flex flex-col gap-1 max-w-[232px] w-full">
           <p>Category:</p>
           <select
@@ -184,10 +220,12 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
             ))}
           </select>
         </div>
+
         <div className="flex flex-col gap-1 max-w-[232px] w-full">
           <p className="-mb-2">Date:</p>
           <ResponsiveDatePicker setTransactionDate={handleSetDate} />
         </div>
+
         <div className="flex flex-col gap-1 max-w-[232px] w-full">
           <p className="">Description:</p>
           <textarea
@@ -198,13 +236,14 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
             placeholder="Transaction detail"
           ></textarea>
         </div>
+
         <button
           className="secondary-btn disabled:opacity-50"
           disabled={cantAddEntry || isLoading}
           title={cantAddEntry ? 'Please enter amount' : ''}
           onClick={handleSaveTr}
         >
-          <h5>{isLoading === true ? 'Saving...' : 'Add Transaction'}</h5>
+          <h5>{isLoading === true ? 'Loading...' : 'Add Transaction'}</h5>
         </button>
       </div>
     </>

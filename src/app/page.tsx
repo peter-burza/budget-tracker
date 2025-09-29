@@ -1,21 +1,23 @@
 'use client'
 
-import Entry from "../components/Entry";
+import Entry from "../components/Entry"
 import { useEffect, useState } from "react"
-import { Transaction } from "../interfaces";
-import TransactionHistory from "../components/TransactionHistory";
-import { useAuth } from "../context/AuthContext";
-import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
-import { db } from "../../firebase";
-import { useSettingsStore } from "@/context/SettingsState";
-import { useCurrencyStore } from "@/context/CurrencyState";
-import { useTransactions } from "@/context/TransactionsContext";
-import { areTransactionSetsEqual } from "@/utils";
+import { Transaction } from "../interfaces"
+import TransactionHistory from "../components/TransactionHistory"
+import { useAuth } from "../context/AuthContext"
+import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore"
+import { db } from "../../firebase"
+import { useSettingsStore } from "@/context/SettingsState"
+import { useCurrencyStore } from "@/context/CurrencyState"
+import { useTransactions } from "@/context/TransactionsContext"
+import { areTransactionSetsEqual } from "@/utils"
+import { useAppStore } from "@/context/AppStore"
+import { useExpTransactionsStore } from "@/context/ExpTransactionsStore"
 
-export default function Home() {
-  // const [transactions, setTransactions] = useState<Transaction[]>([])
+export default function Dashboard() {
   const { transactions, setTransactions } = useTransactions()
-  const [screenWidth, setScreenWidth] = useState(0);
+  const { expTransactions, setExpTransactions } = useExpTransactionsStore()
+  const screenWidth = useAppStore((state) => state.screenWidth)
   const [isLoading, setIsLoading] = useState(false)
 
   const { currentUser } = useAuth()
@@ -27,9 +29,9 @@ export default function Home() {
 
   async function saveTransaction(newTr: Transaction) {
     // Guard closes
-    if (!newTr.id || !newTr?.amount || isLoading) return
+    if (!newTr.id || !newTr?.baseAmount || isLoading) return
     if (!currentUser?.uid) {
-      throw new Error("User is not authenticated");
+      throw new Error("User is not authenticated")
     }
 
     // Save try
@@ -38,16 +40,19 @@ export default function Home() {
       const trRef = doc(db, "users", currentUser?.uid, "transactions", newTr.id)
       const savingTransactionOnDb = await setDoc(trRef, {
         id: newTr.id,
-        amount: newTr.amount,
+        origAmount: newTr.origAmount,
+        baseAmount: newTr.baseAmount,
+        currency: newTr.currency,
         signature: newTr.signature,
         type: newTr.type,
         date: newTr.date,
         category: newTr.category,
         description: newTr.description || '',
+        exchangeRate: newTr.exchangeRate,
         createdAt: serverTimestamp(),
       })
       setTransactions((prev) => [...prev, newTr])
-      console.log('Transaction (id: ' + newTr.id + ') saved successfully');
+      console.log('Transaction (id: ' + newTr.id + ') saved successfully')
     } catch (error: any) {
       console.log(error.message)
     } finally {
@@ -60,9 +65,9 @@ export default function Home() {
     // Guard closes
     if (isLoading || deleteTrId === undefined) return
     if (!currentUser?.uid) {
-      throw new Error("User is not authenticated");
+      throw new Error("User is not authenticated")
     }
-    
+
     // ask if user is sure to delete this transaction
 
     // Delete try
@@ -74,7 +79,7 @@ export default function Home() {
 
       const updatedTransactions = transactions.filter(t => (t.id !== deleteTrId))
       setTransactions(updatedTransactions)
-      console.log('Transaction (id: ' + deleteTrId + ') deleted successfully');
+      console.log('Transaction (id: ' + deleteTrId + ') deleted successfully')
     } catch (error: any) {
       console.log(error.message)
     } finally {
@@ -91,18 +96,52 @@ export default function Home() {
         const tr = doc.data()
         return {
           id: tr.id,
-          amount: tr.amount,
+          origAmount: tr.origAmount,
+          baseAmount: tr.baseAmount,
+          currency: tr.currency,
           signature: tr.signature,
           type: tr.type,
           date: tr.date,
           category: tr.category,
-          description: tr.description || ''
+          description: tr.description || '',
+          exchangeRate: tr.exchangeRate,
         }
       })
 
       if (!areTransactionSetsEqual(transactions, fetchedTransactions)) {
         setTransactions(fetchedTransactions)
-        console.log('Transaction history fetched');
+        console.log('Transaction history fetched')
+      }
+    } catch (error: any) {
+      console.log(error.message)
+    }
+  }
+
+  async function fetchExpTransactions() { // this fetches all expecting transactions
+    if (!currentUser) return
+    try {
+      const transactionsRef = collection(db, 'users', currentUser.uid, 'expTransactions')
+      const snapshot = await getDocs(transactionsRef)
+      const fetchedTransactions = snapshot.docs.map((doc) => {
+        const tr = doc.data()
+        return {
+          id: tr.id,
+          origAmount: tr.origAmount,
+          baseAmount: tr.baseAmount,
+          currency: tr.currency,
+          signature: tr.signature,
+          type: tr.type,
+          payDay: tr.payDay,
+          startDate: tr.startDate,
+          category: tr.category,
+          description: tr.description || '',
+          exchangeRate: tr.exchangeRate,
+        }
+      })
+
+      if (!areTransactionSetsEqual(expTransactions, fetchedTransactions)) {
+        setExpTransactions(fetchedTransactions)
+        console.log('Expecting Transactions fetched')
       }
     } catch (error: any) {
       console.log(error.message)
@@ -110,33 +149,34 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser) return
 
     async function fetchAll() {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
         await Promise.allSettled([
           fetchUserSettings(currentUser),
-          fetchTransactions()
-        ]);
+          fetchTransactions(),
+          fetchExpTransactions()
+        ])
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     }
 
 
-    fetchAll();
-  }, [currentUser]);
+    fetchAll()
+  }, [currentUser])
 
-  // Screen size
-  useEffect(() => {
-    function handleResize() {
-      setScreenWidth(window.innerWidth);
-    }
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  // // Screen size
+  // useEffect(() => {
+  //   function handleResize() {
+  //     setScreenWidth(window.innerWidth)
+  //   }
+  //   handleResize()
+  //   window.addEventListener('resize', handleResize)
+  //   return () => window.removeEventListener('resize', handleResize)
+  // }, [])
 
   // Fetch rates on app startup
   useEffect(() => {
@@ -158,5 +198,5 @@ export default function Home() {
         isLoading={isLoading}
       />
     </>
-  );
+  )
 }

@@ -62,7 +62,7 @@ h5, h6 {
 input {
   background-color: var(--foreground);
   color: var(--background);
-  padding: 0.4rem 0.7rem;
+  padding: 0.5rem 0.7rem;
   width: 100%;
   outline: none;
 }
@@ -116,12 +116,16 @@ select {
   cursor: pointer;
 }
 
+.secondary-modal-btn {
+  padding: 0.18rem 1rem;
+}
+
 input,
 select,
 textarea {
   box-shadow: 0 0 1.5px 1px white;
   transition-duration: 200ms;
-  border-radius: 0.1rem;
+  border-radius: 0.25rem;
 }
 
 input[type="checkbox"] {
@@ -164,14 +168,12 @@ table td {
   width: 25%;
 }
 
-table th,
-table td,
-table tr {
-  transition-duration: 200ms;
-}
-
 table th {
   border-top: none;
+}
+
+.clickable {
+  transition-duration: 250ms;
 }
 
 .clickable:hover {
@@ -260,13 +262,14 @@ table tbody tr:hover .category-cell:hover {
   /* max-height: 95vh; */
   max-width: 85%;
   overflow-y: auto;
+  text-align: center;
 }
 
 .modal-content p {
   line-height: 1.2rem;
 }
 
-.close-button {  
+.close-btn {  
   position: absolute;
   top: 0.25rem;
   right: 0.25rem;
@@ -278,7 +281,7 @@ table tbody tr:hover .category-cell:hover {
   font-size: small;
 }
 
-.close-button:hover {
+.close-btn:hover {
   border: 1.5px solid transparent;
   opacity: 0.9;
 }
@@ -287,4 +290,70 @@ table tbody tr:hover .category-cell:hover {
   .category-table-header {
     width: 30% !important
   }
+}
+
+
+
+
+
+
+.custom-root {
+  margin-top: 0 !important;
+}
+
+.hide-element {
+  display: none !important;
+}
+
+.custom-header {
+  padding-bottom: 8px;
+  background: white !important;
+}
+
+.month-style {
+  padding: 8px 0;
+}
+
+.selected-month {
+  background: gray !important;
+  padding: 8px 0;
+}
+
+.react-datepicker__input-container input {
+  border: none;
+}
+
+.react-datepicker {
+  border-radius: 0.25rem !important;
+}
+
+.react-datepicker__month-container {
+  min-width: 232px;
+  border-radius: 0.15rem;
+}
+
+/* Layout the months in a 3-column grid */
+.react-datepicker__month-wrapper {
+  display: flex;
+  justify-content: space-around;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0px;
+  /* padding: 4px 0px; */
+}
+
+/* Style each month cell */
+.react-datepicker__month-text {
+  padding: 6px;
+  width: 3rem !important;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+/* Highlight selected month */
+.react-datepicker__month-text--keyboard-selected,
+.selected-month {
+  background-color: #007bff;
+  color: white;
 }

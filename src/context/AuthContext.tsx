@@ -27,6 +27,7 @@ import { useSettingsStore } from './SettingsState'
 interface AuthContextType {
   currentUser: User | null
   isLoadingUser: boolean
+  isLoggedIn: boolean
   signInWithGoogle: () => Promise<UserCredential>
   // signup: (email: string, password: string) => Promise<any>;
   // login: (email: string, password: string) => Promise<any>;
@@ -60,6 +61,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   // const signup = (email: string, password: string) => {
   //   return createUserWithEmailAndPassword(auth, email, password);
   // };
+
+  const isLoggedIn = currentUser ? true : false
 
   const signInWithGoogle = async () => {
     setIsLoadingUser(true)
@@ -104,6 +107,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const value: AuthContextType = {
     currentUser,
     isLoadingUser,
+    isLoggedIn,
     signInWithGoogle,
     // signup,
     // login,
