@@ -1,8 +1,9 @@
-import { JSX } from "@emotion/react/jsx-runtime";
-import { Transaction } from "../interfaces";
-import { Currency } from "../types";
-import { Category, TrType } from "@/enums";
-import { useCurrencyStore } from "@/context/CurrencyState";
+import { JSX } from "@emotion/react/jsx-runtime"
+import { ExpectingTransaction, Transaction } from "../interfaces"
+import { Currency } from "../types"
+import { Category, TrType } from "@/enums"
+import { useCurrencyStore } from "@/context/CurrencyState"
+import dayjs from "dayjs"
 
 // const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
 
@@ -31,10 +32,10 @@ import { useCurrencyStore } from "@/context/CurrencyState";
 //   { id: 'tx022', amount: 80, type: '-', date: '2028-08-22', category: Category.Pets, description: 'Vet visit and pet food for the family dog.' },
 //   { id: 'tx023', amount: 200, type: '-', date: '2027-08-23', category: Category.Shopping, description: 'Bought clothes and accessories during seasonal sale.' },
 //   { id: 'tx024', amount: 400, type: '-', date: '2026-08-24', category: Category.FixedExp, description: 'Monthly fixed expenses including insurance and subscriptions.' }
-// ];
+// ]
 
 
-// const categoryList: Category[] = Object.values(Category);
+// const categoryList: Category[] = Object.values(Category)
 
 // const descriptions: Partial<Record<Category, string>> = {
 //   [Category.Salary]: 'Monthly salary credited with performance bonus.',
@@ -61,24 +62,24 @@ import { useCurrencyStore } from "@/context/CurrencyState";
 //   [Category.Date]: 'Romantic dinner with partner.',
 //   [Category.Garden]: 'Gardening tools and plants.',
 //   [Category.Other]: 'Miscellaneous income or expense.',
-// };
-
-// function pad(num: number): string {
-//   return num.toString().padStart(2, '0');
 // }
 
-// export const FAKE_TRANSACTIONS: Transaction[] = [];
+// function pad(num: number): string {
+//   return num.toString().padStart(2, '0')
+// }
 
-// let txCounter = 1;
+// export const FAKE_TRANSACTIONS: Transaction[] = []
 
-// for (let year = 2022; year <= 2024; year++) {
-//   for (let month = 1; month <= 12; month++) {
-//     for (let i = 0; i < 5; i++) {
-//       const category = categoryList[(txCounter + i) % categoryList.length];
-//       const type = i % 2 === 0 ? '+' : '-';
-//       const amount = type === '+' ? 3000 + (i * 100) : 100 + (i * 50);
-//       const day = pad(i + 1);
-//       const date = `${year}-${pad(month)}-${day}`;
+// let txCounter = 1
+
+// for (let year = 2022 year <= 2024 year++) {
+//   for (let month = 1 month <= 12 month++) {
+//     for (let i = 0 i < 5 i++) {
+//       const category = categoryList[(txCounter + i) % categoryList.length]
+//       const type = i % 2 === 0 ? '+' : '-'
+//       const amount = type === '+' ? 3000 + (i * 100) : 100 + (i * 50)
+//       const day = pad(i + 1)
+//       const date = `${year}-${pad(month)}-${day}`
 //       FAKE_TRANSACTIONS.push({
 //         id: `tx${pad(txCounter++)}`,
 //         amount,
@@ -86,7 +87,7 @@ import { useCurrencyStore } from "@/context/CurrencyState";
 //         date,
 //         category,
 //         description: descriptions[category] || 'General transaction.'
-//       });
+//       })
 //     }
 //   }
 // }
@@ -291,62 +292,62 @@ export const CategoryIcons: Record<Category, JSX.Element> = {
 export function getMonthName(monthNum: string): string {
   switch (monthNum) {
     case "01":
-      return 'January';
+      return 'January'
     case "02":
-      return 'February';
+      return 'February'
     case "03":
-      return 'March';
+      return 'March'
     case "04":
-      return 'April';
+      return 'April'
     case "05":
-      return 'May';
+      return 'May'
     case "06":
-      return 'June';
+      return 'June'
     case "07":
-      return 'July';
+      return 'July'
     case "08":
-      return 'August';
+      return 'August'
     case "09":
-      return 'September';
+      return 'September'
     case "10":
-      return 'October';
+      return 'October'
     case "11":
-      return 'November';
+      return 'November'
     case "12":
-      return 'December';
+      return 'December'
     default:
-      return 'Invalid month';
+      return 'Invalid month'
   }
 }
 
 export function getMonthNumber(monthName: string): string {
   switch (monthName.toLowerCase()) {
     case 'january':
-      return '01';
+      return '01'
     case 'february':
-      return '02';
+      return '02'
     case 'march':
-      return '03';
+      return '03'
     case 'april':
-      return '04';
+      return '04'
     case 'may':
-      return '05';
+      return '05'
     case 'june':
-      return '06';
+      return '06'
     case 'july':
-      return '07';
+      return '07'
     case 'august':
-      return '08';
+      return '08'
     case 'september':
-      return '09';
+      return '09'
     case 'october':
-      return '10';
+      return '10'
     case 'november':
-      return '11';
+      return '11'
     case 'december':
-      return '12';
+      return '12'
     default:
-      return 'Invalid month';
+      return 'Invalid month'
   }
 }
 
@@ -359,14 +360,14 @@ export function getYear(date: string): string {
 }
 
 export function getYearsFromTransactions(transactions: Transaction[]): string[] {
-  const yearsSet = new Set<string>();
+  const yearsSet = new Set<string>()
 
   for (const t of transactions) {
-    const year = t.date.slice(0, 4);
-    yearsSet.add(year);
+    const year = t.date.slice(0, 4)
+    yearsSet.add(year)
   }
 
-  return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
+  return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a))
 }
 
 // Calculate total Income / Expense
@@ -394,9 +395,8 @@ export function getYearsFromTransactions(transactions: Transaction[]): string[] 
 
 export function calculateTotalSimplier(amounts: number[]): number {
   return amounts.reduce((sum, amount) => {
-    console.log(sum + amount);
     return sum + amount
-  }, 0);
+  }, 0)
 }
 
 
@@ -408,27 +408,68 @@ export function roundToTwo(num: number): number {
   return Math.round(num * 100) / 100
 }
 
-export function areTransactionSetsEqual(arr1: Transaction[], arr2: Transaction[]): boolean {
-  if (arr1.length !== arr2.length) return false;
+function getArrayType(arr: (Transaction | ExpectingTransaction)[]): 'transaction' | 'expecting' | 'unknown' {
+  if (arr.length === 0) return 'unknown'
+  const item = arr[0]
 
-  const sortById = (a: Transaction, b: Transaction) => a.id!.localeCompare(b.id!);
+  if ('date' in item) return 'transaction'
+  if ('startDate' in item) return 'expecting'
+  return 'unknown'
+}
 
-  const sorted1 = [...arr1].sort(sortById);
-  const sorted2 = [...arr2].sort(sortById);
 
-  return sorted1.every((tr1, index) => {
-    const tr2 = sorted2[index];
+export function areTransactionSetsEqual(arr1: Transaction[] | ExpectingTransaction[], arr2: Transaction[] | ExpectingTransaction[]): boolean {
+  const type1 = getArrayType(arr1)
+  const type2 = getArrayType(arr2)
+  if (type1 !== type2 || arr1.length !== arr2.length) return false
+
+  const sortById = (a: Transaction | ExpectingTransaction, b: Transaction | ExpectingTransaction) => a.id!.localeCompare(b.id!)
+
+  const sorted1 = [...arr1].sort(sortById)
+  const sorted2 = [...arr2].sort(sortById)
+
+  if (type1 === 'transaction') {
+    return sorted1.every((t1, index) => {
+      const tr1 = t1 as Transaction
+      const tr2 = sorted2[index] as Transaction
+      return (
+        tr1.id === tr2.id &&
+        tr1.baseAmount === tr2.baseAmount &&
+        tr1.type === tr2.type &&
+        tr1.date === tr2.date &&
+        tr1.category === tr2.category &&
+        (tr1.description || '') === (tr2.description || '')
+      )
+    })
+  }
+
+  return sorted1.every((t1, index) => {
+    const tr1 = t1 as ExpectingTransaction
+    const tr2 = sorted2[index] as ExpectingTransaction
     return (
       tr1.id === tr2.id &&
       tr1.baseAmount === tr2.baseAmount &&
       tr1.type === tr2.type &&
-      tr1.date === tr2.date &&
+      tr1.payDay === tr2.payDay &&
+      tr1.startDate === tr2.startDate &&
       tr1.category === tr2.category &&
       (tr1.description || '') === (tr2.description || '')
-    );
-  });
+    )
+  })
 }
 
 export function fancyNumber(num: number): string {
   return num.toFixed(2).toLocaleString()
+}
+
+export function displayCategory(category: Category, screenWidth: number): string | JSX.Element {
+  return screenWidth > 510 ? category : CategoryIcons[category]
+}
+
+export function getCurrentDay() {
+  return dayjs().date()
+}
+
+export function getCurrentDate(format: string) {
+  return dayjs(Date.now()).format(format)
 }

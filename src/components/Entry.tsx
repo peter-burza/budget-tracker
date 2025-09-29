@@ -10,7 +10,7 @@ import { TrType } from '@/enums'
 import Modal from './Modal'
 import { useTransactions } from '@/context/TransactionsContext'
 import { Currency } from '@/types'
-import { CURRENCIES } from '@/utils'
+import { CURRENCIES, getCurrentDate } from '@/utils'
 
 interface EntryProps {
   saveTransaction: (transaction: Transaction) => void
@@ -31,7 +31,6 @@ export function returnSignature(...parts: (string | number | TrType | Category)[
 }
 
 
-
 const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   const { isDuplicate } = useTransactions()
   const baseCurrency = useCurrencyStore((state) => state.baseCurrency)
@@ -40,15 +39,15 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
 
   const [typedAmount, setTypedAmount] = useState<number>(0)
   const [type, setType] = useState<TrType>(TrType.Expense)
-  const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
+  const [date, setDate] = useState<string>(getCurrentDate('YYYY-MM-DD'))
   const [category, setCategory] = useState<Category>(Category.Other)
   const [description, setDescription] = useState<string>('')
   const [newTrCurrency, setNewTrCurrency] = useState<Currency>(selectedCurrency)
-
   const [showDuplicateTrQ, setShowDuplicateTRQ] = useState<boolean>(false)
   const [dontAskAgain, setDontAskAgain] = useState<boolean>(false)
 
   const cantAddEntry: boolean | undefined = typedAmount === 0 ? true : false
+  const trSignatureStructure = [typedAmount, type, category, description, date, newTrCurrency.code]
 
 
   function resetDefaultValues() {
@@ -87,7 +86,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   }
 
   function handleSaveTr() {
-    const signature = returnSignature(typedAmount, type, category, description, date, newTrCurrency.code)
+    const signature = returnSignature(...trSignatureStructure)
     if (isDuplicate(signature) && !dontAskAgain) {
       toggleShowDuplicateTrQ()
       return
@@ -98,7 +97,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   function saveTr() {
     saveTransaction({
       id: crypto.randomUUID(),
-      signature: returnSignature(typedAmount, type, category, description, date, newTrCurrency.code),
+      signature: returnSignature(...trSignatureStructure),
       origAmount: typedAmount,
       baseAmount: (
         newTrCurrency === baseCurrency
@@ -115,7 +114,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
     resetDefaultValues()
   }
 
-  function onModalConfirm() {
+  function saveDuplicateTR() {
     saveTr()
     toggleShowDuplicateTrQ()
   }
@@ -131,11 +130,11 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
 
   return (
     <>
-      <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={onModalConfirm}>
-        <p className='px-5 pt-2 text-center'>You are trying to add a duplicate transaction.</p>
+      <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={saveDuplicateTR}>
+        <p className='px-5 pt-2'>You are trying to add a duplicate transaction.</p>
         <div className="flex justify-evenly gap-1 w-full -mb-2.5">
           <button
-            onClick={onModalConfirm}
+            onClick={saveDuplicateTR}
             className='secondary-btn !p-0.75 items-center'>
             <p className='px-2'>Confirm</p>
           </button>
@@ -244,7 +243,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
           title={cantAddEntry ? 'Please enter amount' : ''}
           onClick={handleSaveTr}
         >
-          <h5>{isLoading === true ? 'Saving...' : 'Add Transaction'}</h5>
+          <h5>{isLoading === true ? 'Loading...' : 'Add Transaction'}</h5>
         </button>
       </div>
     </>

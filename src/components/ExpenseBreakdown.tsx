@@ -6,19 +6,18 @@ import { TrType } from '@/enums'
 import ResponsiveHeader from "./ui/ResponsiveHeader"
 import { JSX } from "@emotion/react/jsx-runtime"
 import { useEffect, useMemo, useState } from "react"
-import { renderSortingIcon } from "./List"
+import { renderSortingIcon } from "./TransactionsList"
 import { Currency } from "@/types"
 import { useTransactions } from "@/context/TransactionsContext"
 // import { getMostUsedCurrency } from "./Summary"
 import { useCurrencyStore } from "@/context/CurrencyState"
-import { roundToTwo } from "@/utils"
+import { displayCategory, roundToTwo } from "@/utils"
 
 interface ExpenseBreakdownProps {
   dateFilteredTransactions: Transaction[]
   screenWidth: number
   selectedCurrency: Currency
   totalExpense: number
-  displayCategory: (category: Category) => string | JSX.Element
   isLoading: boolean
   displayAmount: (amount: number, rate?: number) => string
 }
@@ -37,7 +36,7 @@ function sortTotalLowFirst(list: CategorySummary[]): CategorySummary[] {
   return [...list].sort((a, b) => new Date(a.total).getTime() - new Date(b.total).getTime())
 }
 
-const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayCategory, displayAmount, isLoading }) => {
+const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayAmount, isLoading }) => {
   const baseCurrency = useCurrencyStore(state => state.baseCurrency)
   const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
   const { transactions } = useTransactions()
@@ -140,7 +139,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
               const isLastIdx = idx === orderedBreakdown.length - 1
               return (
                 <tr key={category} className="bg-sky-800">
-                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category)}</td>
+                  <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{displayCategory(category, screenWidth)}</td>
                   <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{total}{" "}{selectedCurrency.symbol}</td>
                   <td className={`${isLastIdx ? '!border-b-0' : ''}`}>{percentage.toFixed(1)}%</td>
                 </tr>

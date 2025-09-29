@@ -5,6 +5,7 @@ import AuthProvider from "../context/AuthContext";
 import TopNav from "../components/TopNav";
 import Footer from "../components/Footer";
 import TransactionsProvider from "../context/TransactionsContext";
+import ScreenTracker from "@/components/ui/ScreenTracker";
 
 export const metadata: Metadata = {
   title: "BudgetTer | Budget Tracker",
@@ -16,6 +17,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <Head />
@@ -27,7 +29,8 @@ export default function RootLayout({
             </header>
 
             <main id="app" className="flex-grow flex flex-col gap-3 p-3">
-                {children}
+              {children}
+              <ScreenTracker />
             </main>
             <div id="portal"></div>
 

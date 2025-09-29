@@ -116,6 +116,10 @@ select {
   cursor: pointer;
 }
 
+.secondary-modal-btn {
+  padding: 0.18rem 1rem;
+}
+
 input,
 select,
 textarea {
@@ -258,13 +262,14 @@ table tbody tr:hover .category-cell:hover {
   /* max-height: 95vh; */
   max-width: 85%;
   overflow-y: auto;
+  text-align: center;
 }
 
 .modal-content p {
   line-height: 1.2rem;
 }
 
-.close-button {  
+.close-btn {  
   position: absolute;
   top: 0.25rem;
   right: 0.25rem;
@@ -276,7 +281,7 @@ table tbody tr:hover .category-cell:hover {
   font-size: small;
 }
 
-.close-button:hover {
+.close-btn:hover {
   border: 1.5px solid transparent;
   opacity: 0.9;
 }

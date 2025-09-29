@@ -11,11 +11,13 @@ import { useSettingsStore } from "@/context/SettingsState"
 import { useCurrencyStore } from "@/context/CurrencyState"
 import { useTransactions } from "@/context/TransactionsContext"
 import { areTransactionSetsEqual } from "@/utils"
+import { useAppStore } from "@/context/AppStore"
+import { useExpTransactionsStore } from "@/context/ExpTransactionsStore"
 
-export default function Home() {
-  // const [transactions, setTransactions] = useState<Transaction[]>([])
+export default function Dashboard() {
   const { transactions, setTransactions } = useTransactions()
-  const [screenWidth, setScreenWidth] = useState(0)
+  const { expTransactions, setExpTransactions } = useExpTransactionsStore()
+  const screenWidth = useAppStore((state) => state.screenWidth)
   const [isLoading, setIsLoading] = useState(false)
 
   const { currentUser } = useAuth()
@@ -115,6 +117,37 @@ export default function Home() {
     }
   }
 
+  async function fetchExpTransactions() { // this fetches all expecting transactions
+    if (!currentUser) return
+    try {
+      const transactionsRef = collection(db, 'users', currentUser.uid, 'expTransactions')
+      const snapshot = await getDocs(transactionsRef)
+      const fetchedTransactions = snapshot.docs.map((doc) => {
+        const tr = doc.data()
+        return {
+          id: tr.id,
+          origAmount: tr.origAmount,
+          baseAmount: tr.baseAmount,
+          currency: tr.currency,
+          signature: tr.signature,
+          type: tr.type,
+          payDay: tr.payDay,
+          startDate: tr.startDate,
+          category: tr.category,
+          description: tr.description || '',
+          exchangeRate: tr.exchangeRate,
+        }
+      })
+
+      if (!areTransactionSetsEqual(expTransactions, fetchedTransactions)) {
+        setExpTransactions(fetchedTransactions)
+        console.log('Expecting Transactions fetched')
+      }
+    } catch (error: any) {
+      console.log(error.message)
+    }
+  }
+
   useEffect(() => {
     if (!currentUser) return
 
@@ -123,7 +156,8 @@ export default function Home() {
       try {
         await Promise.allSettled([
           fetchUserSettings(currentUser),
-          fetchTransactions()
+          fetchTransactions(),
+          fetchExpTransactions()
         ])
       } finally {
         setIsLoading(false)
@@ -134,15 +168,15 @@ export default function Home() {
     fetchAll()
   }, [currentUser])
 
-  // Screen size
-  useEffect(() => {
-    function handleResize() {
-      setScreenWidth(window.innerWidth)
-    }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  // // Screen size
+  // useEffect(() => {
+  //   function handleResize() {
+  //     setScreenWidth(window.innerWidth)
+  //   }
+  //   handleResize()
+  //   window.addEventListener('resize', handleResize)
+  //   return () => window.removeEventListener('resize', handleResize)
+  // }, [])
 
   // Fetch rates on app startup
   useEffect(() => {

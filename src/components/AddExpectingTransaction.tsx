@@ -7,46 +7,44 @@ import { Category, TrType } from "@/enums"
 import dayjs from "dayjs"
 import { Currency } from "@/types"
 import { useCurrencyStore } from "@/context/CurrencyState"
-import { CURRENCIES } from "@/utils"
+import { CURRENCIES, getCurrentDay } from "@/utils"
 import ResponsiveDatePicker from "./ui/ResponsiveDatePicker"
 import { ExpectingTransaction } from "@/interfaces"
 import { useAuth } from "@/context/AuthContext"
 import { doc, serverTimestamp, setDoc } from "firebase/firestore"
 import { db } from "../../firebase"
-import { useExpTransactionsStore } from "@/context/ExpTransactionsState"
+import { useExpTransactionsStore } from "@/context/ExpTransactionsStore"
+import { useTransactions } from "@/context/TransactionsContext"
 
 
 interface AddExpectingTransactionProps {
-
+    isLoading: boolean
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+    setShowAddExpectingTR: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 
-const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ }) => {
-    const { expTransactions, setExpTransactions } = useExpTransactionsStore()
+const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ isLoading, setIsLoading, setShowAddExpectingTR }) => {
+    const { currentUser } = useAuth()
+    const setExpTransactions = useExpTransactionsStore((state) => state.setExpTransactions)
+    const { isDuplicate } = useExpTransactionsStore()
     const baseCurrency = useCurrencyStore((state) => state.baseCurrency)
     const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
     const rates = useCurrencyStore((state) => state.rates)
 
-    const { currentUser } = useAuth()
-
     const [typedAmount, setTypedAmount] = useState<number>(0)
     const [type, setType] = useState<TrType>(TrType.Expense)
-    // const [date, setDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
-    const [repeatDay, setRepeatDay] = useState<number>(1)
+    const [payDay, setPayDay] = useState<number>(getCurrentDay())
     const [startDate, setStartDate] = useState<string>(dayjs(Date.now()).format('YYYY-MM-DD'))
     const [category, setCategory] = useState<Category>(Category.Other)
     const [description, setDescription] = useState<string>('')
     const [newTrCurrency, setNewTrCurrency] = useState<Currency>(selectedCurrency)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [payDayTooHigh, setPayDayTooHigh] = useState<boolean>(false)
+    const [showDuplicateTrQ, setShowDuplicateTRQ] = useState<boolean>(false)
+    const [dontAskAgain, setDontAskAgain] = useState<boolean>(false)
+    const expTrSignatureStructure = [typedAmount, type, category, description, payDay, startDate, newTrCurrency.code]
 
     const cantAddEntry: boolean | undefined = typedAmount === 0 ? true : false
-
-    // const [showDuplicateTrQ, setShowDuplicateTRQ] = useState<boolean>(false)
-
-
-    // function toggleShowDuplicateTrQ() {
-    //     setShowDuplicateTRQ(!showDuplicateTrQ)
-    // }
 
 
     function handleSetAmount(value: string): void {
@@ -63,10 +61,11 @@ const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ }) =>
         setCategory(value)
     }
 
-    function handleSetDate(value: dayjs.Dayjs): void {
+    function handleProcessDate(value: dayjs.Dayjs): void {
         const dateOnly: string = value.format('YYYY-MM-DD')
         setStartDate(dateOnly)
-        setRepeatDay(Number(dateOnly.slice(8)))
+        setPayDay(Number(dateOnly.slice(8)))
+
     }
 
     function handleSetDescription(value: string): void {
@@ -77,92 +76,89 @@ const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ }) =>
         setNewTrCurrency(CURRENCIES[selectedCurrCode]);
     }
 
-    function addExpectingTransaction() {
-
+    function resetDefaultValues() {
+        setTypedAmount(0)
+        setType(TrType.Expense)
+        setCategory(Category.Other)
+        setDescription('')
+        setNewTrCurrency(selectedCurrency)
     }
 
-    async function saveTransaction(newTr: ExpectingTransaction) {
+    function toggleShowDuplicateTrQ() {
+        setShowDuplicateTRQ(!showDuplicateTrQ)
+    }
+
+    function saveDuplicateTR() {
+        saveExpTransaction()
+        toggleShowDuplicateTrQ()
+    }
+
+    function handleSaveExpTr() {
+        const signature = returnSignature(...expTrSignatureStructure)
+        if (isDuplicate(signature) && !dontAskAgain) {
+            toggleShowDuplicateTrQ()
+            return
+        }
+        saveExpTransaction()
+    }
+
+    async function saveExpTransaction() {
         // Guard closes
-        if (!newTr.id || !newTr?.baseAmount || isLoading) return
         if (!currentUser?.uid) {
             throw new Error("User is not authenticated");
         }
+        if (payDay > 28) {
+            setPayDayTooHigh(true)
+            return
+        }
+        if (isLoading) return
 
         // Save try
         try {
             setIsLoading(true)
-            const trRef = doc(db, "users", currentUser?.uid, "exp-transactions", newTr.id)
-            const savingTransactionOnDb = await setDoc(trRef, {
-                id: newTr.id,
-                origAmount: newTr.origAmount,
-                baseAmount: newTr.baseAmount,
-                currency: newTr.currency,
-                signature: newTr.signature,
-                type: newTr.type,
-                repeatDay: newTr.repeatDay,
-                startDate: newTr.startDate,
-                category: newTr.category,
-                description: newTr.description || '',
-                exchangeRate: newTr.exchangeRate,
+            const newTr = {
+                id: crypto.randomUUID(),
+                origAmount: typedAmount,
+                baseAmount: (
+                    newTrCurrency === baseCurrency
+                        ? typedAmount
+                        : toBaseCurrency(typedAmount, newTrCurrency.code, rates[newTrCurrency.code])
+                ),
+                currency: newTrCurrency,
+                signature: returnSignature(...expTrSignatureStructure),
+                type: type,
+                payDay: payDay,
+                startDate: startDate,
+                category: category,
+                description: description,
+                exchangeRate: rates[newTrCurrency.code],
                 createdAt: serverTimestamp(),
-            })
+            }
+            const trRef = doc(db, "users", currentUser?.uid, "expTransactions", newTr.id)
+            const savingTransactionOnDb = await setDoc(trRef, newTr)
             setExpTransactions((prev) => [...prev, newTr])
             console.log('Expecting transaction (id: ' + newTr.id + ') added successfully');
         } catch (error: any) {
             console.log(error.message)
         } finally {
+            resetDefaultValues()
             setIsLoading(false)
         }
-
-
-        saveTransaction({
-            id: crypto.randomUUID(),
-            signature: returnSignature(typedAmount, type, category, description, repeatDay, startDate, newTrCurrency.code),
-            origAmount: typedAmount,
-            baseAmount: (
-                newTrCurrency === baseCurrency
-                    ? typedAmount
-                    : toBaseCurrency(typedAmount, newTrCurrency.code, rates[newTrCurrency.code])
-            ),
-            currency: newTrCurrency,
-            type: type,
-            repeatDay: repeatDay,
-            startDate: startDate,
-            category: category,
-            description: description,
-            exchangeRate: rates[newTrCurrency.code]
-        })
-        resetDefaultValues()
     }
-
-    //   function saveTr() {
-    //     saveTransaction({
-    //       id: crypto.randomUUID(),
-    //       signature: returnSignature(typedAmount, type, category, description, date, newTrCurrency.code),
-    //       origAmount: typedAmount,
-    //       baseAmount: (
-    //         newTrCurrency === baseCurrency
-    //           ? typedAmount
-    //           : toBaseCurrency(typedAmount, newTrCurrency.code, rates[newTrCurrency.code])
-    //       ),
-    //       currency: newTrCurrency,
-    //       type: type,
-    //       date: date,
-    //       category: category,
-    //       description: description,
-    //       exchangeRate: rates[newTrCurrency.code]
-    //     })
-    //     resetDefaultValues()
-    //   }
 
 
     return (
         <>
-            {/* <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={onModalConfirm}>
+            {/* Repeat day too high */}
+            <Modal onClose={() => setPayDayTooHigh(false)} isOpen={payDayTooHigh} includeOk>
+                <p className="pt-5">Please make the repeating day max 28 (cause on february we won't be able to process the transaction 😂)</p>
+            </Modal>
+
+            <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={saveDuplicateTR}>
                 <p className='px-5 pt-2 text-center'>You are trying to add a duplicate transaction.</p>
                 <div className="flex justify-evenly gap-1 w-full -mb-2.5">
                     <button
-                        onClick={onModalConfirm}
+                        onClick={saveDuplicateTR}
                         className='secondary-btn !p-0.75 items-center'>
                         <p className='px-2'>Confirm</p>
                     </button>
@@ -179,11 +175,16 @@ const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ }) =>
                     />
                     <p>Don't ask again</p>
                 </div>
-            </Modal> */}
+            </Modal>
 
 
-            <div className="flex flex-col gap-[0.5rem]">
-                <h4 className="text-center pb-2">Add Expecting Transaction</h4>
+            <div className="flex flex-col gap-[0.5rem] items-center pt-4">
+                <button onClick={() => setShowAddExpectingTR(false)} className="border-1 border-red-400 rounded-full hover:border-transparent duration-200 cursor-pointer">
+                    <div className="flex px-2 py-2.5">
+                        <i className="fa-solid fa-angle-down text-base text-red-400 duration-200 rotate-180"></i>
+                    </div>
+                </button>
+
                 <div className="flex flex-col gap-1 max-w-[232px] w-full">
                     <p>Amount:</p>
                     <div className="group relative w-full">
@@ -248,7 +249,7 @@ const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ }) =>
 
                 <div className="flex flex-col gap-1 max-w-[232px] w-full">
                     <p className="-mb-2">Start date:</p>
-                    <ResponsiveDatePicker setTransactionDate={handleSetDate} />
+                    <ResponsiveDatePicker setTransactionDate={handleProcessDate} />
                 </div>
 
                 <div className="flex flex-col gap-1 max-w-[232px] w-full">
@@ -263,12 +264,12 @@ const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ }) =>
                 </div>
 
                 <button
-                    className="secondary-btn disabled:opacity-50"
+                    className="secondary-btn disabled:opacity-50 !block"
                     disabled={cantAddEntry || isLoading}
                     title={cantAddEntry ? 'Please enter amount' : ''}
-                    onClick={addExpectingTransaction}
+                    onClick={handleSaveExpTr}
                 >
-                    <h5>{isLoading === true ? 'Saving...' : 'Add Transaction'}</h5>
+                    <h5>{isLoading === true ? 'Adding...' : 'Add Expecting Transaction'}</h5>
                 </button>
             </div >
         </>

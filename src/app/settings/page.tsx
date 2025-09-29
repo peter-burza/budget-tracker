@@ -1,8 +1,8 @@
 'use client'
 
-import AddExpectingTransaction from "@/components/AddExpectingTransaction"
+import ExpTransactions from "@/components/ExpTransactions"
 import CurrencySelector from "@/components/ui/CurrencySelector"
-import { ExpectingTransaction } from "@/interfaces"
+import { useAuth } from "@/context/AuthContext"
 import { useState } from "react"
 
 interface SettingsPageProps {
@@ -10,7 +10,12 @@ interface SettingsPageProps {
 }
 
 const SettingsPage: React.FC<SettingsPageProps> = () => {
-    const [showAddExpectingTR, setShowAddExpectingTR] = useState<boolean>(true)
+    const { currentUser } = useAuth()
+
+    if (!currentUser) {
+        // if no user found - then boot them to the home page cause the settings page is for authenticated users only
+        window.location.href = "/";
+    }
 
     return (
         <>
@@ -24,17 +29,8 @@ const SettingsPage: React.FC<SettingsPageProps> = () => {
 
                 <hr className="text-[var(--color-dark-blue)] w-[85%] mb-3 mt-4" />
 
-                <div id="add-expecting-transaction">
-                    {
-                        showAddExpectingTR
-                            ?
-                            <AddExpectingTransaction />
-                            :
-                            <div>
-
-                            </div>
-                    }
-                </div>
+                <h4 className="text-center pb-2">Expecting Transactions</h4>
+                <ExpTransactions />
             </div>
         </>
     )

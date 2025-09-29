@@ -1,7 +1,7 @@
 'use state'
 
 import React, { useEffect, useMemo, useState } from "react"
-import List, { sortDateNewestFirst } from "./List"
+import TransactionsList, { sortDateNewestFirst } from "./TransactionsList"
 import { calculateTotalSimplier, CategoryIcons, fancyNumber, getMonth, getMonthName, getMonthNumber, getYear, getYearsFromTransactions, roundToTwo } from "@/utils"
 import { Transaction } from "@/interfaces"
 import { Category } from '@/enums'
@@ -11,6 +11,7 @@ import ExpenseBreakdown from "./ExpenseBreakdown"
 import { Currency } from "@/types"
 import { useCurrencyStore } from "@/context/CurrencyState"
 import Summary from "./Summary"
+import { useAppStore } from "@/context/AppStore"
 // import { useTransactions } from "../context/TransactionsContext"
 
 interface TransactionHistoryPtops {
@@ -23,7 +24,7 @@ interface TransactionHistoryPtops {
 
 const OVERALL = 'overall'
 
-const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, selectedCurrency, deleteTransaction, screenWidth, isLoading }) => {
+const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, selectedCurrency, deleteTransaction, isLoading, screenWidth }) => {
     // const { transactions } = useTransactions()
     const baseCurrency = useCurrencyStore(state => state.baseCurrency)
     const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
@@ -65,10 +66,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         setResetSignal(() => resetSignal + 1)
     }
 
-    function displayCategory(category: Category): string | JSX.Element {
-        return screenWidth > 510 ? category : CategoryIcons[category]
-    }
-
     function convertAmount(amount: number, rate: number) {
         const convertedAmount = roundToTwo(convert(amount, rate))
         return convertedAmount
@@ -79,7 +76,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
         const fanciedAmount = fancyNumber(modifiedAmount)
         return fanciedAmount
     }
-
 
     // TotalExpence calculation
     useEffect(() => {
@@ -178,7 +174,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 displayAmount={displayAmount}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%]" />
-            <List
+            <TransactionsList
                 // selectedCurrency={selectedCurrency}
                 dateFilteredTransactions={dateFilteredTransactions}
                 deleteTransaction={deleteTransaction}
@@ -186,7 +182,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 selectedYear={selectedYear}
                 resetSignal={resetSignal}
                 screenWidth={screenWidth}
-                displayCategory={displayCategory}
                 isLoading={isLoading}
             // displayAmount={displayAmount}
             />
@@ -196,7 +191,6 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 screenWidth={screenWidth}
                 selectedCurrency={selectedCurrency}
                 totalExpense={totalExpense}
-                displayCategory={displayCategory}
                 isLoading={isLoading}
                 displayAmount={displayAmount}
             />

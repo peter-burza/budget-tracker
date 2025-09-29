@@ -21,8 +21,8 @@ export interface ExpectingTransaction {
   baseAmount: number
   currency: Currency
   type: TrType.Income | TrType.Expense
-  repeatDay?: number
-  startDate?: string
+  payDay: number
+  startDate: string
   category: Category
   description?: string
   exchangeRate: number // 1 (baseCurrency) = exchangeRate (origCurrency)

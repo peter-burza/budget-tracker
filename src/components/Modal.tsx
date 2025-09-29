@@ -7,9 +7,10 @@ interface ModalProps {
     onConfirm?: () => void
     onClose: () => void
     children: React.ReactNode
+    includeOk?: boolean
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, children, includeOk }) => {
     const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null)
 
     useEffect(() => {
@@ -38,7 +39,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, children }) =
         document.addEventListener('keydown', handleEnterDown)
         return () => document.removeEventListener('keydown', handleEnterDown)
     }, [isOpen, onConfirm])
-    
+
 
     if (!isOpen || !portalRoot) return null
 
@@ -46,10 +47,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, children }) =
         <div className="modal-container">
             <button onClick={onClose} className="modal-underlay" />
             <div className="modal-content">
-                <button className="flex items-center close-button" onClick={onClose}>
+                <button className="flex items-center close-btn" onClick={onClose}>
                     <i className="fa-solid fa-xmark"></i>
                 </button>
                 {children}
+                {
+                    includeOk &&
+                    <button className="secondary-btn secondary-modal-btn" onClick={onClose}>
+                        <p>Ok</p>
+                    </button>
+                }
             </div>
         </div>,
         portalRoot

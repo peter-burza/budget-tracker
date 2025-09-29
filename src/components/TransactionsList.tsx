@@ -8,7 +8,6 @@ import { Category } from '@/enums'
 import { TrType } from '@/enums'
 import ResponsiveHeader from './ui/ResponsiveHeader'
 import Modal from './Modal'
-import { Currency } from "@/types"
 import { handleToggle } from '@/utils'
 import { useTransactions } from '@/context/TransactionsContext'
 
@@ -20,7 +19,6 @@ interface ListProps {
     resetSignal: number
     deleteTransaction: (deleteTrId: string | undefined) => void
     screenWidth: number
-    displayCategory: (category: Category) => string | JSX.Element
     isLoading: boolean
     // displayAmount: (amount: number) => string
 }
@@ -45,7 +43,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 }
 
 
-const List: React.FC<ListProps> = ({ dateFilteredTransactions, deleteTransaction, resetSignal, displayCategory, /*displayAmount,*/ screenWidth, isLoading }) => {
+const TransactionsList: React.FC<ListProps> = ({ dateFilteredTransactions, deleteTransaction, resetSignal, /*displayAmount,*/ screenWidth, isLoading }) => {
     const { transactions } = useTransactions()
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null) // true = TrType.Income, false = TrType.Expense, null = all
@@ -128,7 +126,7 @@ const List: React.FC<ListProps> = ({ dateFilteredTransactions, deleteTransaction
 
             <Modal onClose={toggleShowInfo} isOpen={showInfo}>
                 <h3>List usage info</h3>
-                <ul className="flex flex-col gap-2">
+                <ul className="flex flex-col gap-2 text-start">
                     <li className='p-1.5'>1. Click on a transaction for more details.</li>
                     <li className='p-1.5'>2. To filter and reorder, click on table headers.</li>
                     <li className='p-1.5'>3. For category filtering, click on a specific category.</li>
@@ -177,7 +175,6 @@ const List: React.FC<ListProps> = ({ dateFilteredTransactions, deleteTransaction
                                 <TransactionCard
                                     key={idx}
                                     screenWidth={screenWidth}
-                                    displayCategory={displayCategory}
                                     // displayAmount={displayAmount}
                                     transaction={transaction}
                                     // selectedCurrency={selectedCurrency}
@@ -211,4 +208,4 @@ const List: React.FC<ListProps> = ({ dateFilteredTransactions, deleteTransaction
     )
 }
 
-export default List
+export default TransactionsList
