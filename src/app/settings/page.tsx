@@ -3,7 +3,6 @@
 import ExpTransactions from "@/components/ExpTransactions"
 import CurrencySelector from "@/components/ui/CurrencySelector"
 import { useAuth } from "@/context/AuthContext"
-import { useState } from "react"
 
 interface SettingsPageProps {
 

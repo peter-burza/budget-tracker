@@ -1,144 +1,13 @@
 import { JSX } from "@emotion/react/jsx-runtime"
 import { ExpectingTransaction, Transaction } from "../interfaces"
-import { Currency } from "../types"
-import { Category, TrType } from "@/enums"
-import { useCurrencyStore } from "@/context/CurrencyState"
+import { Rates } from "../types"
+import { Category } from "@/enums"
 import dayjs from "dayjs"
+import { arrayUnion, doc, setDoc, updateDoc } from "firebase/firestore"
+import { db } from "../../firebase"
+import { User } from "firebase/auth"
+import { returnSignature } from "@/components/Entry"
 
-// const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
-
-// export const FAKE_TRANSACTIONS: Transaction[] = [
-//   { id: 'tx001', amount: 3200, type: '+', date: '2025-08-01', category: Category.Salary, description: 'Received monthly salary from full-time employment, including base pay and performance bonus.' },
-//   { id: 'tx002', amount: 850, type: '-', date: '2025-08-02', category: Category.Rent, description: 'Paid rent for downtown apartment, including utilities and maintenance fees.' },
-//   { id: 'tx003', amount: 120, type: '-', date: '2025-08-03', category: Category.Groceries, description: 'Bought weekly groceries: vegetables, fruits, dairy, and snacks.' },
-//   { id: 'tx004', amount: 60, type: '-', date: '2025-08-04', category: Category.Entertainment, description: 'Cinema outing with friends, including tickets and snacks.' },
-//   { id: 'tx005', amount: 400, type: '+', date: '2025-08-05', category: Category.Other, description: 'Freelance design project payment for marketing materials.' },
-//   { id: 'tx006', amount: 75, type: '-', date: '2025-08-06', category: Category.CarMaintenance, description: 'Gas refill and tire pressure check at local station.' },
-//   { id: 'tx007', amount: 1500, type: '+', date: '2025-08-07', category: Category.Vacation, description: 'Refund from travel agency for canceled vacation plans.' },
-//   { id: 'tx008', amount: 90, type: '-', date: '2025-08-08', category: Category.Garden, description: 'Purchased gardening tools, soil, and flower seeds.' },
-//   { id: 'tx009', amount: 45, type: '-', date: '2025-08-09', category: Category.Date, description: 'Romantic dinner with partner at a cozy restaurant.' },
-//   { id: 'tx010', amount: 500, type: '+', date: '2025-08-10', category: Category.Home, description: 'Employer stipend for home office upgrades.' },
-//   { id: 'tx011', amount: 130, type: '-', date: '2025-08-11', category: Category.Birthdays, description: 'Birthday gift and celebration expenses for a friend.' },
-//   { id: 'tx012', amount: 180, type: '-', date: '2025-08-12', category: Category.Christmass, description: 'Car maintenance including oil change and brake inspection.' },
-//   { id: 'tx013', amount: 220, type: '-', date: '2025-08-13', category: Category.InternetPhone, description: 'Monthly internet and phone service bill.' },
-//   { id: 'tx014', amount: 95, type: '-', date: '2025-08-14', category: Category.Food, description: 'Family dinner at a restaurant for a special occasion.' },
-//   { id: 'tx015', amount: 300, type: '+', date: '2025-08-15', category: Category.Savings, description: 'Transferred funds to savings account for emergency fund.' },
-//   { id: 'tx016', amount: 110, type: '-', date: '2025-08-16', category: Category.StreamingServices, description: 'Monthly subscription for streaming platforms.' },
-//   { id: 'tx017', amount: 60, type: '-', date: '2025-08-17', category: Category.Party, description: 'Bought drinks and decorations for weekend house party.' },
-//   { id: 'tx018', amount: 100, type: '-', date: '2025-08-18', category: Category.HealthInsurance, description: 'Monthly health insurance premium payment.' },
-//   { id: 'tx019', amount: 250, type: '+', date: '2025-08-19', category: Category.Investment, description: 'Dividend payout from stock portfolio.' },
-//   { id: 'tx020', amount: 90, type: '-', date: '2025-08-20', category: Category.GymFitness, description: 'Monthly gym membership fee and fitness class.' },
-//   { id: 'tx021', amount: 150, type: '-', date: '2025-08-21', category: Category.KidsSchool, description: 'School supplies and tuition fees for children.' },
-//   { id: 'tx022', amount: 80, type: '-', date: '2028-08-22', category: Category.Pets, description: 'Vet visit and pet food for the family dog.' },
-//   { id: 'tx023', amount: 200, type: '-', date: '2027-08-23', category: Category.Shopping, description: 'Bought clothes and accessories during seasonal sale.' },
-//   { id: 'tx024', amount: 400, type: '-', date: '2026-08-24', category: Category.FixedExp, description: 'Monthly fixed expenses including insurance and subscriptions.' }
-// ]
-
-
-// const categoryList: Category[] = Object.values(Category)
-
-// const descriptions: Partial<Record<Category, string>> = {
-//   [Category.Salary]: 'Monthly salary credited with performance bonus.',
-//   [Category.Rent]: 'Paid rent including utilities and maintenance.',
-//   [Category.Groceries]: 'Weekly groceries: produce, dairy, and snacks.',
-//   [Category.Food]: 'Dinner at a local restaurant.',
-//   [Category.InternetPhone]: 'Monthly internet and phone bill.',
-//   [Category.HealthInsurance]: 'Health insurance premium payment.',
-//   [Category.Savings]: 'Transferred funds to savings account.',
-//   [Category.FixedExp]: 'Fixed monthly expenses like insurance.',
-//   [Category.Shopping]: 'Bought clothes and accessories.',
-//   [Category.Entertainment]: 'Streaming service or movie night.',
-//   [Category.CarMaintenance]: 'Routine car maintenance and fuel.',
-//   [Category.KidsSchool]: 'School supplies and tuition fees.',
-//   [Category.Pets]: 'Vet visit and pet food.',
-//   [Category.GymFitness]: 'Gym membership and fitness classes.',
-//   [Category.StreamingServices]: 'Subscription for streaming platforms.',
-//   [Category.Home]: 'Home office upgrades and repairs.',
-//   [Category.Investment]: 'Dividend payout from stock portfolio.',
-//   [Category.Vacation]: 'Travel expenses and bookings.',
-//   [Category.Birthdays]: 'Birthday gifts and celebration costs.',
-//   [Category.Christmass]: 'Holiday shopping and decorations.',
-//   [Category.Party]: 'Party supplies and snacks.',
-//   [Category.Date]: 'Romantic dinner with partner.',
-//   [Category.Garden]: 'Gardening tools and plants.',
-//   [Category.Other]: 'Miscellaneous income or expense.',
-// }
-
-// function pad(num: number): string {
-//   return num.toString().padStart(2, '0')
-// }
-
-// export const FAKE_TRANSACTIONS: Transaction[] = []
-
-// let txCounter = 1
-
-// for (let year = 2022 year <= 2024 year++) {
-//   for (let month = 1 month <= 12 month++) {
-//     for (let i = 0 i < 5 i++) {
-//       const category = categoryList[(txCounter + i) % categoryList.length]
-//       const type = i % 2 === 0 ? '+' : '-'
-//       const amount = type === '+' ? 3000 + (i * 100) : 100 + (i * 50)
-//       const day = pad(i + 1)
-//       const date = `${year}-${pad(month)}-${day}`
-//       FAKE_TRANSACTIONS.push({
-//         id: `tx${pad(txCounter++)}`,
-//         amount,
-//         type,
-//         date,
-//         category,
-//         description: descriptions[category] || 'General transaction.'
-//       })
-//     }
-//   }
-// }
-
-export const CURRENCIES: Record<string, Currency> = {
-  USD: { code: 'USD', symbol: '$', name: 'United States Dollar' },
-  EUR: { code: 'EUR', symbol: '€', name: 'Euro' },
-  GBP: { code: 'GBP', symbol: '£', name: 'British Pound Sterling' },
-  JPY: { code: 'JPY', symbol: '¥', name: 'Japanese Yen' },
-  CNY: { code: 'CNY', symbol: '¥', name: 'Chinese Yuan Renminbi' },
-  INR: { code: 'INR', symbol: '₹', name: 'Indian Rupee' },
-  KRW: { code: 'KRW', symbol: '₩', name: 'South Korean Won' },
-  AUD: { code: 'AUD', symbol: 'A$', name: 'Australian Dollar' },
-  CAD: { code: 'CAD', symbol: 'C$', name: 'Canadian Dollar' },
-  CHF: { code: 'CHF', symbol: 'Fr', name: 'Swiss Franc' },
-  SEK: { code: 'SEK', symbol: 'kr', name: 'Swedish Krona' },
-  NOK: { code: 'NOK', symbol: 'kr', name: 'Norwegian Krone' },
-  DKK: { code: 'DKK', symbol: 'kr', name: 'Danish Krone' },
-  CZK: { code: 'CZK', symbol: 'Kč', name: 'Czech Koruna' },
-  HUF: { code: 'HUF', symbol: 'Ft', name: 'Hungarian Forint' },
-  PLN: { code: 'PLN', symbol: 'zł', name: 'Polish Zloty' },
-  RON: { code: 'RON', symbol: 'lei', name: 'Romanian Leu' },
-  BGN: { code: 'BGN', symbol: 'лв', name: 'Bulgarian Lev' },
-  HRK: { code: 'HRK', symbol: 'kn', name: 'Croatian Kuna' },
-  ISK: { code: 'ISK', symbol: 'kr', name: 'Icelandic Krona' },
-  RUB: { code: 'RUB', symbol: '₽', name: 'Russian Ruble' },
-  TRY: { code: 'TRY', symbol: '₺', name: 'Turkish Lira' },
-  ZAR: { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
-  BRL: { code: 'BRL', symbol: 'R$', name: 'Brazilian Real' },
-  MXN: { code: 'MXN', symbol: '$', name: 'Mexican Peso' },
-  ARS: { code: 'ARS', symbol: '$', name: 'Argentine Peso' },
-  CLP: { code: 'CLP', symbol: '$', name: 'Chilean Peso' },
-  COP: { code: 'COP', symbol: '$', name: 'Colombian Peso' },
-  PEN: { code: 'PEN', symbol: 'S/', name: 'Peruvian Sol' },
-  NZD: { code: 'NZD', symbol: 'NZ$', name: 'New Zealand Dollar' },
-  SGD: { code: 'SGD', symbol: 'S$', name: 'Singapore Dollar' },
-  HKD: { code: 'HKD', symbol: 'HK$', name: 'Hong Kong Dollar' },
-  MYR: { code: 'MYR', symbol: 'RM', name: 'Malaysian Ringgit' },
-  IDR: { code: 'IDR', symbol: 'Rp', name: 'Indonesian Rupiah' },
-  THB: { code: 'THB', symbol: '฿', name: 'Thai Baht' },
-  PHP: { code: 'PHP', symbol: '₱', name: 'Philippine Peso' },
-  VND: { code: 'VND', symbol: '₫', name: 'Vietnamese Dong' },
-  AED: { code: 'AED', symbol: 'د.إ', name: 'United Arab Emirates Dirham' },
-  SAR: { code: 'SAR', symbol: '﷼', name: 'Saudi Riyal' },
-  ILS: { code: 'ILS', symbol: '₪', name: 'Israeli New Shekel' },
-  EGP: { code: 'EGP', symbol: '£', name: 'Egyptian Pound' },
-  NGN: { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' },
-  KES: { code: 'KES', symbol: 'Sh', name: 'Kenyan Shilling' },
-  PKR: { code: 'PKR', symbol: '₨', name: 'Pakistani Rupee' },
-  TWD: { code: 'TWD', symbol: 'NT$', name: 'New Taiwan Dollar' },
-}
 
 
 export const CategoryIcons: Record<Category, JSX.Element> = {
@@ -370,35 +239,11 @@ export function getYearsFromTransactions(transactions: Transaction[]): string[] 
   return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a))
 }
 
-// Calculate total Income / Expense
-// export function calculateTotal(
-//   type: TrType,
-//   transactions: Transaction[],
-//   setTotal: React.Dispatch<React.SetStateAction<number>>,
-//   baseCurrCode: string,
-//   selectedCurrCode: string
-// ): void {
-//   const filteredTransactions = transactions.filter(t => (t.type === type))
-//   const convertedTrAmountsPromises = filteredTransactions.map((t) => {
-//     return baseCurrCode === selectedCurrCode
-//       ? Promise.resolve(t.baseAmount)
-//       : t.currency.code === selectedCurrCode
-//         ? Promise.resolve(t.origAmount)
-//         : convertGlobalFunc(t.currency.code, selectedCurrCode, t.origAmount)
-//   })
-
-//   Promise.all(convertedTrAmountsPromises).then((resolvedAmounts) => {
-//     const total = calculateTotalSimplier(resolvedAmounts)
-//     setTotal(roundToTwo(total))
-//   })
-// }
-
 export function calculateTotalSimplier(amounts: number[]): number {
   return amounts.reduce((sum, amount) => {
     return sum + amount
   }, 0)
 }
-
 
 export function handleToggle(x: boolean, setX: React.Dispatch<React.SetStateAction<boolean>>): void {
   setX(!x)
@@ -471,5 +316,150 @@ export function getCurrentDay() {
 }
 
 export function getCurrentDate(format: string) {
-  return dayjs(Date.now()).format(format)
+  return dayjs().format(format)
+}
+
+export async function saveTransaction(
+  newTr: Transaction,
+  currentUserUid: string,
+  setTransactions: (updater: (prev: Transaction[]) => Transaction[]) => void,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+): Promise<void> {
+  if (!newTr.id || !newTr.baseAmount) return;
+
+  try {
+    setIsLoading(true);
+
+    const trRef = doc(db, 'users', currentUserUid, 'transactions', newTr.id);
+    await setDoc(trRef, newTr);
+
+    setTransactions((prev) => [...prev, newTr]);
+    console.log(`Transaction (id: ${newTr.id}) saved successfully`);
+  } catch (error: any) {
+    console.error(error.message);
+  } finally {
+    setIsLoading(false);
+  }
+}
+
+export function getMissingMonthsForExpTr(
+  startDate: string,
+  processedMonths: Set<string>
+): string[] {
+
+  const start = dayjs(startDate).startOf('month');
+  const end = dayjs().subtract(1, 'month').startOf('month'); // 👈 previous month
+
+  const missingMonths: string[] = [];
+  let current = start;
+
+  while (current.isBefore(end) || current.isSame(end)) {
+    const monthKey = current.format('YYYY-MM');
+    if (!processedMonths.has(monthKey)) {
+      missingMonths.push(monthKey);
+    }
+    current = current.add(1, 'month');
+  }
+  return missingMonths;
+}
+
+async function updateExpTransactionField(
+  userId: string,
+  transactionId: string,
+  fieldKey: string,
+  newValue: string
+) {
+  const transactionRef = doc(db, "users", userId, "expTransactions", transactionId);
+
+  try {
+    await updateDoc(transactionRef, {
+      [fieldKey]: arrayUnion(newValue),
+    });
+    console.log(`Updated ${fieldKey} in expTransaction ${transactionId}`);
+  } catch (error) {
+    console.error("Error updating expTransaction:", error);
+  }
+}
+
+export async function processExpTransactions(
+  expTransactions: ExpectingTransaction[],
+  currentUser: User | null,
+  setTransactions: (updater: (prev: Transaction[]) => Transaction[]) => void,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  rates: Rates
+) {
+  if (!currentUser) throw new Error('User is not authenticated');
+  // const rates = useCurrencyStore.getState().rates
+  const currentDayOfMonth = dayjs().date()
+  // console.log(expTransactions);
+  
+  expTransactions.forEach((expTr) => {
+    // check if the expTr was made for every month till its startAt month
+    const processedMonths = new Set(expTr.processedMonths);
+    const unprocessedMonths = getMissingMonthsForExpTr(expTr.startDate, processedMonths)
+
+    if (unprocessedMonths.length > 0) {
+      unprocessedMonths.map((month) => {
+        const fullDate = `${month}-${expTr.payDay.toString().padStart(2, '0')}`;
+        saveTransaction(
+          {
+            id: crypto.randomUUID(),
+            signature: returnSignature(expTr.origAmount, expTr.type, expTr.category, (expTr.description === undefined ? '' : expTr.description), fullDate, expTr.currency.code),
+            origAmount: expTr.origAmount,
+            baseAmount: expTr.baseAmount,
+            currency: expTr.currency,
+            type: expTr.type,
+            date: fullDate,
+            category: expTr.category,
+            description: `${expTr.description} (added from unprocessedMonths)`,
+            exchangeRate: rates[expTr.currency.code]
+          },
+          currentUser.uid,
+          setTransactions,
+          setIsLoading
+        )
+        // Add month to the processedMonths array
+        if (expTr.id) {
+          updateExpTransactionField(currentUser.uid, expTr.id, 'processedMonths', month)
+          expTr.processedMonths.push(month)
+          console.log(month + ' added to processedMonths for expTr (' + expTr.id + ')');
+        } else console.log('expTr.id is not available');
+      })
+      console.log('expTr (' + expTr.id + ') has been processed for: ' + unprocessedMonths)
+    } 
+    // else {
+    //   console.log('expTr (' + expTr.id + ') has no unprocessed months');
+    // }
+
+    //check if tr has to be processed this month
+    if (currentDayOfMonth >= expTr.payDay && !processedMonths.has(getCurrentDate('YYYY-MM'))) {
+      console.log(processedMonths)
+      // save the transaction if it should be processed this month
+      const currentDate = getCurrentDate('YYYY-MM-DD')
+      const currentMonth = getCurrentDate('YYYY-MM')
+      saveTransaction(
+        {
+          id: crypto.randomUUID(),
+          signature: returnSignature(expTr.origAmount, expTr.type, expTr.category, (expTr.description === undefined ? '' : expTr.description), currentDate, expTr.currency.code),
+          origAmount: expTr.origAmount,
+          baseAmount: expTr.baseAmount,
+          currency: expTr.currency,
+          type: expTr.type,
+          date: currentDate,
+          category: expTr.category,
+          description: expTr.description,
+          exchangeRate: rates[expTr.currency.code]
+        },
+        currentUser.uid,
+        setTransactions,
+        setIsLoading
+      )
+      // Add month to the processedMonths array
+      if (expTr.id) {
+        updateExpTransactionField(currentUser.uid, expTr.id, 'processedMonths', currentMonth)
+        expTr.processedMonths.push(currentMonth)
+        console.log(currentMonth + ' added to processedMonths for expTr (' + expTr.id + ')');
+      } else console.log('expTr.id is not available');
+    }
+  })
 }

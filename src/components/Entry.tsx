@@ -1,6 +1,5 @@
 'use client'
 
-import { Transaction } from '@/interfaces'
 import { Category } from '@/enums'
 import React, { useEffect, useState } from 'react'
 import ResponsiveDatePicker from './ui/ResponsiveDatePicker'
@@ -10,11 +9,14 @@ import { TrType } from '@/enums'
 import Modal from './Modal'
 import { useTransactions } from '@/context/TransactionsContext'
 import { Currency } from '@/types'
-import { CURRENCIES, getCurrentDate } from '@/utils'
+import { getCurrentDate, saveTransaction } from '@/utils'
+import { useAuth } from '@/context/AuthContext'
+import { CURRENCIES } from "@/utils/constants"
 
 interface EntryProps {
-  saveTransaction: (transaction: Transaction) => void
+  // saveTransaction: (transaction: Transaction) => void
   isLoading: boolean
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function handleDisplayZero(amount: number): string {
@@ -31,8 +33,9 @@ export function returnSignature(...parts: (string | number | TrType | Category)[
 }
 
 
-const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
-  const { isDuplicate } = useTransactions()
+const Entry: React.FC<EntryProps> = ({ isLoading, setIsLoading }) => {
+  const { currentUser } = useAuth()
+  const { isDuplicate, setTransactions } = useTransactions()
   const baseCurrency = useCurrencyStore((state) => state.baseCurrency)
   const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
   const rates = useCurrencyStore((state) => state.rates)
@@ -95,6 +98,7 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
   }
 
   function saveTr() {
+    if (!currentUser) throw new Error('User is not authenticated');
     saveTransaction({
       id: crypto.randomUUID(),
       signature: returnSignature(...trSignatureStructure),
@@ -110,7 +114,10 @@ const Entry: React.FC<EntryProps> = ({ saveTransaction, isLoading }) => {
       category: category,
       description: description,
       exchangeRate: rates[newTrCurrency.code]
-    })
+    },
+      currentUser.uid,
+      setTransactions,
+      setIsLoading)
     resetDefaultValues()
   }
 

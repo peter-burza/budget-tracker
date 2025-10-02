@@ -1,9 +1,7 @@
 import { create } from 'zustand'
-import { useSettingsStore } from './SettingsState'
-import { Currency } from '@/types'
-import { CURRENCIES } from '@/utils'
+import { Currency, Rates } from '@/types'
+import { CURRENCIES } from "@/utils/constants"
 
-type Rates = Record<string, number>
 
 interface CurrencyState {
   baseCurrency: Currency

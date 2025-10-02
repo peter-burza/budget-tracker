@@ -10,55 +10,56 @@ import { db } from "../../firebase"
 import { useSettingsStore } from "@/context/SettingsState"
 import { useCurrencyStore } from "@/context/CurrencyState"
 import { useTransactions } from "@/context/TransactionsContext"
-import { areTransactionSetsEqual } from "@/utils"
+import { areTransactionSetsEqual, processExpTransactions } from "@/utils"
 import { useAppStore } from "@/context/AppStore"
 import { useExpTransactionsStore } from "@/context/ExpTransactionsStore"
 
 export default function Dashboard() {
+  const { currentUser } = useAuth()
   const { transactions, setTransactions } = useTransactions()
   const { expTransactions, setExpTransactions } = useExpTransactionsStore()
   const screenWidth = useAppStore((state) => state.screenWidth)
+  const rates = useCurrencyStore((state) => state.rates)
+
   const [isLoading, setIsLoading] = useState(false)
 
-  const { currentUser } = useAuth()
 
   const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
   const fetchUserSettings = useSettingsStore((state) => state.fetchUserSettings)
   const fetchRates = useCurrencyStore((state) => state.fetchRates)
 
 
-  async function saveTransaction(newTr: Transaction) {
-    // Guard closes
-    if (!newTr.id || !newTr?.baseAmount || isLoading) return
-    if (!currentUser?.uid) {
-      throw new Error("User is not authenticated")
-    }
+  // async function saveTransaction(newTr: Transaction) {
+  //   // Guard closes
+  //   if (!newTr.id || !newTr?.baseAmount || isLoading) return
+  //   if (!currentUser?.uid) {
+  //     throw new Error("User is not authenticated")
+  //   }
 
-    // Save try
-    try {
-      setIsLoading(true)
-      const trRef = doc(db, "users", currentUser?.uid, "transactions", newTr.id)
-      const savingTransactionOnDb = await setDoc(trRef, {
-        id: newTr.id,
-        origAmount: newTr.origAmount,
-        baseAmount: newTr.baseAmount,
-        currency: newTr.currency,
-        signature: newTr.signature,
-        type: newTr.type,
-        date: newTr.date,
-        category: newTr.category,
-        description: newTr.description || '',
-        exchangeRate: newTr.exchangeRate,
-        createdAt: serverTimestamp(),
-      })
-      setTransactions((prev) => [...prev, newTr])
-      console.log('Transaction (id: ' + newTr.id + ') saved successfully')
-    } catch (error: any) {
-      console.log(error.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  //   // Save try
+  //   try {
+  //     setIsLoading(true)
+  //     const trRef = doc(db, "users", currentUser?.uid, "transactions", newTr.id)
+  //     const savingTransactionOnDb = await setDoc(trRef, {
+  //       id: newTr.id,
+  //       origAmount: newTr.origAmount,
+  //       baseAmount: newTr.baseAmount,
+  //       currency: newTr.currency,
+  //       signature: newTr.signature,
+  //       type: newTr.type,
+  //       date: newTr.date,
+  //       category: newTr.category,
+  //       description: newTr.description || '',
+  //       exchangeRate: newTr.exchangeRate,
+  //     })
+  //     setTransactions((prev) => [...prev, newTr])
+  //     console.log('Transaction (id: ' + newTr.id + ') saved successfully')
+  //   } catch (error: any) {
+  //     console.log(error.message)
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
   // Delete Transaction
   async function deleteTransaction(deleteTrId: string | undefined) {
@@ -107,7 +108,6 @@ export default function Dashboard() {
           exchangeRate: tr.exchangeRate,
         }
       })
-
       if (!areTransactionSetsEqual(transactions, fetchedTransactions)) {
         setTransactions(fetchedTransactions)
         console.log('Transaction history fetched')
@@ -136,10 +136,11 @@ export default function Dashboard() {
           category: tr.category,
           description: tr.description || '',
           exchangeRate: tr.exchangeRate,
+          processedMonths: tr.processedMonths
         }
       })
-
       if (!areTransactionSetsEqual(expTransactions, fetchedTransactions)) {
+        // console.log(fetchedTransactions)
         setExpTransactions(fetchedTransactions)
         console.log('Expecting Transactions fetched')
       }
@@ -148,25 +149,49 @@ export default function Dashboard() {
     }
   }
 
+  // useEffect(() => {
+  //   if (!currentUser) return
+
+  //   async function fetchAll() {
+  //     setIsLoading(true)
+  //     try {
+  //       await Promise.allSettled([
+  //         fetchUserSettings(currentUser),
+  //         fetchTransactions(),
+  //         fetchExpTransactions(),
+  //         processExpTransactions(expTransactions, currentUser, setTransactions, setIsLoading, rates)
+  //       ])
+  //     } finally {
+  //       setIsLoading(false)
+  //     }
+  //   }
+
+
+  //   fetchAll()
+  // }, [currentUser])
+
   useEffect(() => {
-    if (!currentUser) return
+    console.log('Current User changed-----------------------------------------------------!');
+    if (!currentUser) return;
 
     async function fetchAll() {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        await Promise.allSettled([
-          fetchUserSettings(currentUser),
-          fetchTransactions(),
-          fetchExpTransactions()
-        ])
+        fetchUserSettings(currentUser);
+        await fetchTransactions();
+        await fetchExpTransactions(); // ✅ wait for this to finish
+
+        // ✅ Now run processExpTransactions
+        await processExpTransactions(useExpTransactionsStore.getState().expTransactions, currentUser, setTransactions, setIsLoading, rates)
+      } catch (error) {
+        console.error("Error in fetchAll:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
-
-    fetchAll()
-  }, [currentUser])
+    fetchAll();
+  }, [currentUser]);
 
   // // Screen size
   // useEffect(() => {
@@ -180,6 +205,8 @@ export default function Dashboard() {
 
   // Fetch rates on app startup
   useEffect(() => {
+    console.log('fetching rates');
+
     fetchRates()
   }, [fetchRates])
 
@@ -187,8 +214,9 @@ export default function Dashboard() {
   return (
     <>
       <Entry
-        saveTransaction={saveTransaction}
+        // saveTransaction={saveTransaction}
         isLoading={isLoading}
+        setIsLoading={setIsLoading}
       />
       <TransactionHistory
         transactions={transactions}

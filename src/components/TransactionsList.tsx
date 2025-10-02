@@ -45,6 +45,7 @@ export function renderSortingIcon(sorted: boolean | null): JSX.Element {
 
 const TransactionsList: React.FC<ListProps> = ({ dateFilteredTransactions, deleteTransaction, resetSignal, /*displayAmount,*/ screenWidth, isLoading }) => {
     const { transactions } = useTransactions()
+    
     // Filters and sorting state
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null) // true = TrType.Income, false = TrType.Expense, null = all
     const [categoryFilter, setCategoryFilter] = useState<Category | null>(null)

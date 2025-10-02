@@ -26,4 +26,5 @@ export interface ExpectingTransaction {
   category: Category
   description?: string
   exchangeRate: number // 1 (baseCurrency) = exchangeRate (origCurrency)
+  processedMonths: string[]
 }

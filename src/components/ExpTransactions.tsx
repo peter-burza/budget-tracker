@@ -7,9 +7,10 @@ import { renderSortingIcon } from "./TransactionsList"
 import { useAppStore } from "@/context/AppStore"
 import TransactionCard from "./TransactionCard"
 import { useAuth } from "@/context/AuthContext"
-import { deleteDoc, doc } from "firebase/firestore"
+import { deleteDoc, doc, serverTimestamp, setDoc } from "firebase/firestore"
 import { db } from "../../firebase"
 import AddExpectingTransaction from "./AddExpectingTransaction"
+import { useCurrencyStore } from "@/context/CurrencyState"
 
 interface ExpTransactionsProps {
 
@@ -29,9 +30,9 @@ function sortAmountLowFirst(list: ExpectingTransaction[]): ExpectingTransaction[
 }
 
 const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
+    const { currentUser } = useAuth()
     const { expTransactions, setExpTransactions } = useExpTransactionsStore()
     const { screenWidth } = useAppStore()
-    const { currentUser } = useAuth()
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [typeFilter, setTypeFilter] = useState<boolean | null>(null) // true = TrType.Income, false = TrType.Expense, null = all
@@ -89,6 +90,27 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
         setAmountAscending((prev) => (prev === false ? true : false))
     }
 
+    async function saveExpTransaction(newTr: ExpectingTransaction) {
+        // Guard closes
+        if (!newTr.id || isLoading) return
+        if (!currentUser?.uid) {
+            throw new Error("User is not authenticated");
+        }
+
+        // Save try
+        try {
+            setIsLoading(true)
+            const trRef = doc(db, "users", currentUser?.uid, "expTransactions", newTr.id)
+            const savingTransactionOnDb = await setDoc(trRef, newTr)
+            setExpTransactions((prev) => [...prev, newTr])
+            console.log('Expecting transaction (id: ' + newTr.id + ') added successfully');
+        } catch (error: any) {
+            console.log(error.message)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
     async function deleteExpTransaction(deleteTrId: string | undefined) {
         // Guard closes
         if (isLoading || deleteTrId === undefined) return
@@ -107,16 +129,12 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
 
             const updatedTransactions = expTransactions.filter(t => (t.id !== deleteTrId))
             setExpTransactions(updatedTransactions)
-            console.log('Transaction (id: ' + deleteTrId + ') deleted successfully')
+            console.log('ExpTransaction (id: ' + deleteTrId + ') deleted successfully')
         } catch (error: any) {
             console.log(error.message)
         } finally {
             setIsLoading(false)
         }
-    }
-
-    function processExpTransactions() {
-
     }
 
 
@@ -191,7 +209,6 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
                 </div>
             }
 
-            <hr className="text-[var(--color-dark-blue)] w-[70%] mb-2 mt-2" />
 
             {
                 !showAddExpectingTR
@@ -205,6 +222,7 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
                             isLoading={isLoading}
                             setIsLoading={setIsLoading}
                             setShowAddExpectingTR={setShowAddExpectingTR}
+                            saveExpTransaction={saveExpTransaction}
                         />
                     </div>
             }

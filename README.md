@@ -27,10 +27,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 
 # WHERE TO CONTINUE:
-
-Summary => totalIncome calculation => in calculateTotalSimplier() - finish it
-
-
 - CURRENCY:
         - zmena Transaction interface: add: 
                                                                                 - origAmount - to je amount v urcenej mene (1)
@@ -50,9 +46,7 @@ Summary => totalIncome calculation => in calculateTotalSimplier() - finish it
         EXPENSE BREAKDOWN:
                                                                                 - zobrazit tak isto vsetky vydaje v selectedCurrency,
                 - ked user rozklikne jednotlivo kategorie, tak sa vyroluju sucty transakcii z danej kategorie v jednotlivych menach (ak su nejake, ak je jedna mena tak sa nic nevyroluje a nieje clickable - mozno dat nejaku znacku ze je to mozne nie iba clickable classu...)
-        
-- Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
-        + pridat form ( to co je)
+
 - Vytvorti moznost tvorby vlastnej kategorie, ktoru budeme storovat v databazach
 - Spravit realnejsi prehlad o tom aky je stav kolko viem minut, trvale prikazy vs predpokladany prijem... funkcionalita: ked je den pravidelnej transakcie, tak sa pri prvej navsteve v dany den spytat ci uz vyplata prisla, ak ano, ci prisla presna predpokladana suma. moznost vypnut tuto funkcionalitu vyskakovacieho okna (niekde do nastaveni...)
 - Pripojit investicie, suhrn kam a kolko som investoval...
@@ -68,7 +62,9 @@ Summary => totalIncome calculation => in calculateTotalSimplier() - finish it
 
 
 #### DONE TASKS ✅
-
+        
+- Pridat moznost pridania pravidelnej transakcie - ci expense alebo income
+        + pridat form
 - rates fetchovat pri kazdej konverzii, pridat aj historical - use this API: https://frankfurter.dev/
 - Odfiltrovat categories, aby sa nezobrazil salary ked je nastavene expense - niekto by mozno chcel mat party ako income, ak poriada pary eventy a za kazdu z nich ma nejake peniaze... z toho dovodu som sa zatial rozhodol ponechat vsetky kategorie mozne nastaveniu income aj expence...
 - Popis pouzivania listu aj ostatnych funkcii v appke, dat do nejakej ikonky...

@@ -1,6 +1,6 @@
 'use client'
 
-import { CURRENCIES } from '@/utils'
+import { CURRENCIES } from "@/utils/constants"
 import React from 'react'
 import { db } from '../../../firebase'
 import { useAuth } from '@/context/AuthContext'
