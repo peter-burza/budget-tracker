@@ -56,15 +56,6 @@ const DropdownMenu = () => {
           <li
             onClick={() => {
               toggleMenu()
-              // router.push("/")
-            }}
-            className="px-4 py-2 hover:bg-[var(--background-muted)] duration-200 cursor-pointer"
-          >
-            Profile
-          </li>
-          <li
-            onClick={() => {
-              toggleMenu()
               router.push('/settings')
             }}
             className="px-4 py-2 hover:bg-[var(--background-muted)] duration-200 cursor-pointer"

@@ -16,13 +16,12 @@ import { CURRENCIES } from "@/utils/constants"
 
 interface AddExpectingTransactionProps {
     isLoading: boolean
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
     setShowAddExpectingTR: React.Dispatch<React.SetStateAction<boolean>>
     saveExpTransaction: (newTr: ExpectingTransaction) => void
 }
 
 
-const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ isLoading, setIsLoading, setShowAddExpectingTR, saveExpTransaction }) => {
+const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ isLoading, setShowAddExpectingTR, saveExpTransaction }) => {
     const { isDuplicate } = useExpTransactionsStore()
     const baseCurrency = useCurrencyStore((state) => state.baseCurrency)
     const selectedCurrency = useCurrencyStore((state) => state.selectedCurrency)
@@ -61,7 +60,6 @@ const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ isLoa
         const dateOnly: string = value.format('YYYY-MM-DD')
         setStartDate(dateOnly)
         setPayDay(Number(dateOnly.slice(8)))
-
     }
 
     function handleSetDescription(value: string): void {

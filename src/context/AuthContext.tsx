@@ -1,13 +1,9 @@
 'use client'
 
-// import { Transaction } from '@/app/interfaces/Transaction'
 import { auth } from '../../firebase'
 
 import {
-  // createUserWithEmailAndPassword,
   onAuthStateChanged,
-  // sendPasswordResetEmail,
-  // signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
@@ -29,10 +25,7 @@ interface AuthContextType {
   isLoadingUser: boolean
   isLoggedIn: boolean
   signInWithGoogle: () => Promise<UserCredential>
-  // signup: (email: string, password: string) => Promise<any>;
-  // login: (email: string, password: string) => Promise<any>;
   logout: () => Promise<void>
-  // sendPassResetEmail: (email: string) => Promise<void>;
 }
 
 // Create the context with a default value
@@ -58,10 +51,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(true)
 
-  // const signup = (email: string, password: string) => {
-  //   return createUserWithEmailAndPassword(auth, email, password);
-  // };
-
   const isLoggedIn = currentUser ? true : false
 
   const signInWithGoogle = async () => {
@@ -71,10 +60,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     return signInWithPopup(auth, provider)
   }
 
-  // const login = (email: string, password: string) => {
-  //   return signInWithEmailAndPassword(auth, email, password);
-  // };
-
   const logout = async () => {
     setCurrentUser(null)
     setHasFetchedUserSettings(false)
@@ -82,9 +67,6 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     return await signOut(auth)
   }
 
-  // const sendPassResetEmail = (email: string) => {
-  //   return sendPasswordResetEmail(auth, email);
-  // };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -109,10 +91,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     isLoadingUser,
     isLoggedIn,
     signInWithGoogle,
-    // signup,
-    // login,
     logout
-    // sendPassResetEmail,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -102,13 +102,6 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
           )
           : breakdown
       setOrderedBreakdown(newOrderedBreakdown)
-          // if (totalAscending !== null) {
-      //   const result = totalAscending === false ? sortTotalHighFirst(breakdown) : sortTotalLowFirst(breakdown)
-      //   setOrderedBreakdown(result)
-      // }
-      // console.log('We are setting orderedBD to breakdown not ordered!');
-      
-      // setOrderedBreakdown(breakdown)
     }
 
     fetchBreakdown()

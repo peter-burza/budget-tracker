@@ -11,12 +11,9 @@ import { displayCategory } from "@/utils";
 interface TransactionCardProps {
     screenWidth: number
     transaction: Transaction | ExpectingTransaction,
-    // selectedCurrency: Currency
     setCategoryFilter: React.Dispatch<React.SetStateAction<Category | null>>
     deleteTransaction: (deleteTrId: string | undefined) => void
     isLastIdx: boolean
-    // displayCategory: (category: Category) => string | JSX.Element
-    // displayAmount: (amount: number) => string
 }
 
 function displayType(type: TrType): JSX.Element {
@@ -24,7 +21,7 @@ function displayType(type: TrType): JSX.Element {
     return <i className="fa-solid fa-angles-down"></i>
 }
 
-const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, setCategoryFilter, deleteTransaction, isLastIdx/*, displayAmount*/ }) => {
+const TransactionCard: React.FC<TransactionCardProps> = ({ screenWidth, transaction, setCategoryFilter, deleteTransaction, isLastIdx }) => {
     const cardStyle: string = transaction.type === TrType.Income ? 'bg-[var(--color-list-bg-green)] !border-[var(--color-list-border-green)] text-green-100' : 'bg-[var(--color-list-bg-red)] !border-[var(--color-list-border-red)] text-red-100'
     const [isExpanded, setIsExpanded] = useState<boolean>(false)
     const [deleteQuestion, setDeleteQuestion] = useState<boolean>(false)

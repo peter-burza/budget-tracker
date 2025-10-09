@@ -6,30 +6,25 @@ import { CURRENCIES } from "@/utils/constants"
 interface CurrencyState {
   baseCurrency: Currency
   setBaseCurrency: (currency: Currency) => void
-
   selectedCurrency: Currency
   setSelectedCurrency: (newCurr: Currency) => void
-  // selectedCurrency: Currency
   rates: Rates
   lastRatesFetch: number
   setLastRatesFetch: (newTime: number) => void
-  // setSelectedCurrency: (item: Currency) => void
   fetchRates: () => Promise<void>
   convert: (amountInBaseCurr: number, currency: number) => number
   convertGlobalFunc: (from: string, to: string, amount: number, date?: string) => Promise<number>
 }
 
-export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurrenty*/) => ({
+export const useCurrencyStore = create<CurrencyState>((set, get) => ({
   baseCurrency: CURRENCIES.EUR,
   setBaseCurrency: (currency) => set({ baseCurrency: currency}),
 
   selectedCurrency: CURRENCIES.EUR,
   setSelectedCurrency: (newCurr: Currency) => {
     set({ selectedCurrency: newCurr }) 
-    // console.log('selectedCurrency changed -> ' + newCurr)
   },
 
-  // selectedCurrency: CURRENCIES.USD,
   rates: {"EUR": 1},
   lastRatesFetch: 0,
   setLastRatesFetch: (newTimestamp) => set({lastRatesFetch: newTimestamp}),
@@ -60,7 +55,6 @@ export const useCurrencyStore = create<CurrencyState>((set, get/*, selectedCurre
     try {
       const response = await fetch(endpoint)
       const data = await response.json()
-      // console.log(from + ' => ' + to)
       
       if (!data.rates || !data.rates[to]) {
         throw new Error(`Rate for ${to} not found`)

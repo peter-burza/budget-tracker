@@ -2,7 +2,6 @@
 
 import { Transaction } from "@/interfaces"
 import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useMemo, useState } from "react"
-import { text } from "stream/consumers"
 
 
 type TransactionsContextType = {
