@@ -7,7 +7,6 @@ interface ExpTransactionsStoreProps {
   setExpTransactions: (
     updater: ExpectingTransaction[] | ((prev: ExpectingTransaction[]) => ExpectingTransaction[])
   ) => void
-  // clearExpTransactions: () => void
   isDuplicate: (id: string) => boolean
 }
 

@@ -118,8 +118,6 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
             throw new Error("User is not authenticated")
         }
 
-        // ask if user is sure to delete this transaction
-
         // Delete try
         try {
             setIsLoading(true)
@@ -220,7 +218,6 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
                     <div id="add-expecting-transaction">
                         <AddExpectingTransaction
                             isLoading={isLoading}
-                            setIsLoading={setIsLoading}
                             setShowAddExpectingTR={setShowAddExpectingTR}
                             saveExpTransaction={saveExpTransaction}
                         />

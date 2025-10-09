@@ -19,30 +19,6 @@ function calculateNetBalance(totalIncome: number, totalExpense: number): number 
     return Math.abs(totalIncome - totalExpense)
 }
 
-// export function getMostUsedCurrency(transactions: Transaction[], baseCurrency: Currency) {
-//     const frequencyMap: Record<string, number> = {}
-
-//     for (const tx of transactions) {
-//         const currencyCode = tx.currency?.code
-
-//         if (!currencyCode) continue
-//         frequencyMap[currencyCode] = (frequencyMap[currencyCode] || 0) + 1
-//     }
-
-//     let mostUsedCurr: Currency = baseCurrency
-//     let maxCount = 0
-
-//     for (const [code, count] of Object.entries(frequencyMap)) {
-//         if (count > maxCount) {
-//             mostUsedCurr = CURRENCIES[code]
-//             maxCount = count
-//         }
-//     }
-
-//     return mostUsedCurr
-// }
-
-
 const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpense, isLoading, displayAmount }) => {
     const baseCurrency = useCurrencyStore(state => state.baseCurrency)
     const selectedCurrency = useCurrencyStore(state => state.selectedCurrency)
@@ -53,27 +29,8 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
     const [showExpenseDetails, setShowExpenseDetails] = useState<boolean>(false)
     const [totalIncome, setTotalIncome] = useState<number>(0)
 
-
-    // const totalIncome = useMemo(() => {
-    //     const convertedTrAmounts = dateFilteredTransactions.map((t) => {
-    //         return (
-    //             baseCurrency === selectedCurrency
-    //                 ? t.baseAmount
-    //                 : t.currency === selectedCurrency
-    //                     ? t.origAmount
-    //                     : convertGlobalFunc(t.currency.code, selectedCurrency.code, t.origAmount)
-    //         )
-    //     })
-
-    //     const calculatedTotal = calculateTotalSimplier(TrType.Income, convertedTrAmounts)
-    //     return calculatedTotal
-    // }, [dateFilteredTransactions])
-
     const netBalance = calculateNetBalance(totalIncome, totalExpense)
 
-    // const mostUsedCurrency = useMemo(() => {
-    //     return getMostUsedCurrency(dateFilteredTransactions, baseCurrency)
-    // }, [dateFilteredTransactions])
 
     function toggleShowInfo() {
         setShowInfo(!showInfo)
@@ -104,7 +61,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
 
 
     return (
-        <div id="summary" className="flex flex-col items-center gap-2 w-full">
+        <div id="summary" className="flex flex-col items-center gap-2 w-full max-w-108">
 
             <Modal onClose={toggleShowInfo} isOpen={showInfo}>
                 <h3>Summary</h3 >

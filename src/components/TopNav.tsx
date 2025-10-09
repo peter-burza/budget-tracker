@@ -5,11 +5,7 @@ import React from 'react'
 import DropdownMenu from './ui/DropdownMenu'
 import { useRouter } from 'next/navigation'
 
-// interface TopNavProps {
 
-// }
-
-// const TopNav: React.FC<TopNavProps> = () => {
 export default function TopNav() {
   const { signInWithGoogle, currentUser } = useAuth()
   const router = useRouter()
@@ -36,5 +32,3 @@ export default function TopNav() {
     </div>
   )
 }
-
-// export default TopNav
