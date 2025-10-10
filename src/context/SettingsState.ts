@@ -74,8 +74,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
                 setUserSettings(baseCurrency, selectedCurrency/*, lang*/)
             }
 
-        } catch (error: any) {
-            console.log(error.message)
+        } catch (error: unknown) {
+            if (error instanceof Error) console.log(error.message)
         } finally {
             setHasFetchedUserSettings(true)
         }

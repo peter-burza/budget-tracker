@@ -3,7 +3,7 @@
 import { TrType } from "@/enums"
 import { Transaction } from "@/interfaces"
 import { CURRENCIES } from "@/utils/constants"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 
 interface SummaryDetailsProps {
     type: TrType

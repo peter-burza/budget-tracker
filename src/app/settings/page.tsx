@@ -4,12 +4,13 @@ import ExpTransactions from "@/components/ExpTransactions"
 import CurrencySelector from "@/components/ui/CurrencySelector"
 import { useAuth } from "@/context/AuthContext"
 
-interface SettingsPageProps {
 
-}
+const SettingsPage = () => {
+    const { currentUser, isLoadingUser } = useAuth()
 
-const SettingsPage: React.FC<SettingsPageProps> = () => {
-    const { currentUser } = useAuth()
+    if (isLoadingUser) {
+        return <h6 className="">Loading User...</h6>;
+    }
 
     if (!currentUser) {
         // if no user found - then boot them to the home page cause the settings page is for authenticated users only

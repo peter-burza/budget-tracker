@@ -7,14 +7,10 @@ import { renderSortingIcon } from "./TransactionsList"
 import { useAppStore } from "@/context/AppStore"
 import TransactionCard from "./TransactionCard"
 import { useAuth } from "@/context/AuthContext"
-import { deleteDoc, doc, serverTimestamp, setDoc } from "firebase/firestore"
+import { deleteDoc, doc, setDoc } from "firebase/firestore"
 import { db } from "../../firebase"
 import AddExpectingTransaction from "./AddExpectingTransaction"
-import { useCurrencyStore } from "@/context/CurrencyState"
 
-interface ExpTransactionsProps {
-
-}
 
 function sortPayDayHighFirst(list: ExpectingTransaction[]): ExpectingTransaction[] {
     return [...list].sort((a, b) => b.payDay - a.payDay)
@@ -29,7 +25,7 @@ function sortAmountLowFirst(list: ExpectingTransaction[]): ExpectingTransaction[
     return [...list].sort((a, b) => a.origAmount - b.origAmount)
 }
 
-const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
+const ExpTransactions = () => {
     const { currentUser } = useAuth()
     const { expTransactions, setExpTransactions } = useExpTransactionsStore()
     const { screenWidth } = useAppStore()
@@ -104,8 +100,8 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
             const savingTransactionOnDb = await setDoc(trRef, newTr)
             setExpTransactions((prev) => [...prev, newTr])
             console.log('Expecting transaction (id: ' + newTr.id + ') added successfully');
-        } catch (error: any) {
-            console.log(error.message)
+        } catch (error: unknown) {
+            if (error instanceof Error) console.log(error.message)
         } finally {
             setIsLoading(false)
         }
@@ -128,8 +124,8 @@ const ExpTransactions: React.FC<ExpTransactionsProps> = ({ }) => {
             const updatedTransactions = expTransactions.filter(t => (t.id !== deleteTrId))
             setExpTransactions(updatedTransactions)
             console.log('ExpTransaction (id: ' + deleteTrId + ') deleted successfully')
-        } catch (error: any) {
-            console.log(error.message)
+        } catch (error: unknown) {
+            if (error instanceof Error) console.log(error.message)
         } finally {
             setIsLoading(false)
         }

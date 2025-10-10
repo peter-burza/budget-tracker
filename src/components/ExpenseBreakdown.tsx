@@ -4,12 +4,10 @@ import { Transaction } from "@/interfaces"
 import { Category } from '@/enums'
 import { TrType } from '@/enums'
 import ResponsiveHeader from "./ui/ResponsiveHeader"
-import { JSX } from "@emotion/react/jsx-runtime"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { renderSortingIcon } from "./TransactionsList"
 import { Currency } from "@/types"
 import { useTransactions } from "@/context/TransactionsContext"
-// import { getMostUsedCurrency } from "./Summary"
 import { useCurrencyStore } from "@/context/CurrencyState"
 import { displayCategory, roundToTwo } from "@/utils"
 
@@ -36,7 +34,7 @@ function sortTotalLowFirst(list: CategorySummary[]): CategorySummary[] {
   return [...list].sort((a, b) => new Date(a.total).getTime() - new Date(b.total).getTime())
 }
 
-const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, displayAmount, isLoading }) => {
+const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransactions, screenWidth, selectedCurrency, totalExpense, isLoading }) => {
   const baseCurrency = useCurrencyStore(state => state.baseCurrency)
   const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
   const { transactions } = useTransactions()
@@ -128,7 +126,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ dateFilteredTransac
         </thead>
         <tbody className={`${isLoading && 'opacity-50 duration-200'}`}>
           {dateFilteredTransactions.length > 0
-            ? orderedBreakdown.map(({ category, total, percentage, currency }, idx) => {
+            ? orderedBreakdown.map(({ category, total, percentage }, idx) => {
               const isLastIdx = idx === orderedBreakdown.length - 1
               return (
                 <tr key={category} className="bg-sky-800">

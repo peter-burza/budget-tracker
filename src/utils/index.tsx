@@ -335,8 +335,8 @@ export async function saveTransaction(
 
     setTransactions((prev) => [...prev, newTr]);
     console.log(`Transaction (id: ${newTr.id}) saved successfully`);
-  } catch (error: any) {
-    console.error(error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) console.log(error.message)
   } finally {
     setIsLoading(false);
   }
@@ -392,7 +392,7 @@ export async function processExpTransactions(
   // const rates = useCurrencyStore.getState().rates
   const currentDayOfMonth = dayjs().date()
   // console.log(expTransactions);
-  
+
   expTransactions.forEach((expTr) => {
     // check if the expTr was made for every month till its startAt month
     const processedMonths = new Set(expTr.processedMonths);
@@ -426,7 +426,7 @@ export async function processExpTransactions(
         } else console.log('expTr.id is not available');
       })
       console.log('expTr (' + expTr.id + ') has been processed for: ' + unprocessedMonths)
-    } 
+    }
     // else {
     //   console.log('expTr (' + expTr.id + ') has no unprocessed months');
     // }

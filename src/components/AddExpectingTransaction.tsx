@@ -130,7 +130,7 @@ const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ isLoa
 
             {/* Repeat day too high */}
             <Modal onClose={() => setPayDayTooHigh(false)} isOpen={payDayTooHigh} includeOk>
-                <p className="pt-5">Please make the repeating day max 28 (cause on february we won't be able to process the transaction 😂)</p>
+                <p className="pt-5">Please make the repeating day max 28 (cause on february we won&apos;t be able to process the transaction 😂)</p>
             </Modal>
 
             <Modal onClose={toggleShowDuplicateTrQ} isOpen={showDuplicateTrQ} onConfirm={saveDuplicateExpTr}>
@@ -152,7 +152,7 @@ const AddExpectingTransaction: React.FC<AddExpectingTransactionProps> = ({ isLoa
                         checked={dontAskAgain}
                         onChange={(e) => setDontAskAgain(e.target.checked)}
                     />
-                    <p>Don't ask again</p>
+                    <p>Don&apos;t ask again</p>
                 </div>
             </Modal>
 

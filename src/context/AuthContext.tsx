@@ -76,8 +76,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         setCurrentUser(user)
         if (!user) throw new Error('No user found')
         console.log('Found user')
-      } catch (error: any) {
-        console.log(error.message)
+      } catch (error: unknown) {
+        if (error instanceof Error) console.log(error.message)
       } finally {
         setIsLoadingUser(false)
       }

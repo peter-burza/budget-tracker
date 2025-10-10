@@ -156,7 +156,7 @@ const Entry: React.FC<EntryProps> = ({ isLoading, setIsLoading }) => {
             checked={dontAskAgain}
             onChange={(e) => setDontAskAgain(e.target.checked)}
           />
-          <p>Don't ask again</p>
+          <p>Don&apos;t ask again</p>
         </div>
       </Modal>
 

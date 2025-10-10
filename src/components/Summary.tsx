@@ -3,7 +3,7 @@
 import { Transaction } from "@/interfaces"
 import { TrType } from '@/enums'
 import { calculateTotalSimplier, handleToggle, roundToTwo } from "@/utils"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useState } from "react"
 import Modal from "./Modal"
 import { useCurrencyStore } from "@/context/CurrencyState"
 import SummaryDetails from "./SummaryDetails"

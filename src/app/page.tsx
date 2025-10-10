@@ -2,10 +2,9 @@
 
 import Entry from "../components/Entry"
 import { useEffect, useState } from "react"
-import { Transaction } from "../interfaces"
 import TransactionHistory from "../components/TransactionHistory"
 import { useAuth } from "../context/AuthContext"
-import { collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore"
 import { db } from "../../firebase"
 import { useSettingsStore } from "@/context/SettingsState"
 import { useCurrencyStore } from "@/context/CurrencyState"
@@ -48,8 +47,9 @@ export default function Dashboard() {
       const updatedTransactions = transactions.filter(t => (t.id !== deleteTrId))
       setTransactions(updatedTransactions)
       console.log('Transaction (id: ' + deleteTrId + ') deleted successfully')
-    } catch (error: any) {
-      console.log(error.message)
+    } catch (error: unknown) {
+      if (error instanceof Error) console.log(error.message)
+      else console.log(error)
     } finally {
       setIsLoading(false)
     }
@@ -79,8 +79,9 @@ export default function Dashboard() {
         setTransactions(fetchedTransactions)
         console.log('Transaction history fetched')
       }
-    } catch (error: any) {
-      console.log(error.message)
+    } catch (error: unknown) {
+      if (error instanceof Error) console.log(error.message)
+      else console.log(error)
     }
   }
 
@@ -111,8 +112,9 @@ export default function Dashboard() {
         setExpTransactions(fetchedTransactions)
         console.log('Expecting Transactions fetched')
       }
-    } catch (error: any) {
-      console.log(error.message)
+    } catch (error: unknown) {
+      if (error instanceof Error) console.log(error.message)
+      else console.log(error)
     }
   }
 
@@ -129,8 +131,8 @@ export default function Dashboard() {
 
         // ✅ Now run processExpTransactions
         await processExpTransactions(useExpTransactionsStore.getState().expTransactions, currentUser, setTransactions, setIsLoading, rates)
-      } catch (error) {
-        console.error("Error in fetchAll:", error);
+      } catch (error: unknown) {
+        if (error instanceof Error) console.log(error.message)
       } finally {
         setIsLoading(false);
       }
