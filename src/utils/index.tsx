@@ -319,6 +319,17 @@ export function getCurrentDate(format: string) {
   return dayjs().format(format)
 }
 
+export function hasMultipleCurrencies(transactions: Transaction[]) {
+  const seen = new Set<string>()
+
+  for (const tr of transactions) {
+    seen.add(tr.currency.code)
+    if (seen.size > 1) return true // early exit
+  }
+
+  return false
+}
+
 export async function saveTransaction(
   newTr: Transaction,
   currentUserUid: string,

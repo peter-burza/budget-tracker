@@ -30,6 +30,9 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
     const [selectedYear, setSelectedYear] = useState<string>("")
     const [resetSignal, setResetSignal] = useState<number>(0)
     const [totalExpense, setTotalExpense] = useState<number>(0)
+    const [incomeFilteredTransactions, setIncomeFilteredTransactions] = useState<Transaction[]>([])
+    const [expenseFilteredTransactions, setExpenseFilteredTransactions] = useState<Transaction[]>([])
+
 
     // Years list once
     const years = useMemo(() => [OVERALL, ...getYearsFromTransactions(transactions).sort((a, b) => Number(b) - Number(a))], [transactions])
@@ -70,8 +73,7 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
 
     // TotalExpence calculation
     useEffect(() => {
-        const filteredTransactions = dateFilteredTransactions.filter(t => (t.type === TrType.Expense))
-        const convertedTrAmountsPromises = filteredTransactions.map((t) => {
+        const convertedTrAmountsPromises = expenseFilteredTransactions.map((t) => {
             return baseCurrency.code === selectedCurrency.code
                 ? Promise.resolve(t.baseAmount)
                 : t.currency.code === selectedCurrency.code
@@ -83,7 +85,16 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
             const total = calculateTotalSimplier(resolvedAmounts)
             setTotalExpense(roundToTwo(total))
         })
-    }, [dateFilteredTransactions, selectedCurrency])
+    }, [expenseFilteredTransactions, selectedCurrency])
+
+    useEffect(() => {
+        const income = dateFilteredTransactions.filter(t => t.type === TrType.Income);
+        const expense = dateFilteredTransactions.filter(t => t.type === TrType.Expense);
+
+        setIncomeFilteredTransactions(income);
+        setExpenseFilteredTransactions(expense);
+    }, [dateFilteredTransactions]);
+
 
     useEffect(() => { // to ensure that when the page is loaded and all data are fetched, the filter will set te latest Transaction date
         if (transactions.length === 0 || (selectedMonth !== "" && selectedYear !== "")) return
@@ -163,6 +174,8 @@ const TransactionHistory: React.FC<TransactionHistoryPtops> = ({ transactions, s
                 totalExpense={totalExpense}
                 isLoading={isLoading}
                 displayAmount={displayAmount}
+                incomeFilteredTransactions={incomeFilteredTransactions}
+                expenseFilteredTransactions={expenseFilteredTransactions}
             />
             <hr className="text-[var(--color-dark-blue)] w-[85%] my-5" />
             <TransactionsList

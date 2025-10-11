@@ -2,7 +2,7 @@
 
 import { Transaction } from "@/interfaces"
 import { TrType } from '@/enums'
-import { calculateTotalSimplier, handleToggle, roundToTwo } from "@/utils"
+import { calculateTotalSimplier, handleToggle, hasMultipleCurrencies, roundToTwo } from "@/utils"
 import React, { useEffect, useState } from "react"
 import Modal from "./Modal"
 import { useCurrencyStore } from "@/context/CurrencyState"
@@ -10,6 +10,8 @@ import SummaryDetails from "./SummaryDetails"
 
 interface SummaryProps {
     dateFilteredTransactions: Transaction[]
+    incomeFilteredTransactions: Transaction[]
+    expenseFilteredTransactions: Transaction[]
     totalExpense: number
     isLoading: boolean
     displayAmount: (amount: number, rate?: number) => string
@@ -19,7 +21,7 @@ function calculateNetBalance(totalIncome: number, totalExpense: number): number 
     return Math.abs(totalIncome - totalExpense)
 }
 
-const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpense, isLoading, displayAmount }) => {
+const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpense, isLoading, displayAmount, incomeFilteredTransactions, expenseFilteredTransactions }) => {
     const baseCurrency = useCurrencyStore(state => state.baseCurrency)
     const selectedCurrency = useCurrencyStore(state => state.selectedCurrency)
     const convertGlobalFunc = useCurrencyStore(state => state.convertGlobalFunc)
@@ -28,6 +30,8 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
     const [showIncomeDetails, setShowIncomeDetails] = useState<boolean>(false)
     const [showExpenseDetails, setShowExpenseDetails] = useState<boolean>(false)
     const [totalIncome, setTotalIncome] = useState<number>(0)
+    const [multipleIncomeCurrencies, setMultipleIncomeCurrencies] = useState<boolean>(false)
+    const [multipleExpenseCurrencies, setMultipleExpenseCurrencies] = useState<boolean>(false)
 
     const netBalance = calculateNetBalance(totalIncome, totalExpense)
 
@@ -36,15 +40,18 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
         setShowInfo(!showInfo)
     }
 
-    function toggleShowDetails(type: TrType) {
-        if (type === TrType.Income) setShowIncomeDetails(!showIncomeDetails)
-        else setShowExpenseDetails(!showExpenseDetails)
+    function toggleShowIncomeDetails() {
+        if (totalIncome != 0 && multipleIncomeCurrencies) setShowIncomeDetails(!showIncomeDetails)
     }
+
+    function toggleShowExpenseDetails() {
+        if (totalExpense != 0 && multipleExpenseCurrencies) setShowExpenseDetails(!showExpenseDetails)
+    }
+
 
     // TotalIncome calculation
     useEffect(() => {
-        const filteredTransactions = dateFilteredTransactions.filter(t => (t.type === TrType.Income))
-        const convertedTrAmountsPromises = filteredTransactions.map((t) => {
+        const convertedTrAmountsPromises = incomeFilteredTransactions.map((t) => {
             return baseCurrency.code === selectedCurrency.code
                 ? Promise.resolve(t.baseAmount)
                 : t.currency.code === selectedCurrency.code
@@ -57,7 +64,21 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
             setTotalIncome(roundToTwo(total))
         })
         // calculateTotal(TrType.Income, dateFilteredTransactions, setTotalIncome, baseCurrency.code, selectedCurrency.code)
-    }, [dateFilteredTransactions, selectedCurrency])
+    }, [incomeFilteredTransactions, selectedCurrency])
+
+    useEffect(() => {
+        if (hasMultipleCurrencies(incomeFilteredTransactions)) setMultipleIncomeCurrencies(true)
+        else setMultipleIncomeCurrencies(false)
+        if (showIncomeDetails)
+            toggleShowIncomeDetails()
+    }, [incomeFilteredTransactions])
+
+    useEffect(() => {
+        if (hasMultipleCurrencies(expenseFilteredTransactions)) setMultipleExpenseCurrencies(true)
+        else setMultipleExpenseCurrencies(false)
+        if (showExpenseDetails)
+            toggleShowExpenseDetails()
+    }, [expenseFilteredTransactions])
 
 
     return (
@@ -65,8 +86,9 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
 
             <Modal onClose={toggleShowInfo} isOpen={showInfo}>
                 <h3>Summary</h3 >
-                <ul className="flex flex-col gap-2">
-                    <li className='p-1.5'>Basic info of the selected period.</li>
+                <ul className="flex flex-col gap-1 items-start">
+                    <li className='p-1.5'>1. Basic info of the selected period.</li>
+                    <li className='p-1.5'>2. Click on the Income/Expense bar to show each currency summary separatly.</li>
                 </ul >
             </Modal >
 
@@ -76,7 +98,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
             </div>
             <div id="basic-summary-info" className={`flex flex-col w-full justify-between gap-0.25 ${isLoading && 'opacity-50 duration-200'}`}>
 
-                <div onClick={() => toggleShowDetails(TrType.Income)} className="flex gap-2 w-full items-center justify-between bg-[var(--color-list-bg-green)] text-green-200 p-1 px-3 border-1 border-[var(--color-dark-blue)] clickable">
+                <div onClick={toggleShowIncomeDetails} className={`flex gap-2 w-full items-center justify-between bg-[var(--color-list-bg-green)] text-green-200 p-1 px-3 border-1 border-[var(--color-dark-blue)] ${(totalIncome > 0 && multipleIncomeCurrencies) && 'clickable'}`}>
                     <h4>Income:</h4>
                     <div className="flex gap-2">
                         <h4>{totalIncome}</h4>
@@ -89,7 +111,7 @@ const Summary: React.FC<SummaryProps> = ({ dateFilteredTransactions, totalExpens
                     isOpen={showIncomeDetails}
                 />
 
-                <div onClick={() => toggleShowDetails(TrType.Expense)} className="flex gap-2 w-full items-center justify-between bg-[var(--color-list-bg-red)] text-red-200 p-1 px-3 border-1 border-[var(--color-dark-blue)] clickable">
+                <div onClick={toggleShowExpenseDetails} className={`flex gap-2 w-full items-center justify-between bg-[var(--color-list-bg-red)] text-red-200 p-1 px-3 border-1 border-[var(--color-dark-blue)] ${(totalExpense > 0 && multipleExpenseCurrencies) && 'clickable'}`}>
                     <h4>Expense:</h4>
                     <div className="flex gap-2">
                         <h4>- {totalExpense}</h4>
